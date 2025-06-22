@@ -8,18 +8,6 @@
       "destination": "/"
     }
   ],
-  "env": {
-    "NEXT_PUBLIC_SITE_URL": "https://vibecodingbible.agentland.saarland",
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
-    "STRIPE_SECRET_KEY": "@stripe_secret_key",
-    "STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key",
-    "STRIPE_WEBHOOK_SECRET": "@stripe_webhook_secret",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "ANTHROPIC_API_KEY": "@anthropic_api_key",
-    "GOOGLE_AI_API_KEY": "@google_ai_api_key"
-  },
   "headers": [
     {
       "source": "/(.*)",
