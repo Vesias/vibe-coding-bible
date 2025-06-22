@@ -1,11 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Fira_Code, Cinzel } from 'next/font/google'
 import './globals.css'
-import { AuthProvider } from '@/lib/auth/AuthProvider'
-import { ThemeProvider } from '@/components/providers/ThemeProvider'
-import { Toaster } from '@/components/ui/toaster'
-import { ProgressProvider } from '@/lib/progress/ProgressProvider'
-import { AnalyticsProvider } from '@/components/providers/AnalyticsProvider'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-fira-code' })
@@ -84,23 +79,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${firaCode.variable} ${cinzel.variable} font-sans antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <ProgressProvider>
-              <AnalyticsProvider>
-                <div className="relative min-h-screen bg-background">
-                  {children}
-                  <Toaster />
-                </div>
-              </AnalyticsProvider>
-            </ProgressProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <div className="relative min-h-screen">
+          {children}
+        </div>
       </body>
     </html>
   )

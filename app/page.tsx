@@ -1,44 +1,33 @@
-import { Suspense } from 'react'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { CommandmentsPreview } from '@/components/landing/CommandmentsPreview'
-import { InteractiveFeatures } from '@/components/landing/InteractiveFeatures'
-import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { PricingSection } from '@/components/landing/PricingSection'
-import { CTASection } from '@/components/landing/CTASection'
-import { Footer } from '@/components/layout/Footer'
-import { Navigation } from '@/components/layout/Navigation'
-import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen">
-      <Navigation />
-      
-      <Suspense fallback={<LoadingSpinner />}>
+    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
+      {/* Temporary Hero Section */}
+      <div className="relative">
         <HeroSection />
-      </Suspense>
+      </div>
 
-      <Suspense fallback={<div className="h-32 loading-pulse" />}>
+      {/* Commandments Preview */}
+      <div className="py-20">
         <CommandmentsPreview />
-      </Suspense>
+      </div>
 
-      <Suspense fallback={<div className="h-32 loading-pulse" />}>
-        <InteractiveFeatures />
-      </Suspense>
-
-      <Suspense fallback={<div className="h-32 loading-pulse" />}>
-        <TestimonialsSection />
-      </Suspense>
-
-      <Suspense fallback={<div className="h-32 loading-pulse" />}>
+      {/* Pricing Section */}
+      <div className="py-20">
         <PricingSection />
-      </Suspense>
+      </div>
 
-      <Suspense fallback={<div className="h-32 loading-pulse" />}>
-        <CTASection />
-      </Suspense>
-
-      <Footer />
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <h3 className="text-2xl font-bold mb-4">🔮 Die Vibe Coding Bibel</h3>
+          <p className="text-slate-300 mb-4">Master AI-Assisted Development with the 10 Sacred Commandments</p>
+          <p className="text-sm text-slate-400">© 2025 vibecodingbible.agentland.saarland - All rights reserved</p>
+        </div>
+      </footer>
     </main>
   )
 }
