@@ -1,6 +1,18 @@
+import { AppLayout } from '@/components/layout/AppLayout'
+import { PageHeader } from '@/components/ui/navigation'
+
 export default function WorkshopsPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
+    <AppLayout>
+      <PageHeader
+        title="🔮 The Sacred Workshops"
+        description="Master the 10 Sacred Commandments through interactive workshops powered by biblical wisdom and AI mentoring."
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Workshops' }
+        ]}
+      />
+      <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
       {/* Header */}
       <div className="bg-slate-900 border-b border-blue-500/20">
         <div className="container mx-auto px-4 py-12">
@@ -244,5 +256,6 @@ export default function WorkshopsPage() {
         </div>
       </div>
     </main>
+    </AppLayout>
   )
 }

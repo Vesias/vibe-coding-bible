@@ -1,11 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { getAIProvider } from '@/lib/ai/provider'
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore.set(name, value, options)
+              )
+            } catch {
+              // The `setAll` method was called from a Server Component.
+            }
+          },
+        },
+      }
+    )
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
@@ -41,7 +61,7 @@ export async function POST(request: NextRequest) {
       .eq('interaction_type', 'coding_help')
       .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) // Last 30 days
 
-    if (helpCount >= helpLimit) {
+    if ((helpCount || 0) >= helpLimit) {
       return NextResponse.json({ 
         error: 'Monthly AI help limit reached. Upgrade your tier for more assistance.',
         upgradeRequired: true
@@ -83,9 +103,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       ...helpResponse,
-      helpUsed: helpCount + 1,
+      helpUsed: (helpCount || 0) + 1,
       helpLimit: helpLimit,
-      tierLimitReached: helpCount + 1 >= helpLimit
+      tierLimitReached: (helpCount || 0) + 1 >= helpLimit
     })
 
   } catch (error) {

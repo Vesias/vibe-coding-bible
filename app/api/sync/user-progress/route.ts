@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     
     const { userId, agentlandProfile, timestamp } = await req.json()
     
-    const supabase = createClient()
+    const supabase = await createServerSupabaseClient()
     
     // Update user profile with Agentland data
     const { data: user } = await supabase

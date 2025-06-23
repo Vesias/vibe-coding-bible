@@ -1,11 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { getAIProvider } from '@/lib/ai/provider'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) =>
+                cookieStore.set(name, value, options)
+              )
+            } catch {}
+          },
+        },
+      }
+    )
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
@@ -30,10 +48,10 @@ export async function GET(request: NextRequest) {
         totalInteractions: 0,
         totalTokens: 0,
         totalCost: 0,
-        byType: {},
-        byModel: {},
-        byDay: [],
-        monthlyLimits: {}
+        byType: {} as any,
+        byModel: {} as any,
+        byDay: [] as any[],
+        monthlyLimits: {} as any
       })
     }
 
@@ -42,10 +60,10 @@ export async function GET(request: NextRequest) {
       totalInteractions: interactions.length,
       totalTokens: interactions.reduce((sum, i) => sum + (i.tokens_used || 0), 0),
       totalCost: interactions.reduce((sum, i) => sum + (i.cost || 0), 0),
-      byType: {},
-      byModel: {},
-      byDay: [],
-      monthlyLimits: {}
+      byType: {} as any,
+      byModel: {} as any,
+      byDay: [] as any[],
+      monthlyLimits: {} as any
     }
 
     // Group by interaction type
@@ -96,7 +114,7 @@ export async function GET(request: NextRequest) {
     const tier = profile?.current_tier || 'free'
 
     // Define monthly limits by tier
-    const limits = {
+    const limits: any = {
       free: { chat: 10, review: 5, help: 5, recommendations: 3 },
       apostle: { chat: 100, review: 50, help: 50, recommendations: 20 },
       prophet: { chat: 500, review: 200, help: 200, recommendations: 100 },
@@ -104,8 +122,8 @@ export async function GET(request: NextRequest) {
     }
 
     stats.monthlyLimits = {
-      limits: limits[tier],
-      usage: Object.keys(stats.byType).reduce((acc, type) => {
+      limits: limits[tier] || limits.free,
+      usage: Object.keys(stats.byType).reduce((acc: Record<string, number>, type) => {
         acc[type] = stats.byType[type].count
         return acc
       }, {}),

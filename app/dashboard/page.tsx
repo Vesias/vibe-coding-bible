@@ -1,17 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { AuthGuard } from '@/lib/auth/guards'
 import { useAdvancedAuth } from '@/lib/auth/hooks'
-import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
-import { LearningPathsSection } from '@/components/dashboard/LearningPathsSection'
-import { ProgressVisualization } from '@/components/dashboard/ProgressVisualization'
-import { AIRecommendations } from '@/components/dashboard/AIRecommendations'
-import { QuickActions } from '@/components/dashboard/QuickActions'
-import { RecentActivity } from '@/components/dashboard/RecentActivity'
-import { AchievementsPanel } from '@/components/dashboard/AchievementsPanel'
-import { CollaborationHub } from '@/components/dashboard/CollaborationHub'
-import { SacredGeometry } from '@/components/illustrations/SacredGeometry'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function DashboardPage() {
@@ -19,7 +9,6 @@ export default function DashboardPage() {
     user,
     profile,
     tier,
-    tierInfo,
     rank,
     rankInfo,
     nextRank,
@@ -32,11 +21,11 @@ export default function DashboardPage() {
   } = useAdvancedAuth()
 
   const [dashboardData, setDashboardData] = useState({
-    recentWorkshops: [],
-    recommendations: [],
-    achievements: [],
-    collaborationSessions: [],
-    weeklyProgress: {},
+    recentWorkshops: [] as any[],
+    recommendations: [] as any[],
+    achievements: [] as any[],
+    collaborationSessions: [] as any[],
+    weeklyProgress: {} as Record<string, any>,
     learningStreak: 0
   })
   const [dataLoading, setDataLoading] = useState(true)
@@ -48,79 +37,63 @@ export default function DashboardPage() {
   }, [user, profile])
 
   const loadDashboardData = async () => {
-    setDataLoading(true)
     try {
-      // Simulate loading dashboard data
-      // In real implementation, this would fetch from Supabase
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      setDataLoading(true)
       
+      // Mock data - replace with actual API calls
       setDashboardData({
         recentWorkshops: [
           {
             id: '1',
             title: 'The Holy Vision',
             progress: 85,
-            lastAccessed: '2024-01-20',
-            difficulty: 'beginner'
+            lastAccessed: '2024-01-15',
+            difficulty: 'Beginner'
           },
           {
-            id: '2',
+            id: '2', 
             title: 'The Right Stack',
-            progress: 45,
-            lastAccessed: '2024-01-19',
-            difficulty: 'intermediate'
+            progress: 60,
+            lastAccessed: '2024-01-14',
+            difficulty: 'Intermediate'
           }
         ],
         recommendations: [
           {
+            id: '1',
+            title: 'Master AI Prompting',
             type: 'workshop',
-            title: 'Advanced Prompt Engineering',
-            reason: 'Based on your progress in AI workshops',
-            confidence: 95
-          },
-          {
-            type: 'skill',
-            title: 'TypeScript Mastery',
-            reason: 'Complement your JavaScript knowledge',
-            confidence: 88
+            reason: 'Based on your progress in Code Generation'
           }
         ],
         achievements: [
           {
             id: '1',
-            name: 'First Steps',
+            title: 'First Steps',
             description: 'Completed your first workshop',
-            earned: true,
+            unlockedAt: '2024-01-10',
             rarity: 'common'
-          },
-          {
-            id: '2',
-            name: 'Code Prophet',
-            description: 'Reach Prophet rank',
-            earned: false,
-            rarity: 'legendary',
-            progress: rankProgress.progress
           }
         ],
         collaborationSessions: [
           {
             id: '1',
-            name: 'JavaScript Mastery Session',
-            participants: 3,
+            title: 'AI Development Meetup',
+            participants: 8,
             status: 'active',
-            startTime: '2024-01-20T10:00:00Z'
+            startedAt: '2024-01-15T10:00:00Z'
           }
         ],
         weeklyProgress: {
           workshopsCompleted: 2,
-          xpEarned: 850,
-          timeSpent: 12,
+          xpEarned: 450,
+          timeSpent: 180,
           streakDays: 5
         },
         learningStreak: 5
       })
     } catch (error) {
-      console.error('Error loading dashboard data:', error)
+      console.error('Failed to load dashboard data:', error)
     } finally {
       setDataLoading(false)
     }
@@ -138,96 +111,181 @@ export default function DashboardPage() {
   }
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900">
-        {/* Sacred Geometry Background */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <SacredGeometry 
-            type="fibonacci_spiral" 
-            className="absolute top-1/4 right-1/4 opacity-5 scale-150" 
-          />
-          <SacredGeometry 
-            type="flower_of_life" 
-            className="absolute bottom-1/4 left-1/4 opacity-5 scale-75" 
-          />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            🏆 Prophet Dashboard
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Track your divine coding journey and ascend through the sacred ranks.
+          </p>
         </div>
 
-        <div className="relative z-10">
-          {/* Dashboard Header */}
-          <DashboardHeader
-            user={profile}
-            tier={tier}
-            tierInfo={tierInfo}
-            rank={rank}
-            rankInfo={rankInfo}
-            nextRank={nextRank}
-            rankProgress={rankProgress}
-            weeklyProgress={dashboardData.weeklyProgress}
-          />
-
-          {/* Main Dashboard Grid */}
-          <div className="container mx-auto px-4 py-8 space-y-8">
-            {/* Top Row - Quick Actions and AI Recommendations */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <QuickActions 
-                  workshopAccess={workshopAccess}
-                  aiAccess={aiAccess}
-                  collaborationAccess={collaborationAccess}
-                  tier={tier}
-                />
-              </div>
+        {/* Stats Overview */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between">
               <div>
-                <AIRecommendations 
-                  recommendations={dashboardData.recommendations}
-                  tier={tier}
-                  userPreferences={profile?.learning_preferences}
-                />
+                <p className="text-sm text-gray-600 dark:text-gray-400">Current Rank</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{rank || 'Novice'}</p>
               </div>
+              <div className="text-3xl">👑</div>
             </div>
+          </div>
 
-            {/* Second Row - Learning Paths and Progress */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-              <LearningPathsSection
-                recentWorkshops={dashboardData.recentWorkshops}
-                userLevel={profile?.current_level || 1}
-                userInterests={profile?.learning_preferences?.interests || []}
-                tier={tier}
-              />
-              <ProgressVisualization
-                xp={profile?.total_xp || 0}
-                level={profile?.current_level || 1}
-                rank={rank}
-                rankProgress={rankProgress}
-                weeklyProgress={dashboardData.weeklyProgress}
-                learningStreak={dashboardData.learningStreak}
-              />
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total XP</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {profile?.total_xp?.toLocaleString() || '0'}
+                </p>
+              </div>
+              <div className="text-3xl">⚡</div>
             </div>
+          </div>
 
-            {/* Third Row - Activity and Collaboration */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <RecentActivity
-                recentWorkshops={dashboardData.recentWorkshops}
-                xpGains={xpProgression.recentXPGains}
-                user={profile}
-              />
-              <CollaborationHub
-                activeSessions={dashboardData.collaborationSessions}
-                collaborationAccess={collaborationAccess}
-                tier={tier}
-              />
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Workshops</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {dashboardData.recentWorkshops.length}
+                </p>
+              </div>
+              <div className="text-3xl">📚</div>
             </div>
+          </div>
 
-            {/* Bottom Row - Achievements */}
-            <AchievementsPanel
-              achievements={dashboardData.achievements}
-              userXP={profile?.total_xp || 0}
-              userRank={rank}
-              tier={tier}
-            />
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Streak</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {dashboardData.learningStreak} days
+                </p>
+              </div>
+              <div className="text-3xl">🔥</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Workshops */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+            📖 Recent Workshops
+          </h2>
+          
+          {dashboardData.recentWorkshops.length > 0 ? (
+            <div className="space-y-4">
+              {dashboardData.recentWorkshops.map((workshop) => (
+                <div key={workshop.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {workshop.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Last accessed: {workshop.lastAccessed} • {workshop.difficulty}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-semibold text-blue-600">
+                      {workshop.progress}% Complete
+                    </div>
+                    <div className="w-24 bg-gray-200 rounded-full h-2 mt-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full" 
+                        style={{ width: `${workshop.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Begin your divine coding journey
+              </p>
+              <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Start First Workshop
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              🚀 Quick Actions
+            </h3>
+            <div className="space-y-3">
+              <button className="w-full text-left p-3 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                Continue Workshop
+              </button>
+              <button className="w-full text-left p-3 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                Join Collaboration
+              </button>
+              <button className="w-full text-left p-3 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                Ask AI Mentor
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              🏆 Recent Achievements
+            </h3>
+            {dashboardData.achievements.length > 0 ? (
+              <div className="space-y-3">
+                {dashboardData.achievements.map((achievement) => (
+                  <div key={achievement.id} className="flex items-center gap-3">
+                    <div className="text-2xl">🏅</div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {achievement.title}
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {achievement.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 dark:text-gray-400">
+                Complete workshops to earn achievements
+              </p>
+            )}
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              💡 Recommendations
+            </h3>
+            {dashboardData.recommendations.length > 0 ? (
+              <div className="space-y-3">
+                {dashboardData.recommendations.map((rec) => (
+                  <div key={rec.id} className="p-3 border rounded-lg">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {rec.title}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {rec.reason}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 dark:text-gray-400">
+                Personalized recommendations will appear as you progress
+              </p>
+            )}
           </div>
         </div>
       </div>
-    </AuthGuard>
+    </div>
   )
 }
