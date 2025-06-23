@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Fira_Code, Cinzel } from 'next/font/google'
 import './globals.css'
+import { Providers } from '@/components/providers/Providers'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-fira-code' })
@@ -79,9 +80,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${firaCode.variable} ${cinzel.variable} font-sans antialiased`}>
-        <div className="relative min-h-screen">
-          {children}
-        </div>
+        <Providers>
+          <div className="relative min-h-screen">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   )

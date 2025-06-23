@@ -1,13 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+export const dynamic = 'force-dynamic'
+
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { BookOpen, CheckCircle, AlertCircle } from 'lucide-react'
 
-export default function SeamlessAuthPage() {
+function SeamlessAuthContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
@@ -196,5 +198,29 @@ export default function SeamlessAuthPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function SeamlessAuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-8">
+            <div className="text-center space-y-6">
+              <LoadingSpinner className="h-12 w-12 mx-auto" />
+              <div>
+                <h2 className="text-xl font-semibold">Verbindung wird hergestellt</h2>
+                <p className="text-muted-foreground mt-2">
+                  Ihre Agentland-Anmeldung wird übertragen...
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <SeamlessAuthContent />
+    </Suspense>
   )
 }

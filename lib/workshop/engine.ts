@@ -249,7 +249,10 @@ class WorkshopEngine {
         { 
           language: this.currentWorkshop.language as any,
           enableTests: true,
-          timeout: step.timeEstimate * 1000
+          timeout: step.timeEstimate * 1000,
+          memoryLimit: 64, // MB
+          allowNetworking: false,
+          allowFileSystem: false
         },
         step.tests
       )
@@ -339,7 +342,7 @@ class WorkshopEngine {
 
     // Check for runtime errors
     if (result.error) {
-      feedback.push(`❌ Runtime Error: ${result.error.message}`)
+      feedback.push(`❌ Runtime Error: ${result.error}`)
       return { score: 0, passed: false, feedback }
     }
 
@@ -580,7 +583,7 @@ class WorkshopEngine {
     // Build progress for each step
     Object.keys(submissionsByChallenge).forEach(challengeId => {
       const challengeSubmissions = submissionsByChallenge[challengeId]
-      const bestSubmission = challengeSubmissions.reduce((best, current) => 
+      const bestSubmission = challengeSubmissions.reduce((best: any, current: any) => 
         current.score > best.score ? current : best
       )
 
@@ -588,9 +591,9 @@ class WorkshopEngine {
         status: bestSubmission.is_correct ? 'completed' : 'in_progress',
         attempts: challengeSubmissions.length,
         bestScore: bestSubmission.score,
-        timeSpent: challengeSubmissions.reduce((total, sub) => total + (sub.execution_time || 0), 0),
+        timeSpent: challengeSubmissions.reduce((total: number, sub: any) => total + (sub.execution_time || 0), 0),
         hintsUsed: 0, // Would need to track this separately
-        codeSubmissions: challengeSubmissions.map(sub => ({
+        codeSubmissions: challengeSubmissions.map((sub: any) => ({
           code: sub.code,
           result: sub.answer,
           score: sub.score,

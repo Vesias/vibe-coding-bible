@@ -5,6 +5,7 @@
  * for all sacred illustrations in the Vibe Coding Bible.
  */
 
+import React from 'react';
 import { DesignTokens } from '../sacred-design/visual-system';
 
 export interface ResponsiveImageConfig {

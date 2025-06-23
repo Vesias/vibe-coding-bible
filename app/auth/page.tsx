@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+export const dynamic = 'force-dynamic'
+
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { AuthForm } from '@/components/auth/AuthForms'
 import { useAuth } from '@/lib/auth/AuthProvider'
 
-export default function AuthPage() {
+function AuthPageContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { user, loading } = useAuth()
@@ -44,5 +46,17 @@ export default function AuthPage() {
         <AuthForm mode={mode} onModeChange={setMode} />
       </div>
     </div>
+  )
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    }>
+      <AuthPageContent />
+    </Suspense>
   )
 }
