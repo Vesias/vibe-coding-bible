@@ -1,20 +1,13 @@
-import { AppLayout } from '@/components/layout/AppLayout'
-
 export default function HomePage() {
   return (
-    <AppLayout showNavigation={false}>
-      <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
+    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-purple-900 to-indigo-900">
       {/* Hero Section */}
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden">      
         <div className="container relative z-10 mx-auto px-4 py-16 text-center">
           <div className="mx-auto max-w-4xl">
-            {/* Agentland Logo */}
+            {/* VibeCoding Bible Logo */}
             <div className="flex justify-center mb-8">
-              <img 
-                src="/logo.png" 
-                alt="Agentland" 
-                className="h-16 w-auto opacity-90 hover:opacity-100 transition-opacity"
-              />
+              <div className="text-6xl">📜</div>
             </div>
 
             {/* Badge */}
@@ -125,6 +118,5 @@ export default function HomePage() {
         </div>
       </footer>
     </main>
-    </AppLayout>
   )
 }
