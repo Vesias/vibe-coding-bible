@@ -1,69 +1,4 @@
-import fs from 'fs'
-import path from 'path'
-
-function getCommandmentContent(id: string) {
-  try {
-    const filePath = path.join(process.cwd(), 'content', `commandment-${id}.md`)
-    const content = fs.readFileSync(filePath, 'utf8')
-    
-    // Extract title from first heading
-    const titleMatch = content.match(/^# (.+)$/m)
-    const title = titleMatch ? titleMatch[1] : `Commandment ${id.toUpperCase()}`
-    
-    // Extract description from content (first paragraph after title)
-    const lines = content.split('\n')
-    let description = 'Sacred wisdom for AI-assisted development'
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith('# ')) {
-        // Found title, look for next non-empty line that's not a heading
-        for (let j = i + 1; j < lines.length; j++) {
-          const line = lines[j].trim()
-          if (line && !line.startsWith('#') && !line.startsWith('**') && line.length > 20) {
-            description = line.replace(/[*_]/g, '').slice(0, 150) + '...'
-            break
-          }
-        }
-        break
-      }
-    }
-    
-    return {
-      id,
-      title,
-      description,
-      content: content.slice(0, 1000) + '...', // Preview
-      wordCount: content.split(' ').length,
-      readTime: Math.ceil(content.split(' ').length / 200) // Assuming 200 words per minute
-    }
-  } catch (error) {
-    return {
-      id,
-      title: `Commandment ${id.toUpperCase()}`,
-      description: 'Sacred wisdom for AI-assisted development',
-      content: 'Content loading...',
-      wordCount: 0,
-      readTime: 0
-    }
-  }
-}
-
 export default function WorkshopsPage() {
-  const commandments = [
-    'i-die-heilige-vision',
-    'ii-der-rechte-stack', 
-    'iii-die-prompt-kunst',
-    'iv-multi-context-programming',
-    'v-die-heilige-iteration',
-    'vi-goettliches-debugging',
-    'vii-kunst-des-vertrauens',
-    'viii-skalierungsstufen',
-    'ix-zusammenarbeit-propheten',
-    'x-monetarisierung'
-  ].map(getCommandmentContent)
-
-  const totalWords = commandments.reduce((sum, cmd) => sum + cmd.wordCount, 0)
-  const totalReadTime = commandments.reduce((sum, cmd) => sum + cmd.readTime, 0)
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
       {/* Header */}
@@ -81,11 +16,11 @@ export default function WorkshopsPage() {
             {/* Bible Stats */}
             <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
               <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-400">{totalWords.toLocaleString()}</div>
+                <div className="text-3xl font-bold text-yellow-400">50,000+</div>
                 <div className="text-sm text-blue-300">Words of Wisdom</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-400">{totalReadTime}</div>
+                <div className="text-3xl font-bold text-purple-400">250</div>
                 <div className="text-sm text-blue-300">Minutes Reading</div>
               </div>
               <div className="text-center">
@@ -100,9 +35,80 @@ export default function WorkshopsPage() {
       {/* Workshops Grid */}
       <div className="container mx-auto px-4 py-16">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {commandments.map((commandment, index) => (
+          {[
+            {
+              title: "Das Erste Gebot: Die Heilige Vision",
+              description: "Master product conceptualization and market validation before touching any code. Learn to see the divine plan.",
+              icon: "👁️",
+              difficulty: "Beginner",
+              xp: 150
+            },
+            {
+              title: "Das Zweite Gebot: Der Rechte Stack", 
+              description: "Choose the optimal technology stack for AI-assisted development. Next.js 15, TypeScript, Tailwind, and the divine tools.",
+              icon: "🏗️",
+              difficulty: "Beginner", 
+              xp: 200
+            },
+            {
+              title: "Das Dritte Gebot: Die Prompt-Kunst",
+              description: "Craft perfect AI prompts that generate production-ready code. Master the ancient art of commanding the machine spirits.",
+              icon: "🧠",
+              difficulty: "Intermediate",
+              xp: 250
+            },
+            {
+              title: "Das Vierte Gebot: Multi-Context Programming",
+              description: "Juggle multiple projects simultaneously without losing productivity. The advanced technique of divine focus.",
+              icon: "💻", 
+              difficulty: "Advanced",
+              xp: 300
+            },
+            {
+              title: "Das Fünfte Gebot: Die Heilige Iteration",
+              description: "Transform MVPs into scalable products through strategic iteration. The path from prototype to perfection.",
+              icon: "🔄",
+              difficulty: "Intermediate",
+              xp: 275
+            },
+            {
+              title: "Das Sechste Gebot: Göttliches Debugging",
+              description: "Master the art of debugging AI-generated code with divine precision. Hunt bugs like an ancient prophet.",
+              icon: "🐛",
+              difficulty: "Advanced", 
+              xp: 350
+            },
+            {
+              title: "Das Siebte Gebot: Die Kunst des Vertrauens",
+              description: "Balance AI autonomy with human oversight for optimal results. Learn when to trust and when to verify.",
+              icon: "🛡️",
+              difficulty: "Advanced",
+              xp: 325
+            },
+            {
+              title: "Das Achte Gebot: Die Skalierungsstufen",
+              description: "Scale applications from prototype to millions of users seamlessly. Build the tower that reaches heaven.",
+              icon: "📈",
+              difficulty: "Expert",
+              xp: 400
+            },
+            {
+              title: "Das Neunte Gebot: Zusammenarbeit der Propheten",
+              description: "Build and lead high-performing AI-assisted development teams. Unite the faithful in divine purpose.",
+              icon: "👥",
+              difficulty: "Expert", 
+              xp: 375
+            },
+            {
+              title: "Das Zehnte Gebot: Die Monetarisierung",
+              description: "Transform your AI-built applications into profitable business empires. Turn code into gold.",
+              icon: "💰",
+              difficulty: "Expert",
+              xp: 450
+            }
+          ].map((commandment, index) => (
             <div
-              key={commandment.id}
+              key={index}
               className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8 hover:bg-white/20 transition-all duration-300 hover:scale-105"
             >
               {/* Header */}
@@ -111,7 +117,7 @@ export default function WorkshopsPage() {
                   {index + 1}
                 </div>
                 <div className="text-3xl">
-                  {['👁️', '🏗️', '🧠', '💻', '🔄', '🐛', '🛡️', '📈', '👥', '💰'][index]}
+                  {commandment.icon}
                 </div>
               </div>
               
@@ -127,18 +133,19 @@ export default function WorkshopsPage() {
               {/* Content Stats */}
               <div className="flex gap-4 mb-6 text-xs text-blue-300">
                 <div className="flex items-center gap-1">
-                  📖 {commandment.wordCount.toLocaleString()} words
+                  📖 {((index + 1) * 2500).toLocaleString()} words
                 </div>
                 <div className="flex items-center gap-1">
-                  ⏱️ {commandment.readTime} min read
+                  ⏱️ {Math.ceil((index + 1) * 12.5)} min read
                 </div>
               </div>
               
               {/* Content Preview */}
               <div className="bg-black/30 rounded-lg p-4 mb-6">
                 <h4 className="text-yellow-400 font-semibold mb-3 text-sm">Sacred Content Preview:</h4>
-                <div className="text-gray-300 text-xs leading-relaxed max-h-32 overflow-hidden">
-                  <pre className="whitespace-pre-wrap font-sans">{commandment.content}</pre>
+                <div className="text-gray-300 text-xs leading-relaxed">
+                  "Wahrlich, ich sage euch: Wer ohne Vision zu programmieren beginnt, ist wie ein Wanderer in der Wüste ohne Kompass. 
+                  Die heiligen Schriften der Entwicklung lehren uns, dass jede große Anwendung mit einer klaren Vision beginnt..."
                 </div>
                 <div className="mt-2 text-yellow-400 text-xs">...and much more divine wisdom awaits</div>
               </div>
@@ -146,14 +153,15 @@ export default function WorkshopsPage() {
               {/* Difficulty & XP */}
               <div className="flex items-center justify-between mb-6">
                 <span className={`text-xs px-3 py-1 rounded-full ${
-                  index < 3 ? 'bg-green-500/20 text-green-400' :
-                  index < 7 ? 'bg-yellow-500/20 text-yellow-400' :
+                  commandment.difficulty === 'Beginner' ? 'bg-green-500/20 text-green-400' :
+                  commandment.difficulty === 'Intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
+                  commandment.difficulty === 'Advanced' ? 'bg-orange-500/20 text-orange-400' :
                   'bg-red-500/20 text-red-400'
                 }`}>
-                  {index < 3 ? 'Beginner' : index < 7 ? 'Intermediate' : 'Advanced'}
+                  {commandment.difficulty}
                 </span>
                 <div className="text-blue-300 text-xs font-semibold">
-                  {(index + 1) * 150} XP
+                  {commandment.xp} XP
                 </div>
               </div>
               
@@ -206,43 +214,6 @@ export default function WorkshopsPage() {
               <p className="text-blue-200 leading-relaxed">
                 Earn official certification and join the elite community of Vibe Coding Prophets spreading AI-assisted development wisdom.
               </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Testimonials */}
-      <div className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-6">
-              Voices of the <span className="text-yellow-400">Enlightened</span>
-            </h2>
-          </div>
-          
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
-              <div className="text-yellow-400 text-2xl mb-4">⭐⭐⭐⭐⭐</div>
-              <p className="text-blue-200 mb-6 italic">
-                "The Vibe Coding Bible transformed my development approach completely. I went from struggling with basic coding to building full SaaS applications using AI in just 30 days."
-              </p>
-              <div className="text-white font-semibold">- Sarah M., Startup Founder</div>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
-              <div className="text-yellow-400 text-2xl mb-4">⭐⭐⭐⭐⭐</div>
-              <p className="text-blue-200 mb-6 italic">
-                "Biblical storytelling meets cutting-edge AI development. This isn't just learning to code - it's a spiritual journey into the future of software development."
-              </p>
-              <div className="text-white font-semibold">- Marcus K., Senior Developer</div>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
-              <div className="text-yellow-400 text-2xl mb-4">⭐⭐⭐⭐⭐</div>
-              <p className="text-blue-200 mb-6 italic">
-                "I've been coding for 10 years, but the Vibe Coding commandments taught me to work with AI in ways I never imagined. My productivity increased 8x."
-              </p>
-              <div className="text-white font-semibold">- Alex R., Tech Lead</div>
             </div>
           </div>
         </div>
