@@ -111,7 +111,7 @@ export function ProgressVisualization({
       {/* Sacred Geometry Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <SacredGeometry 
-          type="golden_ratio" 
+          pattern="golden-spiral" 
           className="absolute top-4 right-4 opacity-5 scale-75" 
         />
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-primary/5 to-transparent" />

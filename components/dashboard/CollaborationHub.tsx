@@ -16,7 +16,7 @@ import {
   MicOff, 
   VideoIcon, 
   VideoOff,
-  Screen,
+  Monitor,
   MessageCircle,
   UserPlus,
   Settings,
