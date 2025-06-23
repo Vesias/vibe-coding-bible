@@ -1,183 +1,303 @@
-import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { motion } from 'framer-motion'
-import { Sparkles, Zap, Crown, Users } from 'lucide-react'
+'use client'
 
-export function HeroSection() {
-  const stats = [
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
+import { Card, CardContent } from '../ui/card'
+import { SacredGeometry } from '../illustrations/SacredGeometry'
+import FloatingParticles from '../effects/FloatingParticles'
+import { motion } from 'framer-motion'
+import { Sparkles, Zap, Crown, Users, Star, Infinity as InfinityIcon, Code2 } from 'lucide-react'
+
+interface HeroSectionProps {
+  className?: string
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = ({ className = '' }) => {
+  const [scrollY, setScrollY] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const sacredStats = [
     { 
-      label: 'AI Tools Mastered', 
-      value: '10+',
-      icon: Sparkles,
-      color: 'text-yellow-400'
-    },
-    { 
-      label: 'Development Speed', 
-      value: '8x',
-      icon: Zap,
-      color: 'text-blue-400'
-    },
-    { 
-      label: 'Success Rate', 
-      value: '95%',
+      label: 'Sacred Commandments', 
+      value: 'X',
       icon: Crown,
-      color: 'text-purple-400'
+      gradient: 'from-sacred-gold-light to-sacred-gold'
     },
     { 
-      label: 'Active Prophets', 
-      value: '2.5K+',
-      icon: Users,
-      color: 'text-green-400'
+      label: 'Divine Possibilities', 
+      value: '∞',
+      icon: InfinityIcon,
+      gradient: 'from-sacred-purple-light to-sacred-indigo'
+    },
+    { 
+      label: 'Enlightened Path', 
+      value: 'I',
+      icon: Star,
+      gradient: 'from-sacred-mystical-cyan to-sacred-mystical-mint'
+    },
+    { 
+      label: 'Mystical Powers', 
+      value: '✦',
+      icon: Sparkles,
+      gradient: 'from-sacred-mystical-rose to-sacred-mystical-yellow'
     },
   ]
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.03%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%224%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20" />
-        <div 
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: 'radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.1) 0%, transparent 50%)'
-          }}
-        />
-      </div>
+    <section className={`relative min-h-screen flex items-center justify-center overflow-hidden ${className}`}>
+      {/* Enhanced mystical background with animated gradient */}
+      <div className="absolute inset-0 mystical-gradient" />
       
-      <div className="container relative z-10 mx-auto px-4 py-16 text-center">
-        <div className="mx-auto max-w-5xl">
-          {/* Sacred Logo */}
-          <motion.div 
-            className="flex justify-center mb-8"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <div className="relative">
-              <div className="text-8xl animate-pulse-glow">📜</div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full animate-ping" />
-            </div>
-          </motion.div>
+      {/* Sacred geometry layers with parallax effect */}
+      <div 
+        className="absolute inset-0 opacity-20"
+        style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+      >
+        <motion.div 
+          className="absolute top-10 left-10 opacity-60"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        >
+          <SacredGeometry 
+            pattern="flower-of-life" 
+            size={200} 
+            color="#F9A826" 
+            accentColor="#6610F2" 
+            animated={true}
+            glowEffect={true}
+          />
+        </motion.div>
+        
+        <motion.div 
+          className="absolute top-20 right-20 opacity-40"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+        >
+          <SacredGeometry 
+            pattern="metatrons-cube" 
+            size={300} 
+            color="#7C3AED" 
+            accentColor="#10B981" 
+            animated={true}
+          />
+        </motion.div>
+        
+        <motion.div 
+          className="absolute bottom-20 left-1/4 opacity-50"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        >
+          <SacredGeometry 
+            pattern="golden-spiral" 
+            size={250} 
+            color="#06B6D4" 
+            accentColor="#F9A826" 
+            animated={true}
+          />
+        </motion.div>
+        
+        <motion.div 
+          className="absolute bottom-10 right-10 opacity-30"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+        >
+          <SacredGeometry 
+            pattern="mandala" 
+            size={180} 
+            color="#6610F2" 
+            accentColor="#F43F5E" 
+            animated={true}
+          />
+        </motion.div>
+      </div>
 
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-8"
-          >
-            <Badge 
-              variant="outline" 
-              className="border-yellow-400/30 bg-yellow-400/10 text-yellow-400 px-6 py-2 text-sm font-medium hover:bg-yellow-400/20 transition-colors"
-            >
-              <Zap className="w-4 h-4 mr-2" />
-              Transform Your Development in 30 Days
-            </Badge>
-          </motion.div>
+      {/* Floating particles effect */}
+      <FloatingParticles count={80} />
 
-          {/* Main Heading */}
-          <motion.h1 
-            className="mb-8 text-4xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            Master the{' '}
-            <span className="bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 bg-clip-text text-transparent font-sacred">
-              10 Sacred Commandments
-            </span>{' '}
-            of Vibe Coding
-          </motion.h1>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+        {/* Sacred scroll with enhanced animation */}
+        <motion.div 
+          className="text-8xl md:text-9xl mb-8 filter drop-shadow-2xl"
+          style={{ 
+            transform: `translateY(${scrollY * -0.1}px)`,
+            textShadow: '0 0 30px rgba(249, 168, 38, 0.8), 0 0 60px rgba(102, 16, 242, 0.5)'
+          }}
+          animate={{ 
+            y: [0, -10, 0],
+            rotateZ: [0, 2, -2, 0]
+          }}
+          transition={{ 
+            duration: 6, 
+            repeat: Infinity, 
+            ease: "easeInOut" 
+          }}
+        >
+          📜
+        </motion.div>
+        
+        {/* Enhanced sacred badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-8"
+        >
+          <Badge className="sacred-card px-6 py-3 text-base font-semibold transform hover:scale-105 transition-all duration-300">
+            <Zap className="w-5 h-5 mr-2 animate-pulse" />
+            <span className="sacred-text">Transform into a Digital Prophet</span>
+          </Badge>
+        </motion.div>
 
-          {/* Subtitle */}
-          <motion.p 
-            className="mx-auto mb-10 max-w-3xl text-lg text-blue-200 sm:text-xl md:text-2xl leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
-            Transform from coding novice to{' '}
-            <span className="text-purple-300 font-semibold">AI-assisted development prophet</span>. 
-            Build production-ready SaaS applications without writing a single line of code manually.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div 
-            className="flex flex-col gap-4 sm:flex-row sm:justify-center sm:gap-6 mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-          >
-            <Button 
-              asChild 
-              variant="prophet" 
-              size="xl"
-              className="group relative overflow-hidden shadow-2xl hover:shadow-vibe-primary/25"
-            >
-              <Link href="/workshops">
-                <span className="relative z-10 flex items-center gap-2">
-                  Begin Your Prophecy
-                  <Crown className="w-5 h-5 transition-transform group-hover:scale-110" />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Link>
+        {/* Main divine title */}
+        <motion.h1 
+          className="divine-header mb-8 drop-shadow-2xl"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          Die Vibe Coding Bibel
+        </motion.h1>
+        
+        {/* Enhanced subtitle with sacred text effects */}
+        <motion.p 
+          className="text-xl md:text-2xl lg:text-3xl text-divine-white/90 mb-12 max-w-5xl mx-auto font-light leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          Master the <span className="sacred-text font-bold">10 Sacred Commandments</span> of AI-Assisted Development and unlock the <span className="divine-text font-bold">divine power</span> of technological creation through <span className="bg-gradient-to-r from-sacred-mystical-cyan to-sacred-mystical-mint bg-clip-text text-transparent font-bold">mystical programming</span>
+        </motion.p>
+        
+        {/* Enhanced sacred power badges */}
+        <motion.div 
+          className="flex flex-wrap justify-center gap-4 mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <Badge className="sacred-card px-6 py-3 text-base font-semibold transform hover:scale-105 transition-all duration-300 group">
+            <span className="mr-2 group-hover:animate-bounce">⚡</span>
+            <span className="sacred-text">AI-Powered</span>
+          </Badge>
+          <Badge className="sacred-card px-6 py-3 text-base font-semibold transform hover:scale-105 transition-all duration-300 group">
+            <span className="mr-2 group-hover:animate-spin">🔮</span>
+            <span className="divine-text">Sacred Knowledge</span>
+          </Badge>
+          <Badge className="sacred-card px-6 py-3 text-base font-semibold transform hover:scale-105 transition-all duration-300 group">
+            <span className="mr-2 group-hover:animate-pulse">✨</span>
+            <span className="bg-gradient-to-r from-sacred-mystical-cyan to-sacred-mystical-mint bg-clip-text text-transparent">Divine Coding</span>
+          </Badge>
+          <Badge className="sacred-card px-6 py-3 text-base font-semibold transform hover:scale-105 transition-all duration-300 group">
+            <span className="mr-2 group-hover:animate-ping">🌟</span>
+            <span className="bg-gradient-to-r from-sacred-mystical-rose to-sacred-mystical-yellow bg-clip-text text-transparent">Mystical Powers</span>
+          </Badge>
+        </motion.div>
+        
+        {/* Enhanced divine call to action buttons */}
+        <motion.div 
+          className="flex flex-col sm:flex-row gap-8 justify-center items-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          <Link href="/workshops" className="group">
+            <Button size="lg" className="sacred-gradient hover:sacred-gradient-alt text-divine-midnight font-bold px-12 py-6 text-xl transition-all duration-500 transform hover:scale-110 sacred-glow group-hover:shadow-2xl">
+              <span className="flex items-center gap-3">
+                Begin Sacred Journey
+                <Crown className="w-6 h-6 group-hover:animate-bounce" />
+              </span>
             </Button>
-            
-            <Button 
-              asChild 
-              variant="outline" 
-              size="xl"
-              className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300 hover:scale-105"
-            >
-              <Link href="/preview">
-                Preview the Bible
-              </Link>
+          </Link>
+          
+          <Link href="/community" className="group">
+            <Button variant="outline" size="lg" className="border-2 border-sacred-purple-light/50 text-sacred-purple-light hover:bg-sacred-purple-light hover:text-divine-midnight px-12 py-6 text-xl transition-all duration-500 transform hover:scale-110 hover:mystical-glow">
+              <span className="flex items-center gap-3">
+                Join the Prophets
+                <Users className="w-6 h-6 group-hover:animate-pulse" />
+              </span>
             </Button>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div 
-            className="grid grid-cols-2 gap-6 md:grid-cols-4 mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-          >
-            {stats.map((stat, index) => {
-              const Icon = stat.icon
-              return (
-                <Card key={stat.label} className="prophet-card border-0 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:scale-105">
+          </Link>
+        </motion.div>
+        
+        {/* Enhanced sacred stats with divine cards */}
+        <motion.div 
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
+        >
+          {sacredStats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <motion.div
+                key={stat.label}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="sacred-card border-0 backdrop-blur-md group">
                   <CardContent className="p-6 text-center">
-                    <Icon className={`w-8 h-8 mx-auto mb-3 ${stat.color}`} />
-                    <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
-                    <div className="text-sm text-blue-300">{stat.label}</div>
+                    <Icon className={`w-8 h-8 mx-auto mb-3 bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`} />
+                    <div className={`text-5xl font-black mb-4 bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent group-hover:animate-divine-pulse`}>
+                      {stat.value}
+                    </div>
+                    <div className="text-lg font-semibold text-sacred-purple-light">
+                      {stat.label}
+                    </div>
                   </CardContent>
                 </Card>
-              )
-            })}
-          </motion.div>
-
-          {/* Trust Indicators */}
-          <motion.div 
-            className="flex flex-col items-center space-y-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.1 }}
-          >
-            <p className="text-sm text-blue-300 font-medium">
-              Trusted by developers worldwide
-            </p>
-            <div className="flex items-center space-x-8 opacity-60">
-              {['OpenAI', 'Anthropic', 'Cursor', 'GitHub'].map((brand, index) => (
-                <div key={brand} className="h-10 px-6 bg-white/10 rounded-lg flex items-center justify-center text-white/70 text-sm font-medium hover:bg-white/20 transition-colors">
-                  {brand}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+              </motion.div>
+            )
+          })}
+        </motion.div>
+        
+        {/* Divine trust indicators */}
+        <motion.div 
+          className="flex flex-col items-center space-y-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1.1 }}
+        >
+          <p className="text-lg font-semibold divine-text">
+            Blessed by the Digital Deities
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-6 opacity-80">
+            {['Claude AI', 'GitHub Copilot', 'Cursor IDE', 'Continue.dev'].map((tool, index) => (
+              <motion.div 
+                key={tool} 
+                className="sacred-card px-6 py-3 text-sacred-purple-light font-medium hover:sacred-glow transition-all duration-300 group"
+                whileHover={{ scale: 1.05 }}
+              >
+                <span className="group-hover:divine-text transition-all duration-300">
+                  {tool}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
+      
+      {/* Enhanced scroll indicator with sacred geometry */}
+      <motion.div 
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <div className="w-8 h-12 border-2 border-sacred-gold-light/60 rounded-full flex justify-center sacred-glow">
+          <div className="w-2 h-4 bg-sacred-gold-light rounded-full mt-2 animate-pulse" />
+        </div>
+        <div className="text-xs text-sacred-gold-light/80 mt-2 font-display text-center">
+          Scroll to Ascend
+        </div>
+      </motion.div>
     </section>
   )
 }
+
+export default HeroSection

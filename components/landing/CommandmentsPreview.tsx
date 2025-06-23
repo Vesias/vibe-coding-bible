@@ -137,7 +137,7 @@ export function CommandmentsPreview() {
   }
 
   return (
-    <section className="py-24 bg-gradient-to-b from-gray-900 via-slate-900 to-gray-900">
+    <section className="py-24 divine-gradient relative overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.div
@@ -154,16 +154,16 @@ export function CommandmentsPreview() {
               Sacred Knowledge Awaits
             </Badge>
             
-            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl mb-6 text-white">
+            <h2 className="commandment-header mb-6">
               The{' '}
-              <span className="bg-gradient-to-r from-sacred-gold via-sacred-purple to-sacred-blue bg-clip-text text-transparent font-sacred">
-                10 Sacred Commandments
+              <span className="divine-text font-sacred">
+                X Sacred Commandments
               </span>
             </h2>
             
-            <p className="text-xl text-blue-200 max-w-4xl mx-auto leading-relaxed">
-              Each commandment is a comprehensive workshop combining divine theory, hands-on practice, 
-              and real-world application guided by AI mentors.
+            <p className="text-xl text-divine-white/80 max-w-4xl mx-auto leading-relaxed font-light">
+              Each commandment is a comprehensive workshop combining <span className="sacred-text font-semibold">divine theory</span>, hands-on practice, 
+              and real-world application guided by <span className="divine-text font-semibold">AI mentors</span>.
             </p>
           </motion.div>
         </div>
@@ -181,7 +181,7 @@ export function CommandmentsPreview() {
                 viewport={{ once: true }}
                 className="group"
               >
-                <Card className="prophet-card h-full border-0 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm hover:from-white/10 hover:to-white/15 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-vibe-primary/10 overflow-hidden">
+                <Card className="sacred-card h-full border-0 backdrop-blur-md transition-all duration-700 hover:scale-105 overflow-hidden group-hover:sacred-glow">
                   {/* Card Header */}
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between mb-4">

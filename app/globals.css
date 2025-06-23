@@ -2,52 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&family=Cinzel:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Sacred Color System */
+    --sacred-midnight-blue: 222 84% 7%;
+    --sacred-electric-indigo: 258 98% 51%;
+    --sacred-tech-gold: 45 95% 56%;
+    --sacred-cosmic-black: 0 0% 7%;
+    --sacred-digital-white: 210 33% 98%;
+    --sacred-matrix-green: 127 100% 50%;
+    
+    /* Extended Mystical Palette */
+    --sacred-mystic-purple: 258 70% 35%;
+    --sacred-divine-cyan: 188 94% 43%;
+    --sacred-rose: 348 83% 47%;
+    --sacred-ethereal-mint: 158 64% 52%;
+    --sacred-celestial-yellow: 43 89% 58%;
+    --sacred-void-black: 0 0% 0%;
+    --sacred-light-divine: 0 0% 100%;
+    
+    /* Default Light Theme */
+    --background: 210 33% 98%;
+    --foreground: var(--sacred-cosmic-black);
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: var(--sacred-cosmic-black);
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --popover-foreground: var(--sacred-cosmic-black);
+    --primary: var(--sacred-electric-indigo);
+    --primary-foreground: var(--sacred-digital-white);
     --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary-foreground: var(--sacred-cosmic-black);
     --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: var(--sacred-tech-gold);
+    --accent-foreground: var(--sacred-cosmic-black);
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.75rem;
+    --ring: var(--sacred-electric-indigo);
+    --radius: 0.618rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Sacred Dark Theme */
+    --background: var(--sacred-midnight-blue);
+    --foreground: var(--sacred-digital-white);
+    --card: var(--sacred-cosmic-black);
+    --card-foreground: var(--sacred-digital-white);
+    --popover: var(--sacred-cosmic-black);
+    --popover-foreground: var(--sacred-digital-white);
+    --primary: var(--sacred-electric-indigo);
+    --primary-foreground: var(--sacred-digital-white);
+    --secondary: var(--sacred-mystic-purple);
+    --secondary-foreground: var(--sacred-digital-white);
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: var(--sacred-tech-gold);
+    --accent-foreground: var(--sacred-cosmic-black);
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    --ring: var(--sacred-tech-gold);
   }
 }
 
@@ -57,31 +76,88 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 32;
   }
 }
 
 @layer components {
   /* Sacred Design Components */
   .sacred-gradient {
-    @apply bg-gradient-to-br from-sacred-gold via-sacred-purple to-sacred-blue;
+    @apply bg-gradient-to-br from-sacred-tech-gold via-sacred-electric-indigo to-sacred-midnight-blue;
+  }
+  
+  .sacred-gradient-radial {
+    background: radial-gradient(circle at center, hsl(var(--sacred-tech-gold)) 0%, hsl(var(--sacred-electric-indigo)) 50%, hsl(var(--sacred-midnight-blue)) 100%);
+  }
+  
+  .sacred-gradient-conic {
+    background: conic-gradient(from 0deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)), hsl(var(--sacred-matrix-green)), hsl(var(--sacred-tech-gold)));
   }
   
   .sacred-text {
-    @apply bg-gradient-to-r from-sacred-gold to-sacred-purple bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-sacred-tech-gold to-sacred-electric-indigo bg-clip-text text-transparent;
+  }
+  
+  .divine-text {
+    @apply bg-gradient-to-r from-sacred-electric-indigo via-sacred-divine-cyan to-sacred-tech-gold bg-clip-text text-transparent;
+  }
+  
+  .mystical-text {
+    @apply bg-gradient-to-r from-sacred-mystic-purple via-sacred-rose to-sacred-tech-gold bg-clip-text text-transparent;
   }
   
   .divine-glow {
-    @apply shadow-lg shadow-vibe-primary/20;
+    box-shadow: 0 0 20px hsla(var(--sacred-tech-gold), 0.3), 0 0 40px hsla(var(--sacred-electric-indigo), 0.2);
   }
   
+  .mystical-glow {
+    box-shadow: 0 0 15px hsla(var(--sacred-electric-indigo), 0.4), 0 0 30px hsla(var(--sacred-mystic-purple), 0.3);
+  }
+  
+  .matrix-glow {
+    box-shadow: 0 0 10px hsla(var(--sacred-matrix-green), 0.5), 0 0 20px hsla(var(--sacred-matrix-green), 0.3);
+  }
+
   .prophet-card {
-    @apply rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-vibe-primary/10;
+    @apply rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:border-sacred-electric-indigo/30;
+    transform: translateZ(0);
+  }
+  
+  .prophet-card:hover {
+    box-shadow: 0 20px 40px hsla(var(--sacred-electric-indigo), 0.15), 0 0 0 1px hsla(var(--sacred-tech-gold), 0.1);
+    transform: translateY(-2px) scale(1.02);
   }
   
   .commandment-header {
-    @apply font-sacred text-2xl font-semibold text-sacred-gold md:text-3xl;
+    @apply font-sacred text-2xl font-semibold text-sacred-tech-gold md:text-3xl;
+    text-shadow: 0 0 10px hsla(var(--sacred-tech-gold), 0.3);
   }
   
+  .sacred-card {
+    @apply rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md border border-sacred-electric-indigo/20;
+    box-shadow: 0 8px 32px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.1);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .sacred-card:hover {
+    border-color: hsla(var(--sacred-tech-gold), 0.4);
+    box-shadow: 0 20px 40px hsla(var(--sacred-midnight-blue), 0.4), 0 0 0 1px hsla(var(--sacred-tech-gold), 0.2), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.2);
+    transform: translateY(-4px);
+  }
+  
+  .divine-card {
+    @apply rounded-xl bg-gradient-to-br from-sacred-midnight-blue/90 to-sacred-cosmic-black/80 backdrop-blur-lg border border-sacred-tech-gold/30;
+    box-shadow: 0 0 40px hsla(var(--sacred-tech-gold), 0.1), inset 0 1px 0 hsla(var(--sacred-tech-gold), 0.2);
+  }
+  
+  .mystical-border {
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, hsla(var(--sacred-tech-gold), 0.3), hsla(var(--sacred-electric-indigo), 0.3)) border-box;
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+  }
+
   /* Monaco Editor Styles */
   .monaco-editor-wrapper {
     @apply rounded-lg border border-border overflow-hidden;
@@ -89,7 +165,7 @@
   
   /* Progress Bar Styles */
   .progress-sacred {
-    @apply bg-gradient-to-r from-sacred-gold to-sacred-purple;
+    @apply bg-gradient-to-r from-sacred-tech-gold to-sacred-electric-indigo;
   }
   
   /* Achievement Badge Styles */
@@ -168,22 +244,195 @@
   .responsive-text-3xl {
     @apply text-3xl sm:text-4xl md:text-5xl;
   }
+
+  /* Sacred Gamification Elements */
+  .xp-bar {
+    @apply h-2 bg-muted rounded-full overflow-hidden;
+    box-shadow: inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.2);
+  }
+
+  .xp-fill {
+    background: linear-gradient(90deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)));
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px hsla(var(--sacred-tech-gold), 0.5);
+  }
+
+  .achievement-badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium;
+    background: linear-gradient(135deg, hsla(var(--sacred-tech-gold), 0.9), hsla(var(--sacred-electric-indigo), 0.9));
+    box-shadow: 0 4px 8px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .achievement-badge:hover {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 6px 12px hsla(var(--sacred-midnight-blue), 0.4), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.3);
+  }
+
+  /* Sacred Form Elements */
+  .sacred-input {
+    @apply rounded-lg border border-sacred-electric-indigo/20 bg-card/50 backdrop-blur-sm;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.05);
+  }
+
+  .sacred-input:focus {
+    @apply border-sacred-tech-gold/50 ring-2 ring-sacred-tech-gold/20;
+    box-shadow: 0 0 0 3px hsla(var(--sacred-tech-gold), 0.1), inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.05);
+  }
+
+  .sacred-button {
+    @apply rounded-lg font-medium transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)));
+    box-shadow: 0 4px 12px hsla(var(--sacred-midnight-blue), 0.25), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.2);
+  }
+
+  .sacred-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.3);
+  }
+
+  .sacred-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.1);
+  }
+
+  /* Divine Loading States */
+  .divine-spinner {
+    @apply w-8 h-8 border-2 border-sacred-electric-indigo/20 border-t-sacred-tech-gold rounded-full;
+    animation: sacred-rotation 1s linear infinite;
+  }
+
+  .sacred-skeleton {
+    @apply bg-gradient-to-r from-muted via-muted/50 to-muted;
+    background-size: 200% 100%;
+    animation: divine-shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Sacred Typography */
+  .sacred-heading {
+    @apply font-sacred font-bold;
+    background: linear-gradient(135deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px hsla(var(--sacred-tech-gold), 0.3);
+  }
+
+  .divine-text {
+    @apply font-medium;
+    background: linear-gradient(90deg, hsl(var(--sacred-electric-indigo)), hsl(var(--sacred-divine-cyan)), hsl(var(--sacred-tech-gold)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .mystical-text {
+    @apply font-medium;
+    background: linear-gradient(45deg, hsl(var(--sacred-mystic-purple)), hsl(var(--sacred-rose)), hsl(var(--sacred-tech-gold)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Workshop Module Specific Styles */
+  .workshop-container {
+    @apply min-h-screen bg-gradient-to-br from-background via-background to-muted/20;
+  }
+
+  .workshop-sidebar {
+    @apply sticky top-0 h-screen overflow-y-auto bg-card/80 backdrop-blur-sm border-r border-border/50;
+  }
+
+  .workshop-content {
+    @apply flex-1 p-6 lg:p-8;
+  }
+
+  /* Code Playground Styles */
+  .code-playground {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px];
+  }
+
+  .code-editor {
+    @apply rounded-lg border border-border overflow-hidden;
+  }
+
+  .code-output {
+    @apply rounded-lg border border-border bg-muted/50 p-4 overflow-auto;
+  }
+
+  /* Community Features */
+  .community-post {
+    @apply rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:shadow-lg;
+  }
+
+  .user-avatar {
+    @apply rounded-full border-2 border-border;
+  }
 }
 
-/* Animations for Interactive Elements */
+/* Sacred Animations & Divine Effects */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
 }
 
-@keyframes pulse-glow {
+@keyframes divine-float {
   0%, 100% { 
-    box-shadow: 0 0 5px rgba(99, 102, 241, 0.5);
+    transform: translateY(0px) rotate(0deg);
+    filter: brightness(1);
+  }
+  50% { 
+    transform: translateY(-8px) rotate(1deg);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes sacred-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px hsla(var(--sacred-tech-gold), 0.3), 0 0 20px hsla(var(--sacred-electric-indigo), 0.2);
     transform: scale(1);
   }
   50% { 
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
-    transform: scale(1.02);
+    box-shadow: 0 0 30px hsla(var(--sacred-tech-gold), 0.6), 0 0 60px hsla(var(--sacred-electric-indigo), 0.4);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes mystical-glow {
+  0%, 100% {
+    text-shadow: 0 0 5px hsla(var(--sacred-electric-indigo), 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px hsla(var(--sacred-electric-indigo), 0.8), 0 0 30px hsla(var(--sacred-tech-gold), 0.5);
+  }
+}
+
+@keyframes matrix-rain {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes sacred-rotation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes divine-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes sacred-breathe {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 1;
   }
 }
 
@@ -198,74 +447,230 @@
   }
 }
 
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Sacred Animation Classes */
 .float-animation {
   animation: float 3s ease-in-out infinite;
 }
 
-.pulse-glow-animation {
-  animation: pulse-glow 2s ease-in-out infinite;
+.divine-float-animation {
+  animation: divine-float 4s ease-in-out infinite;
+}
+
+.sacred-pulse-animation {
+  animation: sacred-pulse 3s ease-in-out infinite;
+}
+
+.mystical-glow-animation {
+  animation: mystical-glow 2s ease-in-out infinite;
+}
+
+.matrix-rain-animation {
+  animation: matrix-rain 3s linear infinite;
+}
+
+.sacred-rotation-animation {
+  animation: sacred-rotation 20s linear infinite;
+}
+
+.divine-shimmer-animation {
+  background: linear-gradient(90deg, transparent, hsla(var(--sacred-tech-gold), 0.4), transparent);
+  background-size: 200% 100%;
+  animation: divine-shimmer 2s ease-in-out infinite;
+}
+
+.sacred-breathe-animation {
+  animation: sacred-breathe 4s ease-in-out infinite;
 }
 
 .slide-up-animation {
   animation: slide-up 0.6s ease-out;
 }
 
+.slide-in-right-animation {
+  animation: slide-in-right 0.8s ease-out;
+}
+
+.fade-in-scale-animation {
+  animation: fade-in-scale 0.5s ease-out;
+}
+
+/* Hover Effects */
+.sacred-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sacred-hover:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 25px hsla(var(--sacred-midnight-blue), 0.15);
+}
+
+.divine-hover {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.divine-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px hsla(var(--sacred-electric-indigo), 0.25), 0 0 0 1px hsla(var(--sacred-tech-gold), 0.3);
+}
+
+.mystical-hover {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.mystical-hover:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 20px 40px hsla(var(--sacred-mystic-purple), 0.3);
+}
+
 /* Sacred Geometry Backgrounds */
 .sacred-bg-pattern {
   background-image: 
-    radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 25% 25%, hsla(var(--sacred-tech-gold), 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, hsla(var(--sacred-electric-indigo), 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, hsla(var(--sacred-matrix-green), 0.05) 0%, transparent 70%);
 }
 
-/* Workshop Module Specific Styles */
-.workshop-container {
-  @apply min-h-screen bg-gradient-to-br from-background via-background to-muted/20;
+.sacred-geometry-bg {
+  background-image: 
+    conic-gradient(from 0deg at 50% 50%, transparent 0deg, hsla(var(--sacred-tech-gold), 0.1) 90deg, transparent 180deg),
+    radial-gradient(circle at 30% 70%, hsla(var(--sacred-electric-indigo), 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 70% 30%, hsla(var(--sacred-mystic-purple), 0.06) 0%, transparent 50%);
 }
 
-.workshop-sidebar {
-  @apply sticky top-0 h-screen overflow-y-auto bg-card/80 backdrop-blur-sm border-r border-border/50;
+.divine-mandala-bg {
+  background-image: 
+    radial-gradient(circle at center, hsla(var(--sacred-tech-gold), 0.1) 0%, transparent 25%),
+    conic-gradient(from 0deg, hsla(var(--sacred-electric-indigo), 0.05), hsla(var(--sacred-tech-gold), 0.05), hsla(var(--sacred-matrix-green), 0.05), hsla(var(--sacred-electric-indigo), 0.05));
 }
 
-.workshop-content {
-  @apply flex-1 p-6 lg:p-8;
+.mystical-particle-bg {
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, hsla(var(--sacred-tech-gold), 0.3), transparent),
+    radial-gradient(1px 1px at 40px 70px, hsla(var(--sacred-electric-indigo), 0.3), transparent),
+    radial-gradient(1px 1px at 90px 40px, hsla(var(--sacred-matrix-green), 0.3), transparent),
+    radial-gradient(1px 1px at 130px 80px, hsla(var(--sacred-mystic-purple), 0.3), transparent);
+  background-size: 200px 100px;
 }
 
-/* Code Playground Styles */
-.code-playground {
-  @apply grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px];
+/* Enhanced Responsive Typography Classes */
+.hero-title {
+  @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl;
+  line-height: 1.1;
 }
 
-.code-editor {
-  @apply rounded-lg border border-border overflow-hidden;
+.section-title {
+  @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl;
+  line-height: 1.2;
 }
 
-.code-output {
-  @apply rounded-lg border border-border bg-muted/50 p-4 overflow-auto;
+.subsection-title {
+  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+  line-height: 1.3;
 }
 
-/* Community Features */
-.community-post {
-  @apply rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:shadow-lg;
+.card-title {
+  @apply text-lg sm:text-xl md:text-2xl;
+  line-height: 1.4;
 }
 
-.user-avatar {
-  @apply rounded-full border-2 border-border;
+.body-large {
+  @apply text-base sm:text-lg md:text-xl lg:text-2xl;
+  line-height: 1.6;
 }
 
-/* Gamification Elements */
-.xp-bar {
-  @apply h-2 bg-muted rounded-full overflow-hidden;
+.body-medium {
+  @apply text-sm sm:text-base md:text-lg;
+  line-height: 1.5;
 }
 
-.xp-fill {
-  @apply h-full bg-gradient-to-r from-vibe-primary to-vibe-secondary transition-all duration-500;
+.body-small {
+  @apply text-xs sm:text-sm md:text-base;
+  line-height: 1.4;
 }
 
-.achievement-badge {
-  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium;
+/* Enhanced Responsive Spacing */
+.section-padding {
+  @apply py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32;
+}
+
+.container-padding {
+  @apply px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16;
+}
+
+.card-padding {
+  @apply p-4 sm:p-6 md:p-8 lg:p-10;
+}
+
+/* Sacred Grid System */
+.sacred-grid {
+  @apply grid gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12;
+}
+
+.sacred-grid-1 {
+  @apply grid-cols-1;
+}
+
+.sacred-grid-2 {
+  @apply grid-cols-1 sm:grid-cols-2;
+}
+
+.sacred-grid-3 {
+  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.sacred-grid-4 {
+  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
 }
 
 /* Mobile Responsive Adjustments */
+@media (max-width: 640px) {
+  .hero-scroll {
+    @apply text-6xl;
+  }
+  
+  .floating-elements {
+    @apply opacity-50;
+  }
+  
+  .sacred-geometry-bg {
+    @apply opacity-30;
+  }
+  
+  .mystical-effects {
+    @apply hidden;
+  }
+  
+  .section-padding {
+    @apply py-12;
+  }
+  
+  .card-padding {
+    @apply p-3;
+  }
+}
+
 @media (max-width: 768px) {
   .workshop-container {
     @apply block;
@@ -283,6 +688,75 @@
   .code-output {
     @apply h-[300px];
   }
+
+  .sacred-card {
+    transform: none;
+  }
+  
+  .sacred-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .divine-hover:hover {
+    transform: translateY(-2px);
+  }
+  
+  .sacred-heading {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+  }
+  
+  .hero-particles {
+    @apply opacity-70;
+  }
+  
+  .light-beams {
+    @apply opacity-60;
+  }
+  
+  .section-padding {
+    @apply py-16;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sacred-geometry-complex {
+    @apply opacity-60;
+  }
+  
+  .floating-symbols {
+    @apply opacity-80;
+  }
+}
+
+/* Accessibility & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .float-animation,
+  .divine-float-animation,
+  .sacred-pulse-animation,
+  .mystical-glow-animation,
+  .matrix-rain-animation,
+  .sacred-rotation-animation,
+  .divine-shimmer-animation,
+  .sacred-breathe-animation {
+    animation: none;
+  }
+  
+  .sacred-hover,
+  .divine-hover,
+  .mystical-hover {
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .sacred-text,
+  .divine-text,
+  .mystical-text {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: hsl(var(--sacred-tech-gold));
+  }
 }
 
 /* Print Styles */
@@ -294,4 +768,127 @@
   .print-only {
     display: block !important;
   }
+  
+  .sacred-gradient,
+  .sacred-gradient-radial,
+  .sacred-gradient-conic {
+    background: none;
+    background-color: hsl(var(--sacred-midnight-blue));
+  }
+}
+
+/* Sacred Utility Classes */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Sacred Scrollbar */
+.sacred-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sacred-scrollbar::-webkit-scrollbar-track {
+  background: hsla(var(--sacred-midnight-blue), 0.1);
+  border-radius: 3px;
+}
+
+.sacred-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)));
+  border-radius: 3px;
+}
+
+.sacred-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, hsl(var(--sacred-electric-indigo)), hsl(var(--sacred-tech-gold)));
+}
+
+/* Sacred Code Blocks */
+.sacred-code {
+  @apply font-mono text-sm rounded-lg p-4;
+  background: linear-gradient(135deg, hsla(var(--sacred-midnight-blue), 0.9), hsla(var(--sacred-cosmic-black), 0.9));
+  border: 1px solid hsla(var(--sacred-matrix-green), 0.3);
+  box-shadow: inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.3), 0 0 20px hsla(var(--sacred-matrix-green), 0.1);
+}
+
+.sacred-code::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--sacred-matrix-green)), transparent);
+}
+
+/* Divine Containers */
+.divine-container {
+  @apply relative overflow-hidden;
+}
+
+.divine-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, hsla(var(--sacred-tech-gold), 0.03), transparent);
+  animation: sacred-rotation 30s linear infinite;
+  pointer-events: none;
+}
+
+.divine-container::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: hsl(var(--background));
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.divine-container > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Sacred Blur Effects */
+.sacred-blur {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+
+.divine-blur {
+  backdrop-filter: blur(20px) saturate(200%) brightness(110%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%) brightness(110%);
+}
+
+/* Sacred Focus States */
+.sacred-focus:focus-visible {
+  outline: 2px solid hsl(var(--sacred-tech-gold));
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.divine-focus:focus-visible {
+  outline: 2px solid hsl(var(--sacred-electric-indigo));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px hsla(var(--sacred-electric-indigo), 0.2);
+}
+
+/* Sacred Selection */
+::selection {
+  background: hsla(var(--sacred-tech-gold), 0.2);
+  color: hsl(var(--sacred-midnight-blue));
+}
+
+::-moz-selection {
+  background: hsla(var(--sacred-tech-gold), 0.2);
+  color: hsl(var(--sacred-midnight-blue));
 }

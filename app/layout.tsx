@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter, Fira_Code, Cinzel } from 'next/font/google'
+import { Inter, Fira_Code, Cinzel, Montserrat } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers/Providers'
+import { DivineNavigation } from '@/components/navigation/DivineNavigation'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-fira-code' })
 const cinzel = Cinzel({ subsets: ['latin'], variable: '--font-cinzel' })
+const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
 
 export const metadata: Metadata = {
   title: {
@@ -79,10 +81,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${firaCode.variable} ${cinzel.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${firaCode.variable} ${cinzel.variable} ${montserrat.variable} font-sans antialiased`}>
         <Providers>
           <div className="relative min-h-screen">
-            {children}
+            <DivineNavigation />
+            <div className="pt-16 md:pt-20">
+              {children}
+            </div>
           </div>
         </Providers>
       </body>

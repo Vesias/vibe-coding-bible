@@ -201,7 +201,7 @@ export default function DashboardPage() {
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Begin your divine coding journey
               </p>
-              <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
                 Start First Workshop
               </button>
             </div>
