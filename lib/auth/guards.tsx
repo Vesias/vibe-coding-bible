@@ -57,7 +57,7 @@ export function TierGuard({
   const { user, tier, tierInfo, loading } = useAuthWithRoles()
   const router = useRouter()
 
-  const tierOrder: SubscriptionTier[] = ['free', 'basic', 'pro', 'divine']
+  const tierOrder: SubscriptionTier[] = ['free', 'basic', 'pro', 'enterprise']
   const hasRequiredTier = tierOrder.indexOf(tier) >= tierOrder.indexOf(requiredTier)
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export function RankGuard({
   const { user, rank, rankInfo, nextRank, rankProgress, loading } = useAuthWithRoles()
   const router = useRouter()
 
-  const rankOrder: ProphetRank[] = ['novice', 'apprentice', 'practitioner', 'architect', 'prophet']
+  const rankOrder: ProphetRank[] = ['seeker', 'apprentice', 'practitioner', 'architect', 'prophet']
   const hasRequiredRank = rankOrder.indexOf(rank) >= rankOrder.indexOf(requiredRank)
 
   useEffect(() => {
@@ -263,8 +263,8 @@ export function AdvancedGuard({
   const { checkPermission, checkFeatureAccess } = usePermissions()
   const router = useRouter()
 
-  const tierOrder: SubscriptionTier[] = ['free', 'basic', 'pro', 'divine']
-  const rankOrder: ProphetRank[] = ['novice', 'apprentice', 'practitioner', 'architect', 'prophet']
+  const tierOrder: SubscriptionTier[] = ['free', 'basic', 'pro', 'enterprise']
+  const rankOrder: ProphetRank[] = ['seeker', 'apprentice', 'practitioner', 'architect', 'prophet']
 
   const conditions = [
     !requiredTier || tierOrder.indexOf(tier) >= tierOrder.indexOf(requiredTier),

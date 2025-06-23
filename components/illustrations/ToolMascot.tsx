@@ -418,17 +418,17 @@ function renderMascotContent(
             cx={centerX - 10 * scale}
             cy={centerY - 10 * scale}
             r={4 * scale}
-            fill={DesignTokens.colors.primary.digitalWhite}
+            fill={"white"}
           />
           <circle
             cx={centerX + 10 * scale}
             cy={centerY - 10 * scale}
             r={4 * scale}
-            fill={DesignTokens.colors.primary.digitalWhite}
+            fill={"white"}
           />
           <path
             d={`M ${centerX - 15 * scale} ${centerY + 10 * scale} Q ${centerX} ${centerY + 20 * scale} ${centerX + 15 * scale} ${centerY + 10 * scale}`}
-            stroke={DesignTokens.colors.primary.digitalWhite}
+            stroke={"white"}
             strokeWidth={2 * scale}
             fill="none"
           />
@@ -439,7 +439,7 @@ function renderMascotContent(
             y={centerY + 30 * scale}
             width={60 * scale}
             height={15 * scale}
-            fill={DesignTokens.colors.primary.digitalWhite}
+            fill={"white"}
             opacity="0.8"
             rx={7 * scale}
           />

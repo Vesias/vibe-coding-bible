@@ -179,9 +179,9 @@ export default function WorkshopsPage() {
               
               {/* Actions */}
               <div className="space-y-3">
-                <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg">
+                <a href={`/workshops/${index === 0 ? 'i' : index === 1 ? 'ii' : 'coming-soon'}`} className="block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg text-center">
                   🚀 Begin Sacred Journey
-                </button>
+                </a>
                 <button className="w-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-6 py-3 rounded-lg font-semibold transition-all duration-300">
                   👁️ Preview Wisdom
                 </button>

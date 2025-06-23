@@ -1,6 +1,9 @@
+import { AppLayout } from '@/components/layout/AppLayout'
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
+    <AppLayout showNavigation={false}>
+      <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900">
       {/* Hero Section */}
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden">      
         <div className="container relative z-10 mx-auto px-4 py-16 text-center">
@@ -122,5 +125,6 @@ export default function HomePage() {
         </div>
       </footer>
     </main>
+    </AppLayout>
   )
 }

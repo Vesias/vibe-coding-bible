@@ -216,15 +216,15 @@ export function useCertificationAccess() {
   const { tier, tierInfo } = useAuthWithRoles()
 
   const canEarnCertifications = (): boolean => {
-    return tierInfo.certificationAccess
+    return tier !== "free"
   }
 
   const canCreateNFTCertificates = (): boolean => {
-    return tier === 'pro' || tier === 'divine'
+    return tier === 'pro' || tier === 'enterprise'
   }
 
   const canVerifyOnBlockchain = (): boolean => {
-    return tier === 'pro' || tier === 'divine'
+    return tier === 'pro' || tier === 'enterprise'
   }
 
   return {
@@ -241,15 +241,15 @@ export function useTeamAccess() {
   const { tier, tierInfo } = useAuthWithRoles()
 
   const canCreateTeam = (): boolean => {
-    return tierInfo.teamFeatures
+    return tier === "pro" || tier === "enterprise"
   }
 
   const canManageTeam = (): boolean => {
-    return tierInfo.teamFeatures
+    return tier === "pro" || tier === "enterprise"
   }
 
   const canUseCustomBranding = (): boolean => {
-    return tierInfo.customBranding
+    return tier === "enterprise"
   }
 
   return {
@@ -266,16 +266,16 @@ export function useMentoringAccess() {
   const { tier, tierInfo, rank, rankInfo } = useAuthWithRoles()
 
   const canRequestMentoring = (): boolean => {
-    return tierInfo.mentorAccess
+    return tier !== "free"
   }
 
   const canProvideMentoring = (): boolean => {
-    return (tier === 'pro' || tier === 'divine') && 
+    return (tier === 'pro' || tier === 'enterprise') && 
            (rank === 'architect' || rank === 'prophet')
   }
 
   const canScheduleSessions = (): boolean => {
-    return tierInfo.mentorAccess
+    return tier !== "free"
   }
 
   return {
@@ -294,15 +294,15 @@ export function useAnalyticsAccess() {
   const { tier, tierInfo } = useAuthWithRoles()
 
   const canViewAnalytics = (): boolean => {
-    return tierInfo.analyticsAccess
+    return tier !== "free"
   }
 
   const canExportData = (): boolean => {
-    return tier === 'pro' || tier === 'divine'
+    return tier === 'pro' || tier === 'enterprise'
   }
 
   const canViewAdvancedMetrics = (): boolean => {
-    return tier === 'divine'
+    return tier === 'enterprise'
   }
 
   return {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { createCheckoutSession } from '@/lib/stripe/server'
 
@@ -21,16 +21,21 @@ export async function POST(req: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
-          getAll() {
-            return cookieStore.getAll()
+          get(name: string) {
+            return cookieStore.get(name)?.value
           },
-          setAll(cookiesToSet) {
+          set(name: string, value: string, options: CookieOptions) {
             try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              )
-            } catch {
-              // The `setAll` method was called from a Server Component.
+              cookieStore.set(name, value, options)
+            } catch (error) {
+              // The `set` method was called from a Server Component.
+            }
+          },
+          remove(name: string, options: CookieOptions) {
+            try {
+              cookieStore.set(name, '', { ...options, maxAge: 0 })
+            } catch (error) {
+              // The `remove` method was called from a Server Component.
             }
           },
         },

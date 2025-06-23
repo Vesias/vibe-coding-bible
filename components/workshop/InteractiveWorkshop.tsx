@@ -232,11 +232,11 @@ export function InteractiveWorkshop({ workshopId, className = '' }: InteractiveW
       {/* Sacred Geometry Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <SacredGeometry 
-          type="golden_ratio" 
+          pattern="golden-spiral" 
           className="absolute top-1/4 right-1/4 opacity-5 scale-150" 
         />
         <SacredGeometry 
-          type="vesica_piscis" 
+          pattern="vesica-piscis" 
           className="absolute bottom-1/4 left-1/4 opacity-5 scale-75" 
         />
       </div>
@@ -598,7 +598,7 @@ export function InteractiveWorkshop({ workshopId, className = '' }: InteractiveW
                       <div>
                         <h4 className="font-medium text-sm mb-2">Console:</h4>
                         <div className="bg-gray-900 text-gray-300 p-3 rounded text-xs font-mono space-y-1 max-h-32 overflow-y-auto">
-                          {lastResult.result.logs.map((log, index) => (
+                          {lastResult.result.logs.map((log: any, index: number) => (
                             <div key={index}>{log}</div>
                           ))}
                         </div>
