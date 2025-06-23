@@ -5,6 +5,15 @@ export default function HomePage() {
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden">      
         <div className="container relative z-10 mx-auto px-4 py-16 text-center">
           <div className="mx-auto max-w-4xl">
+            {/* Agentland Logo */}
+            <div className="flex justify-center mb-8">
+              <img 
+                src="/logo.png" 
+                alt="Agentland" 
+                className="h-16 w-auto opacity-90 hover:opacity-100 transition-opacity"
+              />
+            </div>
+
             {/* Badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-4 py-2 text-sm font-medium text-yellow-400 mb-6">
               ⚡ Transform Your Development in 30 Days
