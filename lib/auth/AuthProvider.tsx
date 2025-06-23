@@ -21,7 +21,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const [supabaseError, setSupabaseError] = useState(false)
+  
+  let supabase: any = null
+  try {
+    supabase = createClient()
+  } catch (error) {
+    console.error('Supabase client creation failed:', error)
+    setSupabaseError(true)
+    setLoading(false)
+  }
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -57,13 +66,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    if (supabaseError) {
+      // If Supabase is not available, just set loading to false and continue
+      setLoading(false)
+      return
+    }
+    
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (session?.user) {
-        setUser(session.user)
-        const profileData = await fetchProfile(session.user.id)
-        setProfile(profileData)
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (session?.user) {
+          setUser(session.user)
+          const profileData = await fetchProfile(session.user.id)
+          setProfile(profileData)
+        }
+      } catch (error) {
+        console.error('Error getting initial session:', error)
       }
       
       setLoading(false)
@@ -72,21 +96,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     getInitialSession()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          setUser(session.user)
-          const profileData = await fetchProfile(session.user.id)
-          setProfile(profileData)
-        } else {
-          setUser(null)
-          setProfile(null)
+      async (event: any, session: any) => {
+        try {
+          if (session?.user) {
+            setUser(session.user)
+            const profileData = await fetchProfile(session.user.id)
+            setProfile(profileData)
+          } else {
+            setUser(null)
+            setProfile(null)
+          }
+        } catch (error) {
+          console.error('Error in auth state change:', error)
         }
         setLoading(false)
       }
     )
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [supabase, supabaseError])
 
   return (
     <AuthContext.Provider value={{

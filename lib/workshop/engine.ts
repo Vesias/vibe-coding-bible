@@ -129,7 +129,7 @@ class WorkshopEngine {
         tags: workshop.tools_required || [],
         isPublished: workshop.is_published,
         featuredImage: workshop.featured_image,
-        steps: challenges.map((challenge, index) => ({
+        steps: challenges.map((challenge: any, index: number) => ({
           id: challenge.id,
           type: challenge.type as any,
           title: challenge.title,

@@ -113,7 +113,7 @@ export default function CollaborationPage() {
       if (error) throw error
       
       // Transform data to include host info
-      const transformedSessions = data?.map(session => ({
+      const transformedSessions = data?.map((session: any) => ({
         ...session,
         host: session.users,
         language: 'javascript', // Default for now

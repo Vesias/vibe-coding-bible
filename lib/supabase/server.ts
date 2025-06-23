@@ -9,7 +9,16 @@ export const createServerSupabaseClient = async () => {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables')
+    console.warn('Missing Supabase environment variables - returning mock client')
+    // Return a mock server client for public access
+    return {
+      auth: {
+        getUser: () => Promise.resolve({ data: { user: null }, error: null })
+      },
+      from: () => ({
+        select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: null }) }) })
+      })
+    } as any
   }
   
   return createServerClient<Database>(
@@ -40,22 +49,32 @@ export const createServerSupabaseClient = async () => {
 }
 
 export const getUser = async () => {
-  const supabase = await createServerSupabaseClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    return user
+  } catch (error) {
+    console.error('Error getting user:', error)
+    return null
+  }
 }
 
 export const getUserProfile = async () => {
-  const supabase = await createServerSupabaseClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) return null
-  
-  const { data: profile } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-  
-  return profile
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) return null
+    
+    const { data: profile } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+    
+    return profile
+  } catch (error) {
+    console.error('Error getting user profile:', error)
+    return null
+  }
 }

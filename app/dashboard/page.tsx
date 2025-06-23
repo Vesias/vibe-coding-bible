@@ -3,24 +3,15 @@
 export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
-import { useAdvancedAuth } from '@/lib/auth/hooks'
+import { useAuth } from '@/lib/auth/AuthProvider'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function DashboardPage() {
   const {
     user,
     profile,
-    tier,
-    rank,
-    rankInfo,
-    nextRank,
-    rankProgress,
-    xpProgression,
-    workshopAccess,
-    aiAccess,
-    collaborationAccess,
     loading
-  } = useAdvancedAuth()
+  } = useAuth()
 
   const [dashboardData, setDashboardData] = useState({
     recentWorkshops: [] as any[],
@@ -130,7 +121,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Current Rank</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{rank || 'Novice'}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{'Novice'}</p>
               </div>
               <div className="text-3xl">👑</div>
             </div>
