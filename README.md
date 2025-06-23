@@ -1,2 +1,1 @@
-# vibe-coding-bible-private
-Die ultimative Vibe Coding Bible - Interaktive Workshop-Plattform
+# VibeCoding Bible - The 10 Sacred Commandments
