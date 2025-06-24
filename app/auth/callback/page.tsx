@@ -42,7 +42,7 @@ function AuthCallbackContent() {
           if (data.user) {
             // Check if user profile exists
             const { data: profile, error: profileError } = await supabase
-              .from('users')
+              .from('profiles')
               .select('*')
               .eq('id', data.user.id)
               .single()
@@ -50,7 +50,7 @@ function AuthCallbackContent() {
             if (profileError && profileError.code === 'PGRST116') {
               // User doesn't exist, create profile
               const { error: insertError } = await supabase
-                .from('users')
+                .from('profiles')
                 .insert({
                   id: data.user.id,
                   email: data.user.email!,

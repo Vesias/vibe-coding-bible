@@ -13,12 +13,41 @@ export interface SacredCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const SacredCard = React.forwardRef<HTMLDivElement, SacredCardProps>(
-  ({ className, variant = 'default', animate = true, delay = 0, children, ...props }, ref) => {
-    const cardVariants = {
-      default: "prophet-card border-0 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm hover:from-white/10 hover:to-white/15",
-      prophet: "prophet-card border-0 bg-gradient-to-br from-vibe-primary/10 to-vibe-secondary/10 backdrop-blur-sm hover:from-vibe-primary/15 hover:to-vibe-secondary/15 border border-vibe-primary/20",
-      divine: "prophet-card border-0 bg-gradient-to-br from-sacred-gold/10 to-sacred-purple/10 backdrop-blur-sm hover:from-sacred-gold/15 hover:to-sacred-purple/15 border border-sacred-gold/20",
-      sacred: "prophet-card border-0 sacred-gradient/10 backdrop-blur-sm hover:shadow-2xl hover:shadow-sacred-gold/20 border border-sacred-gold/30"
+  ({ className, variant = 'default', animate = true, delay = 0, children, style, ...props }, ref) => {
+    const getCardStyle = () => {
+      switch (variant) {
+        case 'default':
+          return {
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 246, 255, 0.8) 100%)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(37, 99, 235, 0.2)',
+            borderRadius: '0.75rem'
+          }
+        case 'prophet':
+          return {
+            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(37, 99, 235, 0.2)',
+            borderRadius: '0.75rem'
+          }
+        case 'divine':
+          return {
+            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(37, 99, 235, 0.2)',
+            borderRadius: '0.75rem'
+          }
+        case 'sacred':
+          return {
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(239, 246, 255, 0.8) 100%)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(37, 99, 235, 0.3)',
+            borderRadius: '0.75rem',
+            boxShadow: '0 8px 32px rgba(37, 99, 235, 0.15), inset 0 1px 0 rgba(37, 99, 235, 0.1)'
+          }
+        default:
+          return {}
+      }
     }
 
     const CardComponent = 'div' // Temporarily disable animation to fix build
@@ -34,13 +63,28 @@ const SacredCard = React.forwardRef<HTMLDivElement, SacredCardProps>(
     return (
       <CardComponent
         className={cn(
-          cardVariants[variant],
-          "transition-all duration-500 hover:shadow-2xl hover:shadow-vibe-primary/10 overflow-hidden group",
+          "transition-all duration-500 overflow-hidden group",
           className
         )}
+        style={{
+          ...getCardStyle(),
+          ...style
+        }}
         ref={ref}
         {...animationProps}
         {...props}
+        onMouseEnter={(e) => {
+          // Enhanced hover effects
+          e.currentTarget.style.transform = 'translateY(-4px)'
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(37, 99, 235, 0.2), 0 0 0 1px rgba(37, 99, 235, 0.2), inset 0 1px 0 rgba(37, 99, 235, 0.2)'
+          props.onMouseEnter?.(e)
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)'
+          const baseStyle = getCardStyle()
+          e.currentTarget.style.boxShadow = baseStyle.boxShadow || 'none'
+          props.onMouseLeave?.(e)
+        }}
       >
         {children}
       </CardComponent>
@@ -60,13 +104,29 @@ SacredCardHeader.displayName = "SacredCardHeader"
 const SacredCardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
+>(({ className, style, ...props }, ref) => (
   <CardTitle
     ref={ref}
     className={cn(
-      "font-semibold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-sacred-gold group-hover:to-sacred-purple group-hover:bg-clip-text transition-all duration-300",
+      "font-semibold transition-all duration-300",
       className
     )}
+    style={{
+      color: '#1f2937',
+      ...style
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.background = 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)'
+      e.currentTarget.style.webkitBackgroundClip = 'text'
+      e.currentTarget.style.webkitTextFillColor = 'transparent'
+      e.currentTarget.style.backgroundClip = 'text'
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.background = 'none'
+      e.currentTarget.style.webkitBackgroundClip = 'unset'
+      e.currentTarget.style.webkitTextFillColor = '#1f2937'
+      e.currentTarget.style.backgroundClip = 'unset'
+    }}
     {...props}
   />
 ))
@@ -75,10 +135,14 @@ SacredCardTitle.displayName = "SacredCardTitle"
 const SacredCardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
+>(({ className, style, ...props }, ref) => (
   <CardDescription
     ref={ref}
-    className={cn("text-blue-200 leading-relaxed", className)}
+    className={cn("leading-relaxed", className)}
+    style={{
+      color: '#4b5563',
+      ...style
+    }}
     {...props}
   />
 ))

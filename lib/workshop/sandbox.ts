@@ -34,10 +34,20 @@ class CodeSandbox {
   private executionQueue: Map<string, Promise<SandboxResult>> = new Map()
 
   constructor() {
-    this.workerUrl = this.createWorkerBlob()
+    // Only create worker in browser environment
+    if (typeof window !== 'undefined' && typeof Worker !== 'undefined') {
+      this.workerUrl = this.createWorkerBlob()
+    } else {
+      this.workerUrl = ''
+    }
   }
 
   private createWorkerBlob(): string {
+    // Check if running in browser environment
+    if (typeof window === 'undefined' || typeof Blob === 'undefined' || typeof URL === 'undefined') {
+      return ''
+    }
+
     const workerCode = `
       // Sandboxed execution worker
       const consoleLogs = [];
@@ -71,7 +81,7 @@ class CodeSandbox {
 
       // Safe evaluation function
       function safeEval(code, config, tests = []) {
-        const startTime = performance.now();
+        const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
         let result = null;
         let error = null;
         let testResults = [];
@@ -135,7 +145,7 @@ class CodeSandbox {
           };
         }
 
-        const endTime = performance.now();
+        const endTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
         const executionTime = endTime - startTime;
 
         return {
@@ -229,34 +239,41 @@ class CodeSandbox {
       }
 
       // Worker message handler
-      self.onmessage = function(e) {
-        const { id, code, config, tests } = e.data;
-        
-        try {
-          const result = safeEval(code, config, tests);
-          self.postMessage({ id, result });
-        } catch (err) {
-          self.postMessage({
-            id,
-            result: {
-              output: '',
-              error: {
-                name: err.name,
-                message: err.message,
-                stack: err.stack
-              },
-              executionTime: 0,
-              exitCode: 1,
-              logs: [],
-              tests: []
-            }
-          });
-        }
-      };
+      if (typeof self !== 'undefined') {
+        self.onmessage = function(e) {
+          const { id, code, config, tests } = e.data;
+          
+          try {
+            const result = safeEval(code, config, tests);
+            self.postMessage({ id, result });
+          } catch (err) {
+            self.postMessage({
+              id,
+              result: {
+                output: '',
+                error: {
+                  name: err.name,
+                  message: err.message,
+                  stack: err.stack
+                },
+                executionTime: 0,
+                exitCode: 1,
+                logs: [],
+                tests: []
+              }
+            });
+          }
+        };
+      }
     `
 
-    const blob = new Blob([workerCode], { type: 'application/javascript' })
-    return URL.createObjectURL(blob)
+    try {
+      const blob = new Blob([workerCode], { type: 'application/javascript' })
+      return URL.createObjectURL(blob)
+    } catch (error) {
+      console.warn('Failed to create worker blob:', error)
+      return ''
+    }
   }
 
   async executeCode(
@@ -271,6 +288,20 @@ class CodeSandbox {
     },
     tests: any[] = []
   ): Promise<SandboxResult> {
+    // Check if running in browser environment
+    if (typeof window === 'undefined' || !this.workerUrl) {
+      // Return a mock result for server-side rendering
+      return {
+        output: 'Code execution is only available in browser environment',
+        error: undefined,
+        executionTime: 0,
+        memory: 0,
+        exitCode: 0,
+        logs: ['[INFO] Server-side execution not supported'],
+        tests: []
+      }
+    }
+
     const executionId = Math.random().toString(36).substr(2, 9)
 
     // Check if already executing the same code
@@ -285,9 +316,19 @@ class CodeSandbox {
 
       // Create or get worker for this language
       let worker = this.workers.get(config.language)
+      if (!worker && typeof Worker !== 'undefined') {
+        try {
+          worker = new Worker(this.workerUrl)
+          this.workers.set(config.language, worker)
+        } catch (error) {
+          reject(new Error('Failed to create worker: ' + error))
+          return
+        }
+      }
+
       if (!worker) {
-        worker = new Worker(this.workerUrl)
-        this.workers.set(config.language, worker)
+        reject(new Error('Worker not available'))
+        return
       }
 
       // Set up timeout
@@ -461,8 +502,24 @@ class CodeSandbox {
 let sandboxInstance: CodeSandbox | null = null
 
 export function getSandbox(): CodeSandbox {
-  if (!sandboxInstance) {
+  if (!sandboxInstance && typeof window !== 'undefined') {
     sandboxInstance = new CodeSandbox()
+  }
+  // Return a mock sandbox for SSR
+  if (!sandboxInstance) {
+    return {
+      executeCode: async () => ({
+        output: 'Sandbox not available during SSR',
+        error: undefined,
+        executionTime: 0,
+        memory: 0,
+        exitCode: 0,
+        logs: [],
+        tests: []
+      }),
+      validateCode: () => ({ valid: true, errors: [] }),
+      cleanup: () => {}
+    } as any
   }
   return sandboxInstance
 }

@@ -28,7 +28,7 @@ import {
   Clock
 } from 'lucide-react'
 
-type UserProfile = Database['public']['Tables']['users']['Row']
+type UserProfile = Database['public']['Tables']['profiles']['Row']
 
 interface DashboardHeaderProps {
   user: UserProfile | null

@@ -67,7 +67,7 @@ export const getUserProfile = async () => {
     if (!user) return null
     
     const { data: profile } = await supabase
-      .from('users')
+      .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()
@@ -78,3 +78,6 @@ export const getUserProfile = async () => {
     return null
   }
 }
+
+// Export createClient as an alias for backward compatibility
+export const createClient = createServerSupabaseClient

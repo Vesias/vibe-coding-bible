@@ -1,18 +1,23 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { User, AuthError } from '@supabase/supabase-js'
+import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Database } from '@/lib/database.types'
 
-type UserProfile = Database['public']['Tables']['users']['Row']
+type UserProfile = Database['public']['Tables']['profiles']['Row']
 
 interface AuthContextType {
   user: User | null
   profile: UserProfile | null
   loading: boolean
+  error: AuthError | null
+  isAuthenticated: boolean
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
+  redirectToSignIn: (redirectTo?: string) => void
+  redirectAfterAuth: (defaultPath?: string) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -21,7 +26,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<AuthError | null>(null)
   const [supabaseError, setSupabaseError] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
   
   let supabase: any = null
   try {
@@ -32,10 +40,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false)
   }
 
+  const isAuthenticated = !!user
+
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('users')
+        .from('profiles')
         .select('*')
         .eq('id', userId)
         .single()
@@ -52,18 +62,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const refreshProfile = async () => {
+  const refreshProfile = useCallback(async () => {
     if (user) {
       const profileData = await fetchProfile(user.id)
       setProfile(profileData)
     }
-  }
+  }, [user])
 
-  const signOut = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    setProfile(null)
-  }
+  const signOut = useCallback(async () => {
+    try {
+      await supabase.auth.signOut()
+      setUser(null)
+      setProfile(null)
+      setError(null)
+      router.push('/')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }, [router])
+
+  const redirectToSignIn = useCallback((redirectTo?: string) => {
+    const currentPath = redirectTo || (pathname !== '/auth/signin' && pathname !== '/auth/signup' ? pathname : undefined)
+    const signInUrl = currentPath ? `/auth/signin?redirectTo=${encodeURIComponent(currentPath)}` : '/auth/signin'
+    router.push(signInUrl)
+  }, [router, pathname])
+
+  const redirectAfterAuth = useCallback((defaultPath = '/dashboard') => {
+    // Get the redirect URL from the current URL or use default
+    const urlParams = new URLSearchParams(window.location.search)
+    const redirectTo = urlParams.get('redirectTo') || defaultPath
+    
+    // Avoid redirecting to auth pages
+    if (redirectTo.startsWith('/auth/')) {
+      router.push(defaultPath)
+    } else {
+      router.push(redirectTo)
+    }
+  }, [router])
 
   useEffect(() => {
     if (supabaseError) {
@@ -98,16 +133,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event: any, session: any) => {
         try {
-          if (session?.user) {
+          setError(null) // Clear any previous errors
+          
+          if (event === 'SIGNED_IN' && session?.user) {
             setUser(session.user)
             const profileData = await fetchProfile(session.user.id)
             setProfile(profileData)
-          } else {
+          } else if (event === 'SIGNED_OUT') {
+            setUser(null)
+            setProfile(null)
+          } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+            setUser(session.user)
+            // Optionally refresh profile on token refresh
+            if (!profile) {
+              const profileData = await fetchProfile(session.user.id)
+              setProfile(profileData)
+            }
+          } else if (event === 'USER_UPDATED' && session?.user) {
+            setUser(session.user)
+            // Refresh profile when user is updated
+            const profileData = await fetchProfile(session.user.id)
+            setProfile(profileData)
+          } else if (!session) {
             setUser(null)
             setProfile(null)
           }
         } catch (error) {
           console.error('Error in auth state change:', error)
+          setError(error as AuthError)
         }
         setLoading(false)
       }
@@ -121,8 +174,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       profile,
       loading,
+      error,
+      isAuthenticated,
       signOut,
-      refreshProfile
+      refreshProfile,
+      redirectToSignIn,
+      redirectAfterAuth
     }}>
       {children}
     </AuthContext.Provider>

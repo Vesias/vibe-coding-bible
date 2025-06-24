@@ -51,10 +51,10 @@ export const SacredPulse = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { size?: "sm" | "md" | "lg" }
 >(({ className, size = "md", ...props }, ref) => {
-  const sizeClasses = {
-    sm: "h-3 w-3",
-    md: "h-4 w-4", 
-    lg: "h-6 w-6"
+  const sizeStyles = {
+    sm: { height: '12px', width: '12px' },
+    md: { height: '16px', width: '16px' }, 
+    lg: { height: '24px', width: '24px' }
   }
   
   return (
@@ -62,11 +62,11 @@ export const SacredPulse = React.forwardRef<
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className={cn(
-            "rounded-full bg-gradient-to-r from-sacred-tech-gold to-sacred-electric-indigo animate-sacred-pulse",
-            sizeClasses[size]
-          )}
+          className="rounded-full"
           style={{
+            ...sizeStyles[size],
+            background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)',
+            animation: 'sacred-pulse 2s ease-in-out infinite',
             animationDelay: `${i * 0.2}s`
           }}
         />
@@ -85,8 +85,11 @@ export const MatrixRain = React.forwardRef<
     {Array.from({ length: count }).map((_, i) => (
       <div
         key={i}
-        className="h-8 w-0.5 bg-sacred-matrix-green animate-matrix-rain"
         style={{
+          height: '32px',
+          width: '2px',
+          background: '#00ff00',
+          animation: 'matrix-rain 3s linear infinite',
           animationDelay: `${i * 0.3}s`
         }}
       />
@@ -117,14 +120,21 @@ export const DivineGeometry = React.forwardRef<
       {...props}
     >
       {/* Outer ring */}
-      <div className="absolute inset-0 rounded-full border-2 border-sacred-tech-gold/30" />
+      <div className="absolute inset-0 rounded-full border-2" style={{
+        borderColor: 'rgba(255, 206, 0, 0.3)'
+      }} />
       
       {/* Middle ring */}
-      <div className="absolute inset-2 rounded-full border-2 border-sacred-electric-indigo/50 animate-sacred-rotation" 
-           style={{ animationDirection: 'reverse', animationDuration: '2s' }} />
+      <div className="absolute inset-2 rounded-full border-2" style={{
+        borderColor: 'rgba(0, 158, 224, 0.5)',
+        animation: 'sacred-rotation 2s linear infinite reverse'
+      }} />
       
       {/* Inner dot */}
-      <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-gradient-to-r from-sacred-tech-gold to-sacred-electric-indigo animate-sacred-pulse" />
+      <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 h-2 w-2 rounded-full" style={{
+        background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)',
+        animation: 'sacred-pulse 3s ease-in-out infinite'
+      }} />
     </div>
   )
 })
@@ -263,13 +273,21 @@ export const MysticalOrb = React.forwardRef<
       {...props}
     >
       {/* Outer glow */}
-      <div className="absolute inset-0 rounded-full bg-gradient-radial from-sacred-electric-indigo/40 to-transparent animate-sacred-pulse" />
+      <div className="absolute inset-0 rounded-full" style={{
+        background: 'radial-gradient(circle, rgba(0, 158, 224, 0.4) 0%, transparent 70%)',
+        animation: 'sacred-pulse 3s ease-in-out infinite'
+      }} />
       
       {/* Middle layer */}
-      <div className="absolute inset-1 rounded-full bg-gradient-radial from-sacred-tech-gold/60 to-sacred-electric-indigo/40" />
+      <div className="absolute inset-1 rounded-full" style={{
+        background: 'radial-gradient(circle, rgba(255, 206, 0, 0.6) 0%, rgba(0, 158, 224, 0.4) 100%)'
+      }} />
       
       {/* Inner core */}
-      <div className="absolute inset-2 rounded-full bg-gradient-radial from-sacred-digital-white to-sacred-tech-gold animate-mystical-glow" />
+      <div className="absolute inset-2 rounded-full" style={{
+        background: 'radial-gradient(circle, #f8fafc 0%, #fbbf24 100%)',
+        animation: 'mystical-glow 2s ease-in-out infinite'
+      }} />
     </div>
   )
 })

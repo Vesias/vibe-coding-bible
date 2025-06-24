@@ -341,7 +341,7 @@ function OnboardingFlow() {
 
       // Create user profile
       const { error } = await supabase
-        .from('users')
+        .from('profiles')
         .insert({
           id: user.id,
           email: user.email!,

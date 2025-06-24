@@ -39,7 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AuthRespo
 
     // Get user profile from database
     const { data: profile, error: profileError } = await supabase
-      .from('users')
+      .from('profiles')
       .select('*')
       .eq('id', data.user.id)
       .single()

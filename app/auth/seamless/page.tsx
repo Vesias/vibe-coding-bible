@@ -47,14 +47,14 @@ function SeamlessAuthContent() {
       
       // Check if user exists
       const { data: existingUser } = await supabase
-        .from('users')
+        .from('profiles')
         .select('*')
         .eq('email', email)
         .single()
 
       if (!existingUser) {
         // Create new user with Agentland connection
-        await supabase.from('users').insert({
+        await supabase.from('profiles').insert({
           email,
           full_name: metadata.fullName || email.split('@')[0],
           agentland_user_id: userId,
@@ -68,7 +68,7 @@ function SeamlessAuthContent() {
       } else {
         // Update existing user with Agentland connection
         await supabase
-          .from('users')
+          .from('profiles')
           .update({
             agentland_user_id: userId,
             metadata: {

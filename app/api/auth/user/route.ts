@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     
     // Get user profile if exists
     const { data: profile, error } = await supabase
-      .from('users')
+      .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()

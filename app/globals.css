@@ -4,198 +4,305 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
+/* Import Design System CSS */
+@import '../styles/design-system.css';
+
 @layer base {
   :root {
-    /* Sacred Color System */
-    --sacred-midnight-blue: 222 84% 7%;
-    --sacred-electric-indigo: 258 98% 51%;
-    --sacred-tech-gold: 45 95% 56%;
-    --sacred-cosmic-black: 0 0% 7%;
-    --sacred-digital-white: 210 33% 98%;
-    --sacred-matrix-green: 127 100% 50%;
+    /* ===== AGENTLAND-ALIGNED COLOR SYSTEM ===== */
     
-    /* Extended Mystical Palette */
-    --sacred-mystic-purple: 258 70% 35%;
-    --sacred-divine-cyan: 188 94% 43%;
-    --sacred-rose: 348 83% 47%;
-    --sacred-ethereal-mint: 158 64% 52%;
-    --sacred-celestial-yellow: 43 89% 58%;
-    --sacred-void-black: 0 0% 0%;
-    --sacred-light-divine: 0 0% 100%;
+    /* Primary AgentLand Colors */
+    --agentland-blue-50: 239 246 255; /* #eff6ff */
+    --agentland-blue-600: 37 99 235; /* #2563eb */
+    --agentland-indigo-100: 224 231 255; /* #e0e7ff */
+    --agentland-indigo-600: 79 70 229; /* #4f46e5 */
+    --agentland-gray-600: 75 85 99; /* #4b5563 */
+    --agentland-gray-800: 31 41 55; /* #1f2937 */
+    --agentland-white: 255 255 255; /* #ffffff */
     
-    /* Default Light Theme */
-    --background: 210 33% 98%;
-    --foreground: var(--sacred-cosmic-black);
-    --card: 0 0% 100%;
-    --card-foreground: var(--sacred-cosmic-black);
-    --popover: 0 0% 100%;
-    --popover-foreground: var(--sacred-cosmic-black);
-    --primary: var(--sacred-electric-indigo);
-    --primary-foreground: var(--sacred-digital-white);
-    --secondary: 210 40% 96%;
-    --secondary-foreground: var(--sacred-cosmic-black);
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: var(--sacred-tech-gold);
-    --accent-foreground: var(--sacred-cosmic-black);
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: var(--sacred-electric-indigo);
-    --radius: 0.618rem;
+    /* Brand Color System (Updated to AgentLand Palette) */
+    --brand-primary: var(--agentland-blue-600); /* Primary buttons, CTAs */
+    --brand-secondary: var(--agentland-indigo-600); /* Secondary elements */
+    --brand-accent: var(--agentland-indigo-100); /* Subtle accents */
+    --brand-text-primary: var(--agentland-gray-800); /* Headings */
+    --brand-text-secondary: var(--agentland-gray-600); /* Body text */
+    --brand-background-primary: var(--agentland-blue-50); /* Main background */
+    --brand-background-secondary: var(--agentland-indigo-100); /* Card backgrounds */
+    
+    /* Error/Success Colors */
+    --accent-red: 221 0 0; /* #DD0000 - Keep for errors */
+    --accent-green: 34 197 94; /* #22c55e - Success states */
+    
+    /* Legacy Sacred Colors (Gradual migration - will be deprecated) */
+    --sacred-tech-gold: var(--brand-primary); /* Migrate to blue-600 */
+    --sacred-electric-indigo: var(--brand-secondary); /* Migrate to indigo-600 */
+    --sacred-midnight-blue: var(--agentland-gray-800); /* Migrate to gray-800 */
+    --sacred-cosmic-black: var(--agentland-gray-800);
+    --sacred-digital-white: var(--agentland-white);
+    
+    /* Design System Colors */
+    --background: var(--agentland-blue-50);
+    --foreground: var(--agentland-gray-800);
+    --card: var(--agentland-white);
+    --card-foreground: var(--agentland-gray-800);
+    --popover: var(--agentland-white);
+    --popover-foreground: var(--agentland-gray-800);
+    --primary: var(--agentland-blue-600);
+    --primary-foreground: var(--agentland-white);
+    --secondary: var(--agentland-indigo-100);
+    --secondary-foreground: var(--agentland-gray-800);
+    --muted: var(--agentland-indigo-100);
+    --muted-foreground: var(--agentland-gray-600);
+    --accent: var(--agentland-indigo-600);
+    --accent-foreground: var(--agentland-white);
+    --destructive: var(--accent-red);
+    --destructive-foreground: var(--agentland-white);
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: var(--agentland-blue-600);
+    --radius: 0.5rem; /* More standard radius */
   }
 
   .dark {
-    /* Sacred Dark Theme */
-    --background: var(--sacred-midnight-blue);
-    --foreground: var(--sacred-digital-white);
-    --card: var(--sacred-cosmic-black);
-    --card-foreground: var(--sacred-digital-white);
-    --popover: var(--sacred-cosmic-black);
-    --popover-foreground: var(--sacred-digital-white);
-    --primary: var(--sacred-electric-indigo);
-    --primary-foreground: var(--sacred-digital-white);
-    --secondary: var(--sacred-mystic-purple);
-    --secondary-foreground: var(--sacred-digital-white);
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: var(--sacred-tech-gold);
-    --accent-foreground: var(--sacred-cosmic-black);
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: var(--sacred-tech-gold);
+    /* AgentLand Dark Theme */
+    --background: var(--agentland-gray-800);
+    --foreground: var(--agentland-white);
+    --card: 31 41 55; /* Darker gray for cards */
+    --card-foreground: var(--agentland-white);
+    --popover: 31 41 55;
+    --popover-foreground: var(--agentland-white);
+    --primary: var(--agentland-blue-600);
+    --primary-foreground: var(--agentland-white);
+    --secondary: var(--agentland-indigo-600);
+    --secondary-foreground: var(--agentland-white);
+    --muted: 55 65 81; /* Muted grays */
+    --muted-foreground: 156 163 175;
+    --accent: var(--agentland-indigo-600);
+    --accent-foreground: var(--agentland-white);
+    --destructive: 239 68 68; /* Lighter red for dark mode */
+    --destructive-foreground: var(--agentland-white);
+    --border: 55 65 81;
+    --input: 55 65 81;
+    --ring: var(--agentland-blue-600);
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-feature-settings: "cv11", "ss01";
     font-variation-settings: "opsz" 32;
   }
 }
 
+@layer base {
+  /* Screen Reader Only - Accessibility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
 @layer components {
-  /* Sacred Design Components */
+  /* AgentLand Design Components */
+  .agentland-gradient {
+    background: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #2563eb);
+  }
+  
+  .agentland-gradient-radial {
+    background: radial-gradient(circle at center, #eff6ff 0%, #e0e7ff 50%, #2563eb 100%);
+  }
+  
+  .agentland-gradient-conic {
+    background: conic-gradient(from 0deg, #2563eb, #4f46e5, #2563eb);
+  }
+  
+  .agentland-text {
+    background: linear-gradient(to right, #2563eb, #4f46e5);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  
+  .professional-text {
+    background: linear-gradient(to right, #2563eb, #1f2937);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  
+  /* Legacy gradients - gradually migrate to AgentLand versions */
   .sacred-gradient {
-    @apply bg-gradient-to-br from-sacred-tech-gold via-sacred-electric-indigo to-sacred-midnight-blue;
-  }
-  
-  .sacred-gradient-radial {
-    background: radial-gradient(circle at center, hsl(var(--sacred-tech-gold)) 0%, hsl(var(--sacred-electric-indigo)) 50%, hsl(var(--sacred-midnight-blue)) 100%);
-  }
-  
-  .sacred-gradient-conic {
-    background: conic-gradient(from 0deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)), hsl(var(--sacred-matrix-green)), hsl(var(--sacred-tech-gold)));
+    background: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #2563eb);
   }
   
   .sacred-text {
-    @apply bg-gradient-to-r from-sacred-tech-gold to-sacred-electric-indigo bg-clip-text text-transparent;
+    background: linear-gradient(to right, #2563eb, #4f46e5);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
   
   .divine-text {
-    @apply bg-gradient-to-r from-sacred-electric-indigo via-sacred-divine-cyan to-sacred-tech-gold bg-clip-text text-transparent;
+    background: linear-gradient(to right, #2563eb, #4f46e5);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
   
   .mystical-text {
-    @apply bg-gradient-to-r from-sacred-mystic-purple via-sacred-rose to-sacred-tech-gold bg-clip-text text-transparent;
+    color: #1f2937; /* Use solid gray-800 for better readability */
   }
   
+  .agentland-glow {
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3), 0 0 40px rgba(79, 70, 229, 0.2);
+  }
+  
+  .professional-glow {
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4), 0 0 30px rgba(31, 41, 55, 0.3);
+  }
+  
+  /* Legacy glows - migrate to AgentLand versions */
   .divine-glow {
-    box-shadow: 0 0 20px hsla(var(--sacred-tech-gold), 0.3), 0 0 40px hsla(var(--sacred-electric-indigo), 0.2);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3), 0 0 40px rgba(79, 70, 229, 0.2);
   }
   
   .mystical-glow {
-    box-shadow: 0 0 15px hsla(var(--sacred-electric-indigo), 0.4), 0 0 30px hsla(var(--sacred-mystic-purple), 0.3);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4), 0 0 30px rgba(31, 41, 55, 0.3);
   }
   
   .matrix-glow {
-    box-shadow: 0 0 10px hsla(var(--sacred-matrix-green), 0.5), 0 0 20px hsla(var(--sacred-matrix-green), 0.3);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.3);
   }
 
   .prophet-card {
-    @apply rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:border-sacred-electric-indigo/30;
+    border-radius: 0.75rem;
+    border: 1px solid hsl(var(--border) / 0.5);
+    background-color: hsl(var(--card) / 0.5);
+    backdrop-filter: blur(4px);
+    transition: all 0.5s;
     transform: translateZ(0);
   }
   
   .prophet-card:hover {
-    box-shadow: 0 20px 40px hsla(var(--sacred-electric-indigo), 0.15), 0 0 0 1px hsla(var(--sacred-tech-gold), 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15), 0 0 0 1px rgba(79, 70, 229, 0.1);
     transform: translateY(-2px) scale(1.02);
   }
   
   .commandment-header {
-    @apply font-sacred text-2xl font-semibold text-sacred-tech-gold md:text-3xl;
-    text-shadow: 0 0 10px hsla(var(--sacred-tech-gold), 0.3);
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2563eb;
+    text-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+  }
+  
+  @media (min-width: 768px) {
+    .commandment-header {
+      font-size: 1.875rem;
+    }
   }
   
   .sacred-card {
-    @apply rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-md border border-sacred-electric-indigo/20;
-    box-shadow: 0 8px 32px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.1);
+    border-radius: 0.75rem;
+    background: linear-gradient(to bottom right, hsl(var(--card) / 0.8), hsl(var(--card) / 0.4));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    box-shadow: 0 8px 32px rgba(31, 41, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .sacred-card:hover {
-    border-color: hsla(var(--sacred-tech-gold), 0.4);
-    box-shadow: 0 20px 40px hsla(var(--sacred-midnight-blue), 0.4), 0 0 0 1px hsla(var(--sacred-tech-gold), 0.2), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.2);
+    border-color: rgba(79, 70, 229, 0.4);
+    box-shadow: 0 20px 40px rgba(31, 41, 55, 0.4), 0 0 0 1px rgba(79, 70, 229, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     transform: translateY(-4px);
   }
   
   .divine-card {
-    @apply rounded-xl bg-gradient-to-br from-sacred-midnight-blue/90 to-sacred-cosmic-black/80 backdrop-blur-lg border border-sacred-tech-gold/30;
-    box-shadow: 0 0 40px hsla(var(--sacred-tech-gold), 0.1), inset 0 1px 0 hsla(var(--sacred-tech-gold), 0.2);
+    border-radius: 0.75rem;
+    background: linear-gradient(to bottom right, rgba(31, 41, 55, 0.9), rgba(31, 41, 55, 0.8));
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    box-shadow: 0 0 40px rgba(37, 99, 235, 0.1), inset 0 1px 0 rgba(37, 99, 235, 0.2);
   }
   
   .mystical-border {
     border: 1px solid transparent;
-    background: linear-gradient(135deg, hsla(var(--sacred-tech-gold), 0.3), hsla(var(--sacred-electric-indigo), 0.3)) border-box;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.3), rgba(79, 70, 229, 0.3)) border-box;
     mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     mask-composite: xor;
   }
 
   /* Monaco Editor Styles */
   .monaco-editor-wrapper {
-    @apply rounded-lg border border-border overflow-hidden;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
+    overflow: hidden;
   }
   
   /* Progress Bar Styles */
   .progress-sacred {
-    @apply bg-gradient-to-r from-sacred-tech-gold to-sacred-electric-indigo;
+    background: linear-gradient(to right, #2563eb, #4f46e5);
   }
   
   /* Achievement Badge Styles */
   .badge-bronze {
-    @apply bg-gradient-to-r from-amber-600 to-amber-700 text-white;
+    background: linear-gradient(to right, #d97706, #b45309);
+    color: white;
   }
   
   .badge-silver {
-    @apply bg-gradient-to-r from-gray-400 to-gray-500 text-white;
+    background: linear-gradient(to right, #9ca3af, #6b7280);
+    color: white;
   }
   
   .badge-gold {
-    @apply bg-gradient-to-r from-yellow-400 to-yellow-500 text-black;
+    background: linear-gradient(to right, #2563eb, #1d4ed8);
+    color: white;
   }
   
   .badge-diamond {
-    @apply bg-gradient-to-r from-blue-400 to-purple-500 text-white;
+    background: linear-gradient(to right, #4f46e5, #4338ca);
+    color: white;
   }
   
   .badge-divine {
-    @apply sacred-gradient text-white;
+    background: linear-gradient(to bottom right, #2563eb, #4f46e5, #1f2937);
+    color: white;
   }
   
   /* Interactive Elements */
   .interactive-hover {
-    @apply transition-all duration-300 hover:scale-105 hover:shadow-lg;
+    transition: all 0.3s;
+  }
+  
+  .interactive-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
   
   .code-block {
-    @apply rounded-lg bg-muted p-4 font-mono text-sm;
+    border-radius: 0.5rem;
+    background-color: hsl(var(--muted));
+    padding: 1rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.875rem;
   }
   
   /* Scrollbar Styling */
@@ -204,170 +311,287 @@
   }
   
   .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-muted rounded-lg;
+    background-color: hsl(var(--muted));
+    border-radius: 0.5rem;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-lg hover:bg-border/80;
+    background-color: hsl(var(--border));
+    border-radius: 0.5rem;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--border) / 0.8);
   }
   
   /* Loading States */
   .loading-pulse {
-    @apply animate-pulse bg-gradient-to-r from-muted via-muted/50 to-muted;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    background: linear-gradient(to right, hsl(var(--muted)), hsl(var(--muted) / 0.5), hsl(var(--muted)));
   }
   
   /* Responsive Typography */
   .responsive-text-xs {
-    @apply text-xs sm:text-sm;
+    font-size: 0.75rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-text-xs {
+      font-size: 0.875rem;
+    }
   }
   
   .responsive-text-sm {
-    @apply text-sm sm:text-base;
+    font-size: 0.875rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-text-sm {
+      font-size: 1rem;
+    }
   }
   
   .responsive-text-base {
-    @apply text-base sm:text-lg;
+    font-size: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-text-base {
+      font-size: 1.125rem;
+    }
   }
   
   .responsive-text-lg {
-    @apply text-lg sm:text-xl;
+    font-size: 1.125rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-text-lg {
+      font-size: 1.25rem;
+    }
   }
   
   .responsive-text-xl {
-    @apply text-xl sm:text-2xl;
+    font-size: 1.25rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-text-xl {
+      font-size: 1.5rem;
+    }
   }
   
   .responsive-text-2xl {
-    @apply text-2xl sm:text-3xl md:text-4xl;
+    font-size: 1.5rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-text-2xl {
+      font-size: 1.875rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .responsive-text-2xl {
+      font-size: 2.25rem;
+    }
   }
   
   .responsive-text-3xl {
-    @apply text-3xl sm:text-4xl md:text-5xl;
+    font-size: 1.875rem;
+  }
+  
+  @media (min-width: 640px) {
+    .responsive-text-3xl {
+      font-size: 2.25rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .responsive-text-3xl {
+      font-size: 3rem;
+    }
   }
 
   /* Sacred Gamification Elements */
   .xp-bar {
-    @apply h-2 bg-muted rounded-full overflow-hidden;
-    box-shadow: inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.2);
+    height: 0.5rem;
+    background-color: hsl(var(--muted));
+    border-radius: 9999px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(30, 41, 59, 0.2);
   }
 
   .xp-fill {
-    background: linear-gradient(90deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)));
+    background: linear-gradient(90deg, #FFCE00, #009EE0);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 10px hsla(var(--sacred-tech-gold), 0.5);
+    box-shadow: 0 0 10px rgba(255, 206, 0, 0.5);
   }
 
   .achievement-badge {
-    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium;
-    background: linear-gradient(135deg, hsla(var(--sacred-tech-gold), 0.9), hsla(var(--sacred-electric-indigo), 0.9));
-    box-shadow: 0 4px 8px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, rgba(255, 206, 0, 0.9), rgba(0, 158, 224, 0.9));
+    box-shadow: 0 4px 8px rgba(30, 41, 59, 0.3), inset 0 1px 0 rgba(248, 250, 252, 0.2);
     transition: all 0.3s ease;
   }
 
   .achievement-badge:hover {
     transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 6px 12px hsla(var(--sacred-midnight-blue), 0.4), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.3);
+    box-shadow: 0 6px 12px rgba(30, 41, 59, 0.4), inset 0 1px 0 rgba(248, 250, 252, 0.3);
   }
 
   /* Sacred Form Elements */
   .sacred-input {
-    @apply rounded-lg border border-sacred-electric-indigo/20 bg-card/50 backdrop-blur-sm;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(0, 158, 224, 0.2);
+    background-color: hsl(var(--card) / 0.5);
+    backdrop-filter: blur(4px);
     transition: all 0.3s ease;
-    box-shadow: inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.05);
+    box-shadow: inset 0 2px 4px rgba(30, 41, 59, 0.05);
   }
 
   .sacred-input:focus {
-    @apply border-sacred-tech-gold/50 ring-2 ring-sacred-tech-gold/20;
-    box-shadow: 0 0 0 3px hsla(var(--sacred-tech-gold), 0.1), inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.05);
+    border-color: rgba(37, 99, 235, 0.5);
+    outline: 2px solid rgba(37, 99, 235, 0.2);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), inset 0 2px 4px rgba(31, 41, 55, 0.05);
   }
 
   .sacred-button {
-    @apply rounded-lg font-medium transition-all duration-300;
-    background: linear-gradient(135deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)));
-    box-shadow: 0 4px 12px hsla(var(--sacred-midnight-blue), 0.25), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.2);
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    box-shadow: 0 4px 12px rgba(31, 41, 55, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   .sacred-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.3);
+    box-shadow: 0 8px 20px rgba(31, 41, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   .sacred-button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px hsla(var(--sacred-midnight-blue), 0.3), inset 0 1px 0 hsla(var(--sacred-digital-white), 0.1);
+    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   /* Divine Loading States */
   .divine-spinner {
-    @apply w-8 h-8 border-2 border-sacred-electric-indigo/20 border-t-sacred-tech-gold rounded-full;
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid rgba(37, 99, 235, 0.2);
+    border-top-color: #2563eb;
+    border-radius: 50%;
     animation: sacred-rotation 1s linear infinite;
   }
 
   .sacred-skeleton {
-    @apply bg-gradient-to-r from-muted via-muted/50 to-muted;
+    background: linear-gradient(to right, hsl(var(--muted)), hsl(var(--muted) / 0.5), hsl(var(--muted)));
     background-size: 200% 100%;
     animation: divine-shimmer 1.5s ease-in-out infinite;
   }
 
   /* Sacred Typography */
   .sacred-heading {
-    @apply font-sacred font-bold;
-    background: linear-gradient(135deg, hsl(var(--sacred-tech-gold)), hsl(var(--sacred-electric-indigo)));
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 30px hsla(var(--sacred-tech-gold), 0.3);
+    text-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
   }
 
   .divine-text {
-    @apply font-medium;
-    background: linear-gradient(90deg, hsl(var(--sacred-electric-indigo)), hsl(var(--sacred-divine-cyan)), hsl(var(--sacred-tech-gold)));
+    font-weight: 500;
+    background: linear-gradient(90deg, #2563eb, #4f46e5);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .mystical-text {
-    @apply font-medium;
-    background: linear-gradient(45deg, hsl(var(--sacred-mystic-purple)), hsl(var(--sacred-rose)), hsl(var(--sacred-tech-gold)));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-weight: 500;
+    color: #1f2937; /* Use solid color for better readability */
   }
 
   /* Workshop Module Specific Styles */
   .workshop-container {
-    @apply min-h-screen bg-gradient-to-br from-background via-background to-muted/20;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--background)), hsl(var(--muted) / 0.2));
   }
 
   .workshop-sidebar {
-    @apply sticky top-0 h-screen overflow-y-auto bg-card/80 backdrop-blur-sm border-r border-border/50;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(4px);
+    border-right: 1px solid hsl(var(--border) / 0.5);
   }
 
   .workshop-content {
-    @apply flex-1 p-6 lg:p-8;
+    flex: 1;
+    padding: 1.5rem;
+  }
+  
+  @media (min-width: 1024px) {
+    .workshop-content {
+      padding: 2rem;
+    }
   }
 
   /* Code Playground Styles */
   .code-playground {
-    @apply grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px];
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    height: 600px;
+  }
+  
+  @media (min-width: 1024px) {
+    .code-playground {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   .code-editor {
-    @apply rounded-lg border border-border overflow-hidden;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
+    overflow: hidden;
   }
 
   .code-output {
-    @apply rounded-lg border border-border bg-muted/50 p-4 overflow-auto;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--muted) / 0.5);
+    padding: 1rem;
+    overflow: auto;
   }
 
   /* Community Features */
   .community-post {
-    @apply rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:shadow-lg;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  
+  .community-post:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
   .user-avatar {
-    @apply rounded-full border-2 border-border;
+    border-radius: 50%;
+    border: 2px solid hsl(var(--border));
   }
 }
 
@@ -375,6 +599,20 @@
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
+}
+
+/* Enhanced Sacred Pulse with Glow */
+@keyframes sacred-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(255, 206, 0, 0.3);
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 1;
+    box-shadow: 0 0 30px rgba(255, 206, 0, 0.6), 0 0 60px rgba(0, 158, 224, 0.4);
+  }
 }
 
 @keyframes divine-float {
@@ -390,21 +628,21 @@
 
 @keyframes sacred-pulse {
   0%, 100% { 
-    box-shadow: 0 0 10px hsla(var(--sacred-tech-gold), 0.3), 0 0 20px hsla(var(--sacred-electric-indigo), 0.2);
+    box-shadow: 0 0 10px rgba(255, 206, 0, 0.3), 0 0 20px rgba(0, 158, 224, 0.2);
     transform: scale(1);
   }
   50% { 
-    box-shadow: 0 0 30px hsla(var(--sacred-tech-gold), 0.6), 0 0 60px hsla(var(--sacred-electric-indigo), 0.4);
+    box-shadow: 0 0 30px rgba(255, 206, 0, 0.6), 0 0 60px rgba(0, 158, 224, 0.4);
     transform: scale(1.05);
   }
 }
 
 @keyframes mystical-glow {
   0%, 100% {
-    text-shadow: 0 0 5px hsla(var(--sacred-electric-indigo), 0.5);
+    text-shadow: 0 0 5px rgba(0, 158, 224, 0.5);
   }
   50% {
-    text-shadow: 0 0 20px hsla(var(--sacred-electric-indigo), 0.8), 0 0 30px hsla(var(--sacred-tech-gold), 0.5);
+    text-shadow: 0 0 20px rgba(0, 158, 224, 0.8), 0 0 30px rgba(255, 206, 0, 0.5);
   }
 }
 
@@ -495,7 +733,7 @@
 }
 
 .divine-shimmer-animation {
-  background: linear-gradient(90deg, transparent, hsla(var(--sacred-tech-gold), 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 206, 0, 0.4), transparent);
   background-size: 200% 100%;
   animation: divine-shimmer 2s ease-in-out infinite;
 }
@@ -523,7 +761,7 @@
 
 .sacred-hover:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 10px 25px hsla(var(--sacred-midnight-blue), 0.15);
+  box-shadow: 0 10px 25px rgba(30, 41, 59, 0.15);
 }
 
 .divine-hover {
@@ -532,7 +770,7 @@
 
 .divine-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 15px 35px hsla(var(--sacred-electric-indigo), 0.25), 0 0 0 1px hsla(var(--sacred-tech-gold), 0.3);
+  box-shadow: 0 15px 35px rgba(0, 158, 224, 0.25), 0 0 0 1px rgba(255, 206, 0, 0.3);
 }
 
 .mystical-hover {
@@ -541,7 +779,7 @@
 
 .mystical-hover:hover {
   transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 20px 40px hsla(var(--sacred-mystic-purple), 0.3);
+  box-shadow: 0 20px 40px rgba(109, 40, 217, 0.3);
 }
 
 /* Sacred Geometry Backgrounds */
@@ -576,117 +814,360 @@
 
 /* Enhanced Responsive Typography Classes */
 .hero-title {
-  @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl;
+  font-size: 2.25rem;
   line-height: 1.1;
 }
 
+@media (min-width: 640px) {
+  .hero-title { font-size: 3rem; }
+}
+
+@media (min-width: 768px) {
+  .hero-title { font-size: 3.75rem; }
+}
+
+@media (min-width: 1024px) {
+  .hero-title { font-size: 4.5rem; }
+}
+
+@media (min-width: 1280px) {
+  .hero-title { font-size: 6rem; }
+}
+
+@media (min-width: 1536px) {
+  .hero-title { font-size: 8rem; }
+}
+
 .section-title {
-  @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl;
+  font-size: 1.875rem;
   line-height: 1.2;
 }
 
+@media (min-width: 640px) {
+  .section-title { font-size: 2.25rem; }
+}
+
+@media (min-width: 768px) {
+  .section-title { font-size: 3rem; }
+}
+
+@media (min-width: 1024px) {
+  .section-title { font-size: 3.75rem; }
+}
+
+@media (min-width: 1280px) {
+  .section-title { font-size: 4.5rem; }
+}
+
 .subsection-title {
-  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+  font-size: 1.5rem;
   line-height: 1.3;
 }
 
+@media (min-width: 640px) {
+  .subsection-title { font-size: 1.875rem; }
+}
+
+@media (min-width: 768px) {
+  .subsection-title { font-size: 2.25rem; }
+}
+
+@media (min-width: 1024px) {
+  .subsection-title { font-size: 3rem; }
+}
+
 .card-title {
-  @apply text-lg sm:text-xl md:text-2xl;
+  font-size: 1.125rem;
   line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+  .card-title { font-size: 1.25rem; }
+}
+
+@media (min-width: 768px) {
+  .card-title { font-size: 1.5rem; }
 }
 
 .body-large {
-  @apply text-base sm:text-lg md:text-xl lg:text-2xl;
+  font-size: 1rem;
   line-height: 1.6;
 }
 
+@media (min-width: 640px) {
+  .body-large { font-size: 1.125rem; }
+}
+
+@media (min-width: 768px) {
+  .body-large { font-size: 1.25rem; }
+}
+
+@media (min-width: 1024px) {
+  .body-large { font-size: 1.5rem; }
+}
+
 .body-medium {
-  @apply text-sm sm:text-base md:text-lg;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
+@media (min-width: 640px) {
+  .body-medium { font-size: 1rem; }
+}
+
+@media (min-width: 768px) {
+  .body-medium { font-size: 1.125rem; }
+}
+
 .body-small {
-  @apply text-xs sm:text-sm md:text-base;
+  font-size: 0.75rem;
   line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+  .body-small { font-size: 0.875rem; }
+}
+
+@media (min-width: 768px) {
+  .body-small { font-size: 1rem; }
 }
 
 /* Enhanced Responsive Spacing */
 .section-padding {
-  @apply py-16 sm:py-20 md:py-24 lg:py-28 xl:py-32;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 640px) {
+  .section-padding {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .section-padding {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
 }
 
 .container-padding {
-  @apply px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-padding {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-padding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-padding {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-padding {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
 }
 
 .card-padding {
-  @apply p-4 sm:p-6 md:p-8 lg:p-10;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .card-padding {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .card-padding {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-padding {
+    padding: 2.5rem;
+  }
 }
 
 /* Sacred Grid System */
 .sacred-grid {
-  @apply grid gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12;
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .sacred-grid { gap: 1.5rem; }
+}
+
+@media (min-width: 768px) {
+  .sacred-grid { gap: 2rem; }
+}
+
+@media (min-width: 1024px) {
+  .sacred-grid { gap: 2.5rem; }
+}
+
+@media (min-width: 1280px) {
+  .sacred-grid { gap: 3rem; }
 }
 
 .sacred-grid-1 {
-  @apply grid-cols-1;
+  grid-template-columns: 1fr;
 }
 
 .sacred-grid-2 {
-  @apply grid-cols-1 sm:grid-cols-2;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .sacred-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .sacred-grid-3 {
-  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .sacred-grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sacred-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 .sacred-grid-4 {
-  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .sacred-grid-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sacred-grid-4 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (min-width: 1280px) {
+  .sacred-grid-4 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 }
 
 /* Mobile Responsive Adjustments */
 @media (max-width: 640px) {
   .hero-scroll {
-    @apply text-6xl;
+    font-size: 3.75rem;
   }
   
   .floating-elements {
-    @apply opacity-50;
+    opacity: 0.7;
   }
   
   .sacred-geometry-bg {
-    @apply opacity-30;
+    opacity: 0.4;
   }
   
   .mystical-effects {
-    @apply hidden;
+    opacity: 0.6;
   }
   
   .section-padding {
-    @apply py-12;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
   
   .card-padding {
-    @apply p-3;
+    padding: 0.75rem;
+  }
+  
+  /* Enhanced mobile text readability */
+  .sacred-text {
+    text-shadow: 0 0 10px rgba(255, 206, 0, 0.5);
+  }
+  
+  /* Enhanced focus for interactive elements */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid #2563eb !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2) !important;
+  }
+  
+  /* Better mobile button interactions */
+  button:hover {
+    transform: scale(1.02) !important;
+  }
+  
+  /* Improved mobile spacing */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .workshop-container {
-    @apply block;
+    display: block;
   }
   
   .workshop-sidebar {
-    @apply relative h-auto;
+    position: relative;
+    height: auto;
   }
   
   .code-playground {
-    @apply grid-cols-1 h-auto;
+    grid-template-columns: 1fr;
+    height: auto;
   }
   
   .code-editor,
   .code-output {
-    @apply h-[300px];
+    height: 300px;
   }
 
   .sacred-card {
@@ -706,25 +1187,26 @@
   }
   
   .hero-particles {
-    @apply opacity-70;
+    opacity: 0.7;
   }
   
   .light-beams {
-    @apply opacity-60;
+    opacity: 0.6;
   }
   
   .section-padding {
-    @apply py-16;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
 }
 
 @media (max-width: 1024px) {
   .sacred-geometry-complex {
-    @apply opacity-60;
+    opacity: 0.6;
   }
   
   .floating-symbols {
-    @apply opacity-80;
+    opacity: 0.8;
   }
 }
 
@@ -811,7 +1293,10 @@
 
 /* Sacred Code Blocks */
 .sacred-code {
-  @apply font-mono text-sm rounded-lg p-4;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  padding: 1rem;
   background: linear-gradient(135deg, hsla(var(--sacred-midnight-blue), 0.9), hsla(var(--sacred-cosmic-black), 0.9));
   border: 1px solid hsla(var(--sacred-matrix-green), 0.3);
   box-shadow: inset 0 2px 4px hsla(var(--sacred-midnight-blue), 0.3), 0 0 20px hsla(var(--sacred-matrix-green), 0.1);
@@ -829,7 +1314,8 @@
 
 /* Divine Containers */
 .divine-container {
-  @apply relative overflow-hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .divine-container::before {
@@ -884,11 +1370,11 @@
 
 /* Sacred Selection */
 ::selection {
-  background: hsla(var(--sacred-tech-gold), 0.2);
+  background: rgba(255, 206, 0, 0.2);
   color: hsl(var(--sacred-midnight-blue));
 }
 
 ::-moz-selection {
-  background: hsla(var(--sacred-tech-gold), 0.2);
+  background: rgba(255, 206, 0, 0.2);
   color: hsl(var(--sacred-midnight-blue));
 }

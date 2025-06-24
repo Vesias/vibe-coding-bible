@@ -7,32 +7,47 @@ export async function GET(request: NextRequest) {
     
     // Test basic connection
     const { data: connectionTest, error: connectionError } = await supabase
-      .from('users')
+      .from('profiles')
       .select('count')
       .limit(1)
     
-    if (connectionError && connectionError.code !== 'PGRST116') {
-      return NextResponse.json({
-        status: 'error',
-        message: 'Failed to connect to database',
-        error: connectionError.message,
-        timestamp: new Date().toISOString()
-      }, { status: 500 })
+    if (connectionError) {
+      if (connectionError.code === 'PGRST116') {
+        return NextResponse.json({
+          status: 'setup_required',
+          message: 'Database tables not found - migration required',
+          error: connectionError.message,
+          setup_instructions: {
+            message: 'Please run the database migration to set up required tables',
+            migration_file: 'scripts/create-basic-schema.sql',
+            supabase_dashboard: 'https://supabase.com/dashboard',
+            documentation: '/DATABASE_SETUP.md'
+          },
+          timestamp: new Date().toISOString()
+        }, { status: 503 })
+      } else {
+        return NextResponse.json({
+          status: 'error',
+          message: 'Failed to connect to database',
+          error: connectionError.message,
+          timestamp: new Date().toISOString()
+        }, { status: 500 })
+      }
     }
 
     // Test multiple table schemas
     const schemaTests = []
     
-    // Test users table schema
-    const { data: usersSchema, error: usersError } = await supabase
-      .from('users')
+    // Test profiles table schema
+    const { data: profilesSchema, error: profilesError } = await supabase
+      .from('profiles')
       .select('*')
       .limit(0)
     
     schemaTests.push({
-      table: 'users',
-      accessible: !usersError,
-      error: usersError?.message || null
+      table: 'profiles',
+      accessible: !profilesError,
+      error: profilesError?.message || null
     })
 
     // Test workshops table schema

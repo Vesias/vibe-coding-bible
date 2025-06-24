@@ -3,6 +3,7 @@ import { Inter, Fira_Code, Cinzel, Montserrat } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers/Providers'
 import { DivineNavigation } from '@/components/navigation/DivineNavigation'
+import { DivineFooter } from '@/components/layout/DivineFooter'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const firaCode = Fira_Code({ subsets: ['latin'], variable: '--font-fira-code' })
@@ -84,11 +85,12 @@ export default function RootLayout({
     <html lang="de" suppressHydrationWarning>
       <body className={`${inter.variable} ${firaCode.variable} ${cinzel.variable} ${montserrat.variable} font-sans antialiased`}>
         <Providers>
-          <div className="relative min-h-screen">
+          <div className="relative min-h-screen flex flex-col">
             <DivineNavigation />
-            <div style={{ paddingTop: '80px' }}>
+            <div style={{ paddingTop: '80px', flex: 1 }}>
               {children}
             </div>
+            <DivineFooter />
           </div>
         </Providers>
       </body>

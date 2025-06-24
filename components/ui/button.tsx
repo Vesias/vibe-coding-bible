@@ -17,16 +17,16 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-105 transition-all duration-300",
         ghost: "hover:bg-accent hover:text-accent-foreground hover:scale-105 transition-all duration-300",
         link: "text-primary underline-offset-4 hover:underline hover:scale-105 transition-all duration-300",
-        // Sacred Variants
-        sacred: "sacred-gradient text-white hover:scale-105 shadow-sacred-glow hover:shadow-sacred-depth transition-all duration-sacred backdrop-blur-sm relative overflow-hidden",
-        divine: "bg-gradient-to-r from-sacred-midnight-blue to-sacred-cosmic-black text-sacred-digital-white border border-sacred-tech-gold/30 hover:border-sacred-tech-gold/60 hover:scale-105 shadow-divine-soft hover:shadow-sacred-glow transition-all duration-divine backdrop-blur-md",
-        mystical: "bg-gradient-to-r from-sacred-mystic-purple to-sacred-electric-indigo text-sacred-digital-white hover:from-sacred-electric-indigo hover:to-sacred-mystic-purple hover:scale-105 shadow-mystical-glow transition-all duration-mystical",
-        matrix: "bg-gradient-to-r from-sacred-cosmic-black to-sacred-midnight-blue text-sacred-matrix-green border border-sacred-matrix-green/30 hover:border-sacred-matrix-green/60 hover:scale-105 shadow-matrix-glow transition-all duration-sacred font-mono",
-        prophet: "bg-gradient-to-r from-vibe-primary to-vibe-secondary text-white hover:from-vibe-primary/90 hover:to-vibe-secondary/90 hover:scale-105 shadow-lg hover:shadow-xl transition-all duration-300",
+        // Sacred Variants - using inline styles instead of CSS classes
+        sacred: "text-white hover:scale-105 transition-all duration-300 backdrop-blur-sm relative overflow-hidden",
+        divine: "text-white border hover:scale-105 transition-all duration-300 backdrop-blur-md",
+        mystical: "text-white hover:scale-105 transition-all duration-300",
+        matrix: "border hover:scale-105 transition-all duration-300 font-mono",
+        prophet: "text-white hover:scale-105 shadow-lg hover:shadow-xl transition-all duration-300",
         // Premium Sacred Variants
-        "divine-primary": "bg-gradient-to-r from-sacred-tech-gold via-sacred-electric-indigo to-sacred-tech-gold text-sacred-midnight-blue font-bold hover:scale-105 shadow-sacred-glow hover:shadow-sacred-depth transition-all duration-divine backdrop-blur-sm animate-divine-shimmer",
-        "sacred-ghost": "text-sacred-tech-gold hover:bg-sacred-tech-gold/10 hover:text-sacred-electric-indigo hover:scale-105 border border-transparent hover:border-sacred-tech-gold/30 transition-all duration-sacred",
-        "mystical-outline": "border-2 border-sacred-electric-indigo text-sacred-electric-indigo hover:bg-sacred-electric-indigo hover:text-sacred-digital-white hover:scale-105 hover:shadow-mystical-glow transition-all duration-mystical"
+        "divine-primary": "font-bold hover:scale-105 transition-all duration-300 backdrop-blur-sm",
+        "sacred-ghost": "hover:scale-105 border border-transparent transition-all duration-300",
+        "mystical-outline": "border-2 hover:scale-105 transition-all duration-300"
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -56,28 +56,99 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, style, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
-    // Add sacred shimmer effect for divine-primary variant
-    const isDivinePrimary = variant === 'divine-primary'
+    // Get sacred styling based on variant
+    const getSacredStyle = () => {
+      switch (variant) {
+        case 'sacred':
+          return {
+            background: 'linear-gradient(135deg, #FFCE00 0%, #009EE0 100%)',
+            boxShadow: '0 0 20px rgba(255, 206, 0, 0.3), 0 8px 32px rgba(0, 158, 224, 0.25)'
+          }
+        case 'divine':
+          return {
+            background: 'linear-gradient(90deg, #1e293b 0%, #121212 100%)',
+            color: '#f8fafc',
+            borderColor: 'rgba(255, 206, 0, 0.3)',
+            boxShadow: '0 4px 16px rgba(30, 41, 59, 0.2)'
+          }
+        case 'mystical':
+          return {
+            background: 'linear-gradient(90deg, #009EE0 0%, #004A8F 100%)',
+            boxShadow: '0 0 15px rgba(0, 158, 224, 0.4), 0 0 30px rgba(0, 74, 143, 0.3)'
+          }
+        case 'matrix':
+          return {
+            background: 'linear-gradient(90deg, #121212 0%, #1e293b 100%)',
+            color: '#00ff00',
+            borderColor: 'rgba(0, 255, 0, 0.3)',
+            boxShadow: '0 0 10px rgba(0, 255, 0, 0.5)'
+          }
+        case 'prophet':
+          return {
+            background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)'
+          }
+        case 'divine-primary':
+          return {
+            background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 50%, #FFCE00 100%)',
+            color: '#1e293b',
+            boxShadow: '0 0 20px rgba(255, 206, 0, 0.3), 0 8px 32px rgba(0, 158, 224, 0.25)'
+          }
+        case 'sacred-ghost':
+          return {
+            color: '#FFCE00',
+            borderColor: 'transparent'
+          }
+        case 'mystical-outline':
+          return {
+            borderColor: '#004A8F',
+            color: '#004A8F'
+          }
+        default:
+          return {}
+      }
+    }
     
     return (
       <Comp
         className={cn(
-          buttonVariants({ variant, size, className }),
-          isDivinePrimary && "relative overflow-hidden"
+          buttonVariants({ variant, size, className })
         )}
+        style={{
+          ...getSacredStyle(),
+          ...style
+        }}
         ref={ref}
         {...props}
+        onMouseEnter={(e) => {
+          // Enhanced hover effects for sacred variants
+          if (variant === 'sacred-ghost') {
+            e.currentTarget.style.backgroundColor = 'rgba(255, 206, 0, 0.1)'
+            e.currentTarget.style.color = '#004A8F'
+            e.currentTarget.style.borderColor = 'rgba(255, 206, 0, 0.3)'
+          } else if (variant === 'mystical-outline') {
+            e.currentTarget.style.backgroundColor = '#004A8F'
+            e.currentTarget.style.color = '#f8fafc'
+            e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 74, 143, 0.5)'
+          }
+          props.onMouseEnter?.(e)
+        }}
+        onMouseLeave={(e) => {
+          if (variant === 'sacred-ghost') {
+            e.currentTarget.style.backgroundColor = 'transparent'
+            e.currentTarget.style.color = '#FFCE00'
+            e.currentTarget.style.borderColor = 'transparent'
+          } else if (variant === 'mystical-outline') {
+            e.currentTarget.style.backgroundColor = 'transparent'
+            e.currentTarget.style.color = '#004A8F'
+            e.currentTarget.style.boxShadow = 'none'
+          }
+          props.onMouseLeave?.(e)
+        }}
       >
-        {isDivinePrimary && (
-          <>
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-sacred-digital-white/20 to-transparent animate-divine-shimmer" />
-            <span className="relative z-10">{props.children}</span>
-          </>
-        )}
-        {!isDivinePrimary && props.children}
+        {props.children}
       </Comp>
     )
   }

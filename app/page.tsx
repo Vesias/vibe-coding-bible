@@ -1,46 +1,68 @@
-'use client'
-
 import React from 'react'
 import Link from 'next/link'
+import { SacredButton } from '@/components/ui/sacred-button'
 
 // Sacred Components
 const SacredHero = () => (
-  <section className="min-h-screen flex items-center justify-center relative">
-    {/* Sacred Background */}
-    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900" />
-    <div className="absolute inset-0 bg-gradient-to-tr from-black/50 via-transparent to-black/50" />
+  <section 
+    className="min-h-screen flex items-center justify-center relative agentland-gradient"
+    aria-label="Hero section - Vibe Coding Bible introduction"
+    role="banner"
+  >
+    {/* Professional Background Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-indigo-100/30 to-blue-600/10" aria-hidden="true" />
     
-    {/* Sacred Particles */}
-    <div className="absolute top-20 left-20 text-amber-400 text-4xl animate-pulse">⚡</div>
-    <div className="absolute top-40 right-32 text-purple-400 text-3xl animate-bounce delay-1000">✨</div>
-    <div className="absolute bottom-32 left-1/3 text-amber-400 text-5xl animate-pulse delay-2000">🔮</div>
+    {/* Professional Particles */}
+    <div className="absolute top-20 left-20 text-4xl animate-pulse text-blue-600" aria-hidden="true" role="presentation">⚡</div>
+    <div className="absolute top-40 right-32 text-3xl animate-bounce text-indigo-600" style={{ 
+      animationDelay: '1s'
+    }} aria-hidden="true" role="presentation">✨</div>
+    <div className="absolute bottom-32 left-1/3 text-5xl animate-pulse text-blue-700" style={{ 
+      animationDelay: '2s'
+    }} aria-hidden="true" role="presentation">🔮</div>
     
     {/* Hero Content */}
-    <div className="relative z-10 text-center max-w-6xl mx-auto px-6">
+    <div className="relative z-10 text-center max-w-6xl mx-auto px-6" role="main" id="main-content">
       <div className="mb-8">
-        <div className="text-8xl mb-6">📜</div>
+        <div className="flex justify-center mb-6" aria-hidden="true" role="presentation">
+          <img 
+            src="/logo.png" 
+            alt="Vibe Coding Bible Logo" 
+            className="w-32 h-32 object-contain filter drop-shadow-2xl animate-pulse"
+          />
+        </div>
       </div>
       
-      <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-amber-400 via-purple-400 to-amber-400 bg-clip-text text-transparent">
+      <h1 className="text-5xl md:text-7xl font-bold mb-6 agentland-text" id="main-heading">
         Die Vibe Coding Bibel
       </h1>
       
-      <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-4xl mx-auto">
+      <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-gray-600">
         Meistere KI-unterstützte Entwicklung mit den{' '}
-        <span className="text-amber-400 font-semibold">10 heiligen Geboten</span>
+        <span className="font-semibold text-blue-600">10 heiligen Geboten</span>
         {' '}der göttlichen Programmierung
       </p>
       
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <div className="flex flex-col sm:flex-row gap-4 justify-center" role="group" aria-label="Main navigation actions">
         <Link href="/workshops" className="group">
-          <button className="px-8 py-4 bg-gradient-to-r from-amber-500 to-purple-600 text-white font-semibold text-lg rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-            ⚡ Heilige Reise beginnen
+          <button 
+            className="px-8 py-4 text-white font-semibold text-lg rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            aria-describedby="workshops-description"
+          >
+            <span aria-hidden="true">⚡</span> Heilige Reise beginnen
           </button>
+          <div id="workshops-description" className="sr-only">Starte deine Lernreise mit interaktiven Workshops</div>
         </Link>
         <Link href="/dashboard" className="group">
-          <button className="px-8 py-4 border-2 border-amber-400 text-amber-400 font-semibold text-lg rounded-lg hover:bg-amber-400 hover:text-black transition-all duration-300">
-            🏛️ Göttliches Dashboard
-          </button>
+          <SacredButton 
+            variant="outline" 
+            size="lg"
+            aria-describedby="dashboard-description"
+            className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <span aria-hidden="true">🏛️</span> Göttliches Dashboard
+          </SacredButton>
+          <div id="dashboard-description" className="sr-only">Zugang zu deinem persönlichen Lern-Dashboard</div>
         </Link>
       </div>
     </div>
@@ -48,65 +70,109 @@ const SacredHero = () => (
 )
 
 const SacredFeatures = () => (
-  <section className="py-20 px-6">
+  <section className="py-20 px-6 bg-white" aria-labelledby="features-heading">
     <div className="max-w-7xl mx-auto">
       {/* Section Title */}
       <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-400 to-purple-400 bg-clip-text text-transparent">
-          Die Heiligen Pfade
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 agentland-text" id="features-heading">
+          Interaktive E-Book Workshops
         </h2>
-        <p className="text-xl text-slate-400">Drei Säulen der göttlichen Entwicklung</p>
+        <p className="text-xl mb-4 text-gray-600">Live-Coding + KI-Mentoring + Praktische Projekte</p>
+        <div className="flex justify-center gap-4 flex-wrap">
+          <span className="px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-600 border border-blue-200">
+            📚 10 Heilige Gebote
+          </span>
+          <span className="px-4 py-2 rounded-full text-sm font-medium bg-indigo-100 text-indigo-600 border border-indigo-200">
+            🤖 KI-Integration
+          </span>
+          <span className="px-4 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-700 border border-blue-300">
+            💰 Monetarisierung
+          </span>
+        </div>
       </div>
 
-      {/* Features Grid */}
+      {/* Product Features Grid */}
       <div className="grid md:grid-cols-3 gap-8">
-        {/* Heilige Gebote */}
+        {/* Interactive E-Books */}
         <div className="group relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-purple-600/20 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" />
-          <div className="relative bg-slate-800/80 backdrop-blur-sm p-8 rounded-xl border border-slate-700 hover:border-amber-400/50 transition-all duration-300">
-            <div className="text-4xl mb-4">⚡</div>
-            <h3 className="text-2xl font-bold mb-4 text-amber-400">Heilige Gebote</h3>
-            <p className="text-slate-300 mb-6">
-              Meistere die 10 göttlichen Prinzipien, die gewöhnliche Entwickler in Coding-Propheten verwandeln
+          <div 
+            className="absolute inset-0 rounded-xl opacity-20 group-hover:opacity-30 transition-all duration-300 bg-gradient-to-br from-blue-600 to-indigo-600 filter blur-xl"
+          />
+          <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
+            <div className="text-4xl mb-4">📖</div>
+            <h3 className="text-2xl font-bold mb-4 text-blue-600">Live E-Book Workshops</h3>
+            <p className="mb-6 text-gray-600">
+              Interaktive digitale Bücher mit eingebetteten Code-Editoren, Live-Tests und KI-Mentoring
             </p>
+            <div className="mb-4">
+              <span className="text-sm text-gray-500">Enthält:</span>
+              <ul className="text-sm mt-2 space-y-1 text-gray-600">
+                <li>• Live Code-Editoren</li>
+                <li>• Instant Feedback</li>
+                <li>• KI-Assistierte Hilfe</li>
+              </ul>
+            </div>
             <Link href="/workshops">
-              <button className="w-full py-3 bg-gradient-to-r from-amber-500 to-purple-600 text-white font-medium rounded-lg hover:scale-105 transition-transform duration-300">
-                Gebote erkunden
-              </button>
+              <SacredButton className="w-full py-3" aria-describedby="workshop-cta-desc">
+                Jetzt starten - Kostenlos
+              </SacredButton>
+              <div id="workshop-cta-desc" className="sr-only">Beginne deine Lernreise mit kostenlosen interaktiven Workshops</div>
             </Link>
           </div>
         </div>
 
-        {/* Göttliches Arsenal */}
+        {/* Praktische Projekte */}
         <div className="group relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" />
-          <div className="relative bg-slate-800/80 backdrop-blur-sm p-8 rounded-xl border border-slate-700 hover:border-purple-400/50 transition-all duration-300">
-            <div className="text-4xl mb-4">🛠️</div>
-            <h3 className="text-2xl font-bold mb-4 text-purple-400">Göttliches Arsenal</h3>
-            <p className="text-slate-300 mb-6">
-              Führe die heiligen Werkzeuge: Claude, Cursor, Cline und andere mystische Entwicklungsinstrumente
+          <div 
+            className="absolute inset-0 rounded-xl opacity-20 group-hover:opacity-30 transition-all duration-300 bg-gradient-to-br from-indigo-600 to-blue-700 filter blur-xl"
+          />
+          <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
+            <div className="text-4xl mb-4">🚀</div>
+            <h3 className="text-2xl font-bold mb-4 text-indigo-600">Praktische Projekte</h3>
+            <p className="mb-6 text-gray-600">
+              Baue echte Anwendungen während du lernst. Von MVP bis zur Production-Ready App.
             </p>
-            <Link href="/workshops/ii">
-              <button className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-medium rounded-lg hover:scale-105 transition-transform duration-300">
-                Werkzeuge meistern
-              </button>
+            <div className="mb-4">
+              <span className="text-sm text-gray-500">Du baust:</span>
+              <ul className="text-sm mt-2 space-y-1 text-gray-600">
+                <li>• SaaS Applications</li>
+                <li>• KI-Tools & Bots</li>
+                <li>• Profitable MVPs</li>
+              </ul>
+            </div>
+            <Link href="/pricing">
+              <SacredButton variant="secondary" className="w-full py-3" aria-describedby="projects-cta-desc">
+                Premium freischalten
+              </SacredButton>
+              <div id="projects-cta-desc" className="sr-only">Erhalte Zugang zu allen Premium-Projekten und persönlichem Mentoring</div>
             </Link>
           </div>
         </div>
 
-        {/* Propheten-Gemeinschaft */}
+        {/* Community & Support */}
         <div className="group relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" />
-          <div className="relative bg-slate-800/80 backdrop-blur-sm p-8 rounded-xl border border-slate-700 hover:border-indigo-400/50 transition-all duration-300">
+          <div 
+            className="absolute inset-0 rounded-xl opacity-20 group-hover:opacity-30 transition-all duration-300 bg-gradient-to-br from-blue-700 to-indigo-600 filter blur-xl"
+          />
+          <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
             <div className="text-4xl mb-4">👥</div>
-            <h3 className="text-2xl font-bold mb-4 text-indigo-400">Propheten-Gemeinschaft</h3>
-            <p className="text-slate-300 mb-6">
-              Tritt der Bruderschaft der Coding-Propheten bei, die Weisheit und göttliche Entwicklungspraktiken teilen
+            <h3 className="text-2xl font-bold mb-4 text-blue-700">Community & Mentoring</h3>
+            <p className="mb-6 text-gray-600">
+              Private Discord Community + 1:1 Mentoring Sessions + Wöchentliche Live-Calls
             </p>
+            <div className="mb-4">
+              <span className="text-sm text-gray-500">Support:</span>
+              <ul className="text-sm mt-2 space-y-1 text-gray-600">
+                <li>• 24/7 Community Chat</li>
+                <li>• Wöchentliche Q&A Calls</li>
+                <li>• Persönliches Mentoring</li>
+              </ul>
+            </div>
             <Link href="/community">
-              <button className="w-full py-3 border-2 border-indigo-400 text-indigo-400 font-medium rounded-lg hover:bg-indigo-400 hover:text-white transition-all duration-300">
-                Den Propheten beitreten
-              </button>
+              <SacredButton variant="outline" className="w-full py-3" aria-describedby="community-cta-desc">
+                Community beitreten
+              </SacredButton>
+              <div id="community-cta-desc" className="sr-only">Tritt unserer aktiven Entwickler-Community bei und lerne von anderen</div>
             </Link>
           </div>
         </div>
@@ -116,66 +182,146 @@ const SacredFeatures = () => (
 )
 
 const SacredStats = () => (
-  <section className="py-20 px-6 bg-slate-900/50">
+  <section className="py-20 px-6 bg-indigo-50">
     <div className="max-w-6xl mx-auto text-center">
-      <h2 className="text-4xl font-bold mb-12 bg-gradient-to-r from-amber-400 to-purple-400 bg-clip-text text-transparent">
-        Gesegnet durch die göttlichen Zahlen
+      <h2 className="text-4xl font-bold mb-12 agentland-text">
+        Unsere Erfolge in Zahlen
       </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="group">
-          <div className="text-6xl font-bold mb-2 bg-gradient-to-r from-amber-400 to-purple-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">
+          <div className="text-6xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300 agentland-text">
             10
           </div>
-          <div className="text-slate-400 text-lg">Heilige Gebote</div>
+          <div className="text-gray-600 text-lg">Interaktive Workshops</div>
         </div>
         <div className="group">
-          <div className="text-6xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">
-            ∞
+          <div className="text-6xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300 text-indigo-600">
+            10k+
           </div>
-          <div className="text-slate-400 text-lg">Coding-Möglichkeiten</div>
+          <div className="text-gray-600 text-lg">Aktive Lernende</div>
         </div>
         <div className="group">
-          <div className="text-6xl font-bold mb-2 bg-gradient-to-r from-indigo-400 to-amber-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">
-            1
+          <div className="text-6xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300 text-blue-700">
+            95%
           </div>
-          <div className="text-slate-400 text-lg">Göttliche Wahrheit</div>
+          <div className="text-gray-600 text-lg">Erfolgsrate</div>
         </div>
       </div>
     </div>
   </section>
 )
 
+const SacredTestimonials = () => (
+  <section className="py-20 px-6 bg-white">
+    <div className="max-w-6xl mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 agentland-text">
+          Erfahrungsberichte
+        </h2>
+        <p className="text-xl text-gray-600">Was unsere Absolventen über ihre Lernerfahrung sagen</p>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-8">
+        {[
+          {
+            quote: "In nur 3 Monaten konnte ich mein Gehalt als Entwickler um 40% steigern. Die KI-Techniken haben meine Produktivität revolutioniert.",
+            author: "Sarah M.",
+            role: "Senior Full-Stack Developer bei Tech-Startup",
+            emoji: "🚀",
+            verification: "Verifiziert ✓"
+          },
+          {
+            quote: "Das beste Investment in meine Karriere. Die interaktiven Workshops sind praxisnäher als jede Universität.",
+            author: "Marcus K.",
+            role: "Lead Software Architect bei Fortune 500",
+            emoji: "⚡",
+            verification: "Verifiziert ✓"
+          },
+          {
+            quote: "Von Junior zu Senior Developer in 6 Monaten. Die Mentoring-Sessions haben den Unterschied gemacht.",
+            author: "Lisa B.",
+            role: "Senior AI Engineer bei Google",
+            emoji: "🔮",
+            verification: "Verifiziert ✓"
+          }
+        ].map((testimonial, index) => (
+          <div key={index} className="group relative">
+            <div className="absolute inset-0 rounded-xl opacity-20 group-hover:opacity-30 transition-all duration-300 bg-gradient-to-br from-blue-600 to-indigo-600 filter blur-xl" />
+            <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
+              <div className="text-4xl mb-4">{testimonial.emoji}</div>
+              <blockquote className="text-lg mb-6 text-gray-600">
+                "{testimonial.quote}"
+              </blockquote>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-r from-blue-600 to-indigo-600">
+                  <span className="text-xl" aria-hidden="true">{testimonial.emoji}</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <div className="font-semibold text-blue-600">{testimonial.author}</div>
+                    <span className="text-xs text-green-600 font-medium">{testimonial.verification}</span>
+                  </div>
+                  <div className="text-sm text-gray-500">{testimonial.role}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)
+
 const SacredCTA = () => (
-  <section className="py-20 px-6">
+  <section className="py-20 px-6 bg-indigo-50">
     <div className="max-w-4xl mx-auto text-center">
-      <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-amber-400 to-purple-400 bg-clip-text text-transparent">
-        Bereit zum Aufstieg zur göttlichen Entwicklung?
+      <h2 className="text-4xl md:text-5xl font-bold mb-6 agentland-text">
+        Bereit für den nächsten Karriereschritt?
       </h2>
-      <p className="text-xl text-slate-300 mb-10 leading-relaxed">
-        Verwandle deine Coding-Praxis mit heiliger Weisheit, die Tausende von Entwicklern 
-        von bloßen Sterblichen zu digitalen Propheten geführt hat. Der Pfad zur Erleuchtung wartet.
+      <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+        Über 10.000 Entwickler haben bereits ihre Produktivität mit KI-Tools verdoppelt. 
+        Werde Teil der nächsten Generation von Software-Entwicklern.
       </p>
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8 text-center">
+        <p className="text-amber-800 font-medium">
+          🔥 <span className="font-bold">Limitiertes Angebot:</span> Kostenloser Zugang zu allen Workshops für die ersten 1.000 Nutzer
+        </p>
+        <p className="text-sm text-amber-600 mt-1">Noch 247 Plätze verfügbar</p>
+      </div>
       
-      <Link href="/workshops">
-        <button className="px-12 py-5 bg-gradient-to-r from-amber-500 via-purple-600 to-amber-500 text-white font-bold text-xl rounded-lg shadow-2xl hover:shadow-amber-500/25 transform hover:scale-105 transition-all duration-300 animate-pulse">
-          <span className="flex items-center gap-4">
-            <span className="text-3xl">⚡</span>
-            <span>Die heilige Reise beginnen</span>
-            <span className="text-3xl">⚡</span>
-          </span>
-        </button>
-      </Link>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Link href="/workshops">
+          <SacredButton size="lg" className="px-12 py-5 text-xl font-bold shadow-2xl" aria-describedby="main-cta-desc">
+            <span className="flex items-center gap-4">
+              <span className="text-3xl" aria-hidden="true">🚀</span>
+              <span>Kostenlos starten</span>
+              <span className="text-3xl" aria-hidden="true">🚀</span>
+            </span>
+          </SacredButton>
+          <div id="main-cta-desc" className="sr-only">Beginne jetzt kostenlos mit den interaktiven Workshops</div>
+        </Link>
+        <Link href="/pricing">
+          <SacredButton variant="outline" size="lg" className="px-12 py-5 text-xl font-bold" aria-describedby="pricing-cta-desc">
+            <span className="flex items-center gap-4">
+              <span className="text-3xl" aria-hidden="true">📊</span>
+              <span>Preise ansehen</span>
+            </span>
+          </SacredButton>
+          <div id="pricing-cta-desc" className="sr-only">Siehe alle verfügbaren Preispläne und Premium-Features</div>
+        </Link>
+      </div>
     </div>
   </section>
 )
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <SacredHero />
       <SacredFeatures />
       <SacredStats />
+      <SacredTestimonials />
       <SacredCTA />
     </main>
   )

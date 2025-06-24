@@ -334,7 +334,7 @@ export function useXPProgression() {
       const newRank = calculateRankFromXP(newXP)
       
       await supabase
-        .from('users')
+        .from('profiles')
         .update({ 
           total_xp: newXP,
           current_level: Math.floor(newXP / 100) + 1,

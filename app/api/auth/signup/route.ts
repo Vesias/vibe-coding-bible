@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { signUpSchema, type AuthResponse } from '@/lib/validations/auth'
+import { handleDatabaseError, createErrorResponse, logError } from '@/lib/database-error-handler'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest): Promise<NextResponse<AuthResponse>> {
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<AuthRespo
 
     // Create user profile in database
     const { error: profileError } = await supabase
-      .from('users')
+      .from('profiles')
       .insert({
         id: data.user.id,
         email: data.user.email!,
@@ -56,8 +57,20 @@ export async function POST(request: NextRequest): Promise<NextResponse<AuthRespo
       })
 
     if (profileError) {
-      console.error('Profile creation error:', profileError)
-      // Don't fail the signup if profile creation fails
+      logError(profileError, 'signup-profile-creation', data.user.id)
+      
+      const errorResult = handleDatabaseError(profileError)
+      if (errorResult.error?.setupRequired) {
+        const errorResponse = createErrorResponse(errorResult.error, 503)
+        return NextResponse.json({
+          success: false,
+          message: errorResult.error.userMessage,
+          user: null,
+          error: errorResult.error.message,
+          setupRequired: true
+        }, { status: 503 })
+      }
+      // For other errors, don't fail the signup completely but log them
     }
 
     return NextResponse.json({

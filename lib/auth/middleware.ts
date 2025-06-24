@@ -35,7 +35,7 @@ export async function withAuth(
 
       // Get user profile from database
       const { data: profile, error: profileError } = await supabase
-        .from('users')
+        .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single()
@@ -112,7 +112,7 @@ export async function getAuthenticatedUser(request: NextRequest) {
     }
 
     const { data: profile, error: profileError } = await supabase
-      .from('users')
+      .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()

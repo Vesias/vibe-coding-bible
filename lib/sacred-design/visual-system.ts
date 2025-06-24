@@ -11,11 +11,18 @@
  */
 export const DesignTokens = {
   colors: {
-    // Primary Palette
+    // New Unified Brand Palette
+    brand: {
+      gold: '#FFCE00',
+      '500': '#009EE0',
+      '700': '#004A8F',
+    },
+    
+    // Legacy Primary Palette (updated)
     primary: {
       deepMidnightBlue: '#0A1128',
-      electricIndigo: '#6610F2',
-      techGold: '#F9A826',
+      electricIndigo: '#009EE0', // Updated to new brand blue
+      techGold: '#FFCE00', // Updated to new brand gold
     },
     
     // Secondary Palette
@@ -25,32 +32,41 @@ export const DesignTokens = {
       matrixGreen: '#00FF41',
     },
     
-    // Extended Mystical Palette
+    // Extended Mystical Palette (updated)
     mystical: {
-      mysticPurple: '#4C1D95',
-      divineCyan: '#06B6D4',
-      sacredRose: '#F43F5E',
+      mysticPurple: '#004A8F', // Updated to brand-700
+      divineCyan: '#009EE0', // Updated to brand-500
+      sacredRose: '#DD0000', // Updated to accent-red
       etherealMint: '#10B981',
-      celestialYellow: '#FBB92F',
+      celestialYellow: '#FFCE00', // Updated to brand-gold
       voidBlack: '#000000',
       lightDivine: '#FFFFFF',
     },
     
-    // Gradient Definitions
-    gradients: {
-      techGoldToIndigo: 'linear-gradient(135deg, #F9A826 0%, #6610F2 100%)',
-      mysticNight: 'linear-gradient(135deg, #0A1128 0%, #121212 100%)',
-      divineLighting: 'radial-gradient(circle, #F9A826 0%, #6610F2 50%, #0A1128 100%)',
-      matrixFlow: 'linear-gradient(90deg, #00FF41 0%, #6610F2 100%)',
-      sacredAura: 'conic-gradient(from 0deg, #F9A826, #6610F2, #00FF41, #F9A826)',
+    // Accent Colors
+    accent: {
+      red: '#DD0000',
     },
     
-    // Semantic Colors
+    // Gradient Definitions (updated to new brand)
+    gradients: {
+      brandPrimary: 'linear-gradient(135deg, #FFCE00 0%, #009EE0 100%)',
+      brandTriple: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 50%, #004A8F 100%)',
+      mysticNight: 'linear-gradient(135deg, #0A1128 0%, #121212 100%)',
+      divineLighting: 'radial-gradient(circle, #FFCE00 0%, #009EE0 50%, #0A1128 100%)',
+      matrixFlow: 'linear-gradient(90deg, #00FF41 0%, #009EE0 100%)',
+      sacredAura: 'conic-gradient(from 0deg, #FFCE00, #009EE0, #00FF41, #FFCE00)',
+      
+      // Legacy gradients (updated)
+      techGoldToIndigo: 'linear-gradient(135deg, #FFCE00 0%, #009EE0 100%)',
+    },
+    
+    // Semantic Colors (updated)
     semantic: {
       success: '#10B981',
-      warning: '#F59E0B',
-      error: '#EF4444',
-      info: '#3B82F6',
+      error: '#DD0000', // Updated to accent-red
+      warning: '#FFCE00', // Updated to brand-gold
+      info: '#009EE0', // Updated to brand-500
     }
   },
 

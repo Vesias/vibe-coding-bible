@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
@@ -104,16 +105,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <main className="min-h-screen" style={{
+      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%)'
+    }}>
       {/* Sacred Dashboard Hero */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <div className="text-8xl mb-6">👑</div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-amber-400 via-purple-400 to-amber-400 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6" style={{
+              background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 50%, #FFCE00 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               Prophet Dashboard
             </h1>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <p className="text-xl max-w-2xl mx-auto" style={{ color: '#cbd5e1' }}>
               Track your divine coding journey and ascend through the sacred ranks
             </p>
           </div>
@@ -121,12 +129,23 @@ export default function DashboardPage() {
           {/* Sacred Stats Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-16">
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-purple-600/20 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" />
-              <div className="relative bg-slate-800/80 backdrop-blur-sm p-6 rounded-xl border border-slate-700 hover:border-amber-400/50 transition-all duration-300">
+              <div className="absolute inset-0 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" style={{
+                background: 'linear-gradient(135deg, rgba(255, 206, 0, 0.2) 0%, rgba(0, 158, 224, 0.2) 100%)'
+              }} />
+              <div className="relative backdrop-blur-sm p-6 rounded-xl border transition-all duration-300" style={{
+                background: 'rgba(30, 41, 59, 0.8)',
+                borderColor: '#475569'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 206, 0, 0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#475569'
+              }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400">Current Rank</p>
-                    <p className="text-2xl font-bold text-amber-400">Sacred Novice</p>
+                    <p className="text-sm" style={{ color: '#94a3b8' }}>Current Rank</p>
+                    <p className="text-2xl font-bold" style={{ color: '#FFCE00' }}>Sacred Novice</p>
                   </div>
                   <div className="text-3xl">👑</div>
                 </div>
@@ -134,12 +153,23 @@ export default function DashboardPage() {
             </div>
 
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" />
-              <div className="relative bg-slate-800/80 backdrop-blur-sm p-6 rounded-xl border border-slate-700 hover:border-purple-400/50 transition-all duration-300">
+              <div className="absolute inset-0 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" style={{
+                background: 'linear-gradient(135deg, rgba(0, 158, 224, 0.2) 0%, rgba(0, 74, 143, 0.2) 100%)'
+              }} />
+              <div className="relative backdrop-blur-sm p-6 rounded-xl border transition-all duration-300" style={{
+                background: 'rgba(30, 41, 59, 0.8)',
+                borderColor: '#475569'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(0, 158, 224, 0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#475569'
+              }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400">Total XP</p>
-                    <p className="text-2xl font-bold text-purple-400">
+                    <p className="text-sm" style={{ color: '#94a3b8' }}>Total XP</p>
+                    <p className="text-2xl font-bold" style={{ color: '#009EE0' }}>
                       {profile?.total_xp?.toLocaleString() || '0'}
                     </p>
                   </div>
@@ -149,12 +179,23 @@ export default function DashboardPage() {
             </div>
 
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" />
-              <div className="relative bg-slate-800/80 backdrop-blur-sm p-6 rounded-xl border border-slate-700 hover:border-indigo-400/50 transition-all duration-300">
+              <div className="absolute inset-0 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" style={{
+                background: 'linear-gradient(135deg, rgba(0, 74, 143, 0.2) 0%, rgba(0, 158, 224, 0.2) 100%)'
+              }} />
+              <div className="relative backdrop-blur-sm p-6 rounded-xl border transition-all duration-300" style={{
+                background: 'rgba(30, 41, 59, 0.8)',
+                borderColor: '#475569'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(0, 74, 143, 0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#475569'
+              }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400">Workshops</p>
-                    <p className="text-2xl font-bold text-indigo-400">
+                    <p className="text-sm" style={{ color: '#94a3b8' }}>Workshops</p>
+                    <p className="text-2xl font-bold" style={{ color: '#004A8F' }}>
                       {dashboardData.recentWorkshops.length}/10
                     </p>
                   </div>
@@ -164,12 +205,23 @@ export default function DashboardPage() {
             </div>
 
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-600/20 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" />
-              <div className="relative bg-slate-800/80 backdrop-blur-sm p-6 rounded-xl border border-slate-700 hover:border-orange-400/50 transition-all duration-300">
+              <div className="absolute inset-0 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" style={{
+                background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)'
+              }} />
+              <div className="relative backdrop-blur-sm p-6 rounded-xl border transition-all duration-300" style={{
+                background: 'rgba(30, 41, 59, 0.8)',
+                borderColor: '#475569'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(221, 0, 0, 0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#475569'
+              }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-400">Divine Streak</p>
-                    <p className="text-2xl font-bold text-orange-400">
+                    <p className="text-sm" style={{ color: '#94a3b8' }}>Divine Streak</p>
+                    <p className="text-2xl font-bold" style={{ color: '#DD0000' }}>
                       {dashboardData.learningStreak} days
                     </p>
                   </div>
@@ -179,32 +231,88 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Weekly Progress Section */}
+          <div className="backdrop-blur-sm rounded-xl border p-8 mb-8" style={{
+            background: 'rgba(30, 41, 59, 0.8)',
+            borderColor: '#475569'
+          }}>
+            <h2 className="text-2xl font-bold mb-6" style={{
+              background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              📊 Weekly Divine Progress
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(15, 23, 42, 0.5)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#FFCE00' }}>
+                  {dashboardData.weeklyProgress.workshopsCompleted}
+                </div>
+                <p className="text-sm" style={{ color: '#94a3b8' }}>Workshops</p>
+              </div>
+              <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(15, 23, 42, 0.5)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#c084fc' }}>
+                  {dashboardData.weeklyProgress.xpEarned}
+                </div>
+                <p className="text-sm" style={{ color: '#94a3b8' }}>XP Earned</p>
+              </div>
+              <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(15, 23, 42, 0.5)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#004A8F' }}>
+                  {Math.floor(dashboardData.weeklyProgress.timeSpent / 60)}h
+                </div>
+                <p className="text-sm" style={{ color: '#94a3b8' }}>Time Spent</p>
+              </div>
+              <div className="text-center p-4 rounded-lg" style={{ background: 'rgba(15, 23, 42, 0.5)' }}>
+                <div className="text-3xl font-bold mb-2" style={{ color: '#fb923c' }}>
+                  {dashboardData.weeklyProgress.streakDays}
+                </div>
+                <p className="text-sm" style={{ color: '#94a3b8' }}>Streak Days</p>
+              </div>
+            </div>
+          </div>
+
           {/* Recent Workshops Section */}
-          <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700 p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-amber-400 to-purple-400 bg-clip-text text-transparent">
+          <div className="backdrop-blur-sm rounded-xl border p-8 mb-8" style={{
+            background: 'rgba(30, 41, 59, 0.8)',
+            borderColor: '#475569'
+          }}>
+            <h2 className="text-2xl font-bold mb-6" style={{
+              background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               📖 Recent Sacred Workshops
             </h2>
             
             {dashboardData.recentWorkshops.length > 0 ? (
               <div className="space-y-4">
                 {dashboardData.recentWorkshops.map((workshop) => (
-                  <div key={workshop.id} className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-600">
+                  <div key={workshop.id} className="flex items-center justify-between p-4 rounded-lg border" style={{
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    borderColor: '#475569'
+                  }}>
                     <div>
-                      <h3 className="font-semibold text-white mb-1">
+                      <h3 className="font-semibold mb-1" style={{ color: '#fff' }}>
                         {workshop.title}
                       </h3>
-                      <p className="text-sm text-slate-400">
+                      <p className="text-sm" style={{ color: '#94a3b8' }}>
                         Last accessed: {workshop.lastAccessed} • {workshop.difficulty}
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-semibold text-amber-400 mb-2">
+                      <div className="text-sm font-semibold mb-2" style={{ color: '#FFCE00' }}>
                         {workshop.progress}% Complete
                       </div>
-                      <div className="w-24 bg-slate-700 rounded-full h-2">
+                      <div className="w-24 rounded-full h-2" style={{ background: '#374151' }}>
                         <div 
-                          className="bg-gradient-to-r from-amber-500 to-purple-500 h-2 rounded-full transition-all duration-500" 
-                          style={{ width: `${workshop.progress}%` }}
+                          className="h-2 rounded-full transition-all duration-500" 
+                          style={{ 
+                            width: `${workshop.progress}%`,
+                            background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)'
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -214,10 +322,12 @@ export default function DashboardPage() {
             ) : (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🌟</div>
-                <p className="text-slate-400 mb-6">
+                <p className="mb-6" style={{ color: '#94a3b8' }}>
                   Begin your divine coding journey
                 </p>
-                <button className="px-8 py-3 bg-gradient-to-r from-amber-500 to-purple-600 text-white font-semibold rounded-lg hover:scale-105 transition-transform duration-300">
+                <button className="px-8 py-3 text-white font-semibold rounded-lg hover:scale-105 transition-transform duration-300" style={{
+                  background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)'
+                }}>
                   Start First Workshop
                 </button>
               </div>
@@ -227,38 +337,109 @@ export default function DashboardPage() {
           {/* Sacred Actions Grid */}
           <div className="grid gap-8 md:grid-cols-3">
             {/* Quick Actions */}
-            <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
-              <h3 className="text-xl font-bold text-amber-400 mb-6">
+            <div className="backdrop-blur-sm rounded-xl border p-6" style={{
+              background: 'rgba(30, 41, 59, 0.8)',
+              borderColor: '#475569'
+            }}>
+              <h3 className="text-xl font-bold mb-6" style={{ color: '#FFCE00' }}>
                 🚀 Sacred Actions
               </h3>
               <div className="space-y-3">
-                <button className="w-full text-left p-3 bg-slate-900/50 rounded-lg border border-slate-600 hover:border-amber-400/50 hover:bg-slate-700/50 transition-all duration-300">
-                  <span className="text-white">Continue Workshop</span>
-                </button>
-                <button className="w-full text-left p-3 bg-slate-900/50 rounded-lg border border-slate-600 hover:border-purple-400/50 hover:bg-slate-700/50 transition-all duration-300">
-                  <span className="text-white">Join Sacred Collaboration</span>
-                </button>
-                <button className="w-full text-left p-3 bg-slate-900/50 rounded-lg border border-slate-600 hover:border-indigo-400/50 hover:bg-slate-700/50 transition-all duration-300">
-                  <span className="text-white">Ask Divine AI Mentor</span>
-                </button>
+                <a href="/workshops" 
+                  className="block w-full text-left p-3 rounded-lg border transition-all duration-300" 
+                  style={{
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    borderColor: '#475569',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.5)'
+                    e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.5)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#475569'
+                    e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.5)'
+                  }}
+                >
+                  <span style={{ color: '#fff' }}>📚 Continue Workshop</span>
+                </a>
+                <a href="/community" 
+                  className="block w-full text-left p-3 rounded-lg border transition-all duration-300" 
+                  style={{
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    borderColor: '#475569',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(192, 132, 252, 0.5)'
+                    e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.5)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#475569'
+                    e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.5)'
+                  }}
+                >
+                  <span style={{ color: '#fff' }}>👥 Join Sacred Community</span>
+                </a>
+                <a href="/ai-assistant" 
+                  className="block w-full text-left p-3 rounded-lg border transition-all duration-300" 
+                  style={{
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    borderColor: '#475569',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(0, 74, 143, 0.5)'
+                    e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.5)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#475569'
+                    e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.5)'
+                  }}
+                >
+                  <span style={{ color: '#fff' }}>🤖 Ask Divine AI Mentor</span>
+                </a>
+                <a href="/account" 
+                  className="block w-full text-left p-3 rounded-lg border transition-all duration-300" 
+                  style={{
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    borderColor: '#475569',
+                    textDecoration: 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(76, 29, 149, 0.5)'
+                    e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.5)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#475569'
+                    e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.5)'
+                  }}
+                >
+                  <span style={{ color: '#fff' }}>⚙️ Account Settings</span>
+                </a>
               </div>
             </div>
 
             {/* Achievements */}
-            <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
-              <h3 className="text-xl font-bold text-purple-400 mb-6">
+            <div className="backdrop-blur-sm rounded-xl border p-6" style={{
+              background: 'rgba(30, 41, 59, 0.8)',
+              borderColor: '#475569'
+            }}>
+              <h3 className="text-xl font-bold mb-6" style={{ color: '#c084fc' }}>
                 🏆 Sacred Achievements
               </h3>
               {dashboardData.achievements.length > 0 ? (
                 <div className="space-y-4">
                   {dashboardData.achievements.map((achievement) => (
-                    <div key={achievement.id} className="flex items-center gap-3 p-3 bg-slate-900/50 rounded-lg">
+                    <div key={achievement.id} className="flex items-center gap-3 p-3 rounded-lg" style={{
+                      background: 'rgba(15, 23, 42, 0.5)'
+                    }}>
                       <div className="text-2xl">🏅</div>
                       <div>
-                        <p className="font-semibold text-white">
+                        <p className="font-semibold" style={{ color: '#fff' }}>
                           {achievement.title}
                         </p>
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm" style={{ color: '#94a3b8' }}>
                           {achievement.description}
                         </p>
                       </div>
@@ -268,7 +449,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-3">🌟</div>
-                  <p className="text-slate-400">
+                  <p style={{ color: '#94a3b8' }}>
                     Complete workshops to earn sacred achievements
                   </p>
                 </div>
@@ -276,18 +457,24 @@ export default function DashboardPage() {
             </div>
 
             {/* Divine Recommendations */}
-            <div className="bg-slate-800/80 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
-              <h3 className="text-xl font-bold text-indigo-400 mb-6">
+            <div className="backdrop-blur-sm rounded-xl border p-6" style={{
+              background: 'rgba(30, 41, 59, 0.8)',
+              borderColor: '#475569'
+            }}>
+              <h3 className="text-xl font-bold mb-6" style={{ color: '#004A8F' }}>
                 💡 Divine Guidance
               </h3>
               {dashboardData.recommendations.length > 0 ? (
                 <div className="space-y-4">
                   {dashboardData.recommendations.map((rec) => (
-                    <div key={rec.id} className="p-3 bg-slate-900/50 rounded-lg border border-indigo-400/20">
-                      <p className="font-semibold text-white mb-1">
+                    <div key={rec.id} className="p-3 rounded-lg border" style={{
+                      background: 'rgba(15, 23, 42, 0.5)',
+                      borderColor: 'rgba(0, 74, 143, 0.2)'
+                    }}>
+                      <p className="font-semibold mb-1" style={{ color: '#fff' }}>
                         {rec.title}
                       </p>
-                      <p className="text-sm text-slate-400">
+                      <p className="text-sm" style={{ color: '#94a3b8' }}>
                         {rec.reason}
                       </p>
                     </div>
@@ -296,7 +483,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-3">🔮</div>
-                  <p className="text-slate-400 text-sm">
+                  <p className="text-sm" style={{ color: '#94a3b8' }}>
                     Divine recommendations will appear as you progress through the sacred path
                   </p>
                 </div>

@@ -12,10 +12,25 @@ export const createClient = () => {
       auth: {
         getSession: () => Promise.resolve({ data: { session: null }, error: null }),
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-        signOut: () => Promise.resolve({ error: null })
+        signOut: () => Promise.resolve({ error: null }),
+        signUp: () => Promise.resolve({ 
+          data: { user: null, session: null }, 
+          error: { message: 'Database not configured', code: 'DB_NOT_SETUP' } 
+        }),
+        signInWithPassword: () => Promise.resolve({ 
+          data: { user: null, session: null }, 
+          error: { message: 'Database not configured', code: 'DB_NOT_SETUP' } 
+        }),
+        signInWithOAuth: () => Promise.resolve({ 
+          data: { url: null, provider: null }, 
+          error: { message: 'Database not configured', code: 'DB_NOT_SETUP' } 
+        })
       },
       from: () => ({
-        select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: null }) }) })
+        select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: { message: 'Database not configured', code: 'DB_NOT_SETUP' } }) }) }),
+        insert: () => Promise.resolve({ data: null, error: { message: 'Database not configured', code: 'DB_NOT_SETUP' } }),
+        update: () => ({ eq: () => Promise.resolve({ data: null, error: { message: 'Database not configured', code: 'DB_NOT_SETUP' } }) }),
+        delete: () => ({ eq: () => Promise.resolve({ data: null, error: { message: 'Database not configured', code: 'DB_NOT_SETUP' } }) })
       })
     } as any
   }
