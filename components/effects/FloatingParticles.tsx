@@ -21,7 +21,7 @@ interface FloatingParticlesProps {
 
 export const FloatingParticles: React.FC<FloatingParticlesProps> = ({
   count = 50,
-  colors = ['#F9A826', '#6610F2', '#7C3AED', '#10B981', '#06B6D4'],
+  colors = ['#2563eb', '#4f46e5', '#1d4ed8', '#3730a3', '#eff6ff'],
   className = ''
 }) => {
   const [particles, setParticles] = useState<Particle[]>([])

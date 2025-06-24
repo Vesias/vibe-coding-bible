@@ -65,7 +65,7 @@ export const SacredPulse = React.forwardRef<
           className="rounded-full"
           style={{
             ...sizeStyles[size],
-            background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)',
+            background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)',
             animation: 'sacred-pulse 2s ease-in-out infinite',
             animationDelay: `${i * 0.2}s`
           }}
@@ -88,7 +88,7 @@ export const MatrixRain = React.forwardRef<
         style={{
           height: '32px',
           width: '2px',
-          background: '#00ff00',
+          background: '#22c55e',
           animation: 'matrix-rain 3s linear infinite',
           animationDelay: `${i * 0.3}s`
         }}
@@ -121,18 +121,18 @@ export const DivineGeometry = React.forwardRef<
     >
       {/* Outer ring */}
       <div className="absolute inset-0 rounded-full border-2" style={{
-        borderColor: 'rgba(255, 206, 0, 0.3)'
+        borderColor: 'rgba(37, 99, 235, 0.3)'
       }} />
       
       {/* Middle ring */}
       <div className="absolute inset-2 rounded-full border-2" style={{
-        borderColor: 'rgba(0, 158, 224, 0.5)',
+        borderColor: 'rgba(79, 70, 229, 0.5)',
         animation: 'sacred-rotation 2s linear infinite reverse'
       }} />
       
       {/* Inner dot */}
       <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 h-2 w-2 rounded-full" style={{
-        background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)',
+        background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)',
         animation: 'sacred-pulse 3s ease-in-out infinite'
       }} />
     </div>
@@ -274,18 +274,18 @@ export const MysticalOrb = React.forwardRef<
     >
       {/* Outer glow */}
       <div className="absolute inset-0 rounded-full" style={{
-        background: 'radial-gradient(circle, rgba(0, 158, 224, 0.4) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(79, 70, 229, 0.4) 0%, transparent 70%)',
         animation: 'sacred-pulse 3s ease-in-out infinite'
       }} />
       
       {/* Middle layer */}
       <div className="absolute inset-1 rounded-full" style={{
-        background: 'radial-gradient(circle, rgba(255, 206, 0, 0.6) 0%, rgba(0, 158, 224, 0.4) 100%)'
+        background: 'radial-gradient(circle, rgba(37, 99, 235, 0.6) 0%, rgba(79, 70, 229, 0.4) 100%)'
       }} />
       
       {/* Inner core */}
       <div className="absolute inset-2 rounded-full" style={{
-        background: 'radial-gradient(circle, #f8fafc 0%, #fbbf24 100%)',
+        background: 'radial-gradient(circle, #ffffff 0%, #2563eb 100%)',
         animation: 'mystical-glow 2s ease-in-out infinite'
       }} />
     </div>

@@ -64,47 +64,47 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       switch (variant) {
         case 'sacred':
           return {
-            background: 'linear-gradient(135deg, #FFCE00 0%, #009EE0 100%)',
-            boxShadow: '0 0 20px rgba(255, 206, 0, 0.3), 0 8px 32px rgba(0, 158, 224, 0.25)'
+            background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)',
+            boxShadow: '0 0 20px rgba(37, 99, 235, 0.3), 0 8px 32px rgba(79, 70, 229, 0.25)'
           }
         case 'divine':
           return {
-            background: 'linear-gradient(90deg, #1e293b 0%, #121212 100%)',
-            color: '#f8fafc',
-            borderColor: 'rgba(255, 206, 0, 0.3)',
-            boxShadow: '0 4px 16px rgba(30, 41, 59, 0.2)'
+            background: 'linear-gradient(90deg, #1f2937 0%, #374151 100%)',
+            color: '#ffffff',
+            borderColor: 'rgba(37, 99, 235, 0.3)',
+            boxShadow: '0 4px 16px rgba(31, 41, 55, 0.2)'
           }
         case 'mystical':
           return {
-            background: 'linear-gradient(90deg, #009EE0 0%, #004A8F 100%)',
-            boxShadow: '0 0 15px rgba(0, 158, 224, 0.4), 0 0 30px rgba(0, 74, 143, 0.3)'
+            background: 'linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%)',
+            boxShadow: '0 0 15px rgba(37, 99, 235, 0.4), 0 0 30px rgba(29, 78, 216, 0.3)'
           }
         case 'matrix':
           return {
-            background: 'linear-gradient(90deg, #121212 0%, #1e293b 100%)',
-            color: '#00ff00',
-            borderColor: 'rgba(0, 255, 0, 0.3)',
-            boxShadow: '0 0 10px rgba(0, 255, 0, 0.5)'
+            background: 'linear-gradient(90deg, #374151 0%, #1f2937 100%)',
+            color: '#22c55e',
+            borderColor: 'rgba(34, 197, 94, 0.3)',
+            boxShadow: '0 0 10px rgba(34, 197, 94, 0.5)'
           }
         case 'prophet':
           return {
-            background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)'
+            background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)'
           }
         case 'divine-primary':
           return {
-            background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 50%, #FFCE00 100%)',
-            color: '#1e293b',
-            boxShadow: '0 0 20px rgba(255, 206, 0, 0.3), 0 8px 32px rgba(0, 158, 224, 0.25)'
+            background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 50%, #2563eb 100%)',
+            color: '#ffffff',
+            boxShadow: '0 0 20px rgba(37, 99, 235, 0.3), 0 8px 32px rgba(79, 70, 229, 0.25)'
           }
         case 'sacred-ghost':
           return {
-            color: '#FFCE00',
+            color: '#2563eb',
             borderColor: 'transparent'
           }
         case 'mystical-outline':
           return {
-            borderColor: '#004A8F',
-            color: '#004A8F'
+            borderColor: '#4f46e5',
+            color: '#4f46e5'
           }
         default:
           return {}
@@ -125,24 +125,24 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         onMouseEnter={(e) => {
           // Enhanced hover effects for sacred variants
           if (variant === 'sacred-ghost') {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 206, 0, 0.1)'
-            e.currentTarget.style.color = '#004A8F'
-            e.currentTarget.style.borderColor = 'rgba(255, 206, 0, 0.3)'
+            e.currentTarget.style.backgroundColor = 'rgba(37, 99, 235, 0.1)'
+            e.currentTarget.style.color = '#4f46e5'
+            e.currentTarget.style.borderColor = 'rgba(37, 99, 235, 0.3)'
           } else if (variant === 'mystical-outline') {
-            e.currentTarget.style.backgroundColor = '#004A8F'
-            e.currentTarget.style.color = '#f8fafc'
-            e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 74, 143, 0.5)'
+            e.currentTarget.style.backgroundColor = '#4f46e5'
+            e.currentTarget.style.color = '#ffffff'
+            e.currentTarget.style.boxShadow = '0 0 20px rgba(79, 70, 229, 0.5)'
           }
           props.onMouseEnter?.(e)
         }}
         onMouseLeave={(e) => {
           if (variant === 'sacred-ghost') {
             e.currentTarget.style.backgroundColor = 'transparent'
-            e.currentTarget.style.color = '#FFCE00'
+            e.currentTarget.style.color = '#2563eb'
             e.currentTarget.style.borderColor = 'transparent'
           } else if (variant === 'mystical-outline') {
             e.currentTarget.style.backgroundColor = 'transparent'
-            e.currentTarget.style.color = '#004A8F'
+            e.currentTarget.style.color = '#4f46e5'
             e.currentTarget.style.boxShadow = 'none'
           }
           props.onMouseLeave?.(e)
