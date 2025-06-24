@@ -1,0 +1,22 @@
+{
+  "name": "Vibe Coding Bible",
+  "short_name": "VibeCoding",
+  "description": "Master AI-Assisted Development with the 10 Sacred Commandments of Vibe Coding",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png", 
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#D4AF37",
+  "background_color": "#0F0A1A",
+  "display": "standalone",
+  "start_url": "/",
+  "orientation": "portrait"
+}

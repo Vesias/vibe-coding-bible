@@ -10,6 +10,7 @@ const cinzel = Cinzel({ subsets: ['latin'], variable: '--font-cinzel' })
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat' })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://vibecodingbible.agentland.saarland'),
   title: {
     default: 'Vibe Coding Bible - Master AI-Assisted Development',
     template: '%s | Vibe Coding Bible'

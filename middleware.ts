@@ -13,6 +13,11 @@ const publicRoutes = [
   '/api',
   '/_next',
   '/favicon.ico',
+  '/favicon.svg',
+  '/favicon-16x16.png',
+  '/apple-touch-icon.png',
+  '/site.webmanifest',
+  '/og-image.jpg',
   '/logo.png'
 ]
 
