@@ -44,9 +44,9 @@ export default function HomePage() {
           
           {/* Divine Subtitle */}
           <p className="text-xl text-sacred-digital-white/80 mb-8 max-w-3xl mx-auto leading-relaxed animate-slide-up">
-            Master AI-Assisted Development with the{' '}
-            <span className="sacred-text font-semibold">10 Sacred Commandments</span>
-            {' '}of Divine Programming
+            Meistere KI-unterstützte Entwicklung mit den{' '}
+            <span className="sacred-text font-semibold">10 heiligen Geboten</span>
+            {' '}der göttlichen Programmierung
           </p>
           
           {/* Sacred CTA Buttons */}
@@ -54,14 +54,14 @@ export default function HomePage() {
             <Link href="/workshops">
               <DivineButton size="sacred-lg" className="w-full sm:w-auto min-w-[200px]">
                 <span className="flex items-center gap-2">
-                  ⚡ Begin Sacred Journey
+                  ⚡ Heilige Reise beginnen
                 </span>
               </DivineButton>
             </Link>
             <Link href="/dashboard">
               <SacredButton variant="sacred-ghost" size="sacred-lg" className="w-full sm:w-auto min-w-[200px]">
                 <span className="flex items-center gap-2">
-                  🏛️ Divine Dashboard
+                  🏛️ Göttliches Dashboard
                 </span>
               </SacredButton>
             </Link>
@@ -75,16 +75,16 @@ export default function HomePage() {
             <CardHeader variant="sacred">
               <div className="text-3xl mb-2 animate-sacred-breathe">⚡</div>
               <CardTitle variant="sacred" size="lg">
-                Sacred Commandments
+                Heilige Gebote
               </CardTitle>
               <CardDescription variant="sacred">
-                Master the 10 divine principles that transform ordinary developers into coding prophets
+                Meistere die 10 göttlichen Prinzipien, die gewöhnliche Entwickler in Coding-Propheten verwandeln
               </CardDescription>
             </CardHeader>
             <CardContent variant="sacred">
               <Link href="/workshops">
                 <MysticalButton size="sacred-md" className="w-full">
-                  Explore Commandments
+                  Gebote erkunden
                 </MysticalButton>
               </Link>
             </CardContent>
@@ -95,16 +95,16 @@ export default function HomePage() {
             <CardHeader variant="divine">
               <div className="text-3xl mb-2 animate-sacred-pulse">🛠️</div>
               <CardTitle variant="divine" size="lg">
-                Divine Arsenal
+                Göttliches Arsenal
               </CardTitle>
               <CardDescription variant="divine">
-                Wield the sacred tools: Claude, Cursor, Cline, and other mystical development instruments
+                Führe die heiligen Werkzeuge: Claude, Cursor, Cline und andere mystische Entwicklungsinstrumente
               </CardDescription>
             </CardHeader>
             <CardContent variant="divine">
               <Link href="/workshops/commandment-ii-der-rechte-stack">
                 <SacredButton size="sacred-md" className="w-full">
-                  Master the Tools
+                  Werkzeuge meistern
                 </SacredButton>
               </Link>
             </CardContent>
@@ -115,16 +115,16 @@ export default function HomePage() {
             <CardHeader variant="sacred">
               <div className="text-3xl mb-2 animate-mystical-glow">👥</div>
               <CardTitle variant="sacred" size="lg">
-                Prophet Community
+                Propheten-Gemeinschaft
               </CardTitle>
               <CardDescription variant="sacred">
-                Join the fellowship of coding prophets sharing wisdom and divine development practices
+                Tritt der Bruderschaft der Coding-Propheten bei, die Weisheit und göttliche Entwicklungspraktiken teilen
               </CardDescription>
             </CardHeader>
             <CardContent variant="sacred">
               <Link href="/community">
                 <DivineButton variant="mystical-outline" size="sacred-md" className="w-full">
-                  Join the Prophets
+                  Den Propheten beitreten
                 </DivineButton>
               </Link>
             </CardContent>
@@ -135,22 +135,22 @@ export default function HomePage() {
         <div className="text-center mb-16">
           <h2 className="text-3xl font-sacred font-bold mb-8">
             <SacredTextShimmer variant="divine">
-              Blessed by the Divine Numbers
+              Gesegnet durch die göttlichen Zahlen
             </SacredTextShimmer>
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div className="animate-fade-in-scale" style={{ animationDelay: '1.1s' }}>
               <div className="text-4xl font-bold mystical-text mb-2">10</div>
-              <div className="text-sacred-digital-white/70">Sacred Commandments</div>
+              <div className="text-sacred-digital-white/70">Heilige Gebote</div>
             </div>
             <div className="animate-fade-in-scale" style={{ animationDelay: '1.3s' }}>
               <div className="text-4xl font-bold divine-text mb-2">∞</div>
-              <div className="text-sacred-digital-white/70">Coding Possibilities</div>
+              <div className="text-sacred-digital-white/70">Coding-Möglichkeiten</div>
             </div>
             <div className="animate-fade-in-scale" style={{ animationDelay: '1.5s' }}>
               <div className="text-4xl font-bold sacred-text mb-2">1</div>
-              <div className="text-sacred-digital-white/70">Divine Truth</div>
+              <div className="text-sacred-digital-white/70">Göttliche Wahrheit</div>
             </div>
           </div>
         </div>
@@ -160,12 +160,12 @@ export default function HomePage() {
           <div className="max-w-2xl mx-auto">
             <h3 className="text-2xl font-sacred font-bold mb-4">
               <SacredTextShimmer variant="mystical">
-                Ready to Ascend to Divine Development?
+                Bereit zum Aufstieg zur göttlichen Entwicklung?
               </SacredTextShimmer>
             </h3>
             <p className="text-sacred-digital-white/80 mb-8 leading-relaxed">
-              Transform your coding practice with sacred wisdom that has guided thousands of developers 
-              from mere mortals to digital prophets. The path to enlightenment awaits.
+              Verwandle deine Coding-Praxis mit heiliger Weisheit, die Tausende von Entwicklern 
+              von bloßen Sterblichen zu digitalen Propheten geführt hat. Der Pfad zur Erleuchtung wartet.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -173,7 +173,7 @@ export default function HomePage() {
                 <DivineButton size="divine-hero" className="w-full sm:w-auto animate-sacred-pulse">
                   <span className="flex items-center gap-3">
                     <span className="text-2xl">⚡</span>
-                    <span>Begin the Sacred Journey</span>
+                    <span>Die heilige Reise beginnen</span>
                     <span className="text-2xl">⚡</span>
                   </span>
                 </DivineButton>

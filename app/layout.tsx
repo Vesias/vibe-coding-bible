@@ -12,10 +12,10 @@ const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-montserrat
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://vibecodingbible.agentland.saarland'),
   title: {
-    default: 'Vibe Coding Bible - Master AI-Assisted Development',
-    template: '%s | Vibe Coding Bible'
+    default: 'Die Vibe Coding Bibel - Meistere KI-unterstützte Entwicklung',
+    template: '%s | Die Vibe Coding Bibel'
   },
-  description: 'Transform your development skills with the 10 Sacred Commandments of Vibe Coding. Master AI-assisted programming with Claude, Copilot, and modern tools.',
+  description: 'Verwandle deine Entwicklungsfähigkeiten mit den 10 heiligen Geboten des Vibe Codings. Meistere KI-unterstützte Programmierung mit Claude, Copilot und modernen Tools.',
   keywords: [
     'AI programming',
     'Claude Code',
@@ -43,24 +43,24 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'de_DE',
     url: process.env.NEXT_PUBLIC_SITE_URL,
-    siteName: 'Vibe Coding Bible',
-    title: 'Master AI-Assisted Development - Vibe Coding Bible',
-    description: 'Transform your development skills with the 10 Sacred Commandments of Vibe Coding. Interactive workshops, real-time collaboration, and gamified learning.',
+    siteName: 'Die Vibe Coding Bibel',
+    title: 'Meistere KI-unterstützte Entwicklung - Die Vibe Coding Bibel',
+    description: 'Verwandle deine Entwicklungsfähigkeiten mit den 10 heiligen Geboten des Vibe Codings. Interaktive Workshops, Echtzeit-Zusammenarbeit und gamifiziertes Lernen.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Vibe Coding Bible - Interactive Workshop Experience',
+        alt: 'Die Vibe Coding Bibel - Interaktive Workshop-Erfahrung',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Master AI-Assisted Development - Vibe Coding Bible',
-    description: 'Transform your development skills with the 10 Sacred Commandments of Vibe Coding.',
+    title: 'Meistere KI-unterstützte Entwicklung - Die Vibe Coding Bibel',
+    description: 'Verwandle deine Entwicklungsfähigkeiten mit den 10 heiligen Geboten des Vibe Codings.',
     images: ['/og-image.jpg'],
     creator: '@vibecodingbible',
   },
@@ -81,7 +81,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="de" suppressHydrationWarning>
       <body className={`${inter.variable} ${firaCode.variable} ${cinzel.variable} ${montserrat.variable} font-sans antialiased`}>
         <Providers>
           <div className="relative min-h-screen">
