@@ -35,6 +35,9 @@ export function PWAInstallPrompt({
   const [isInstalling, setIsInstalling] = useState(false)
 
   useEffect(() => {
+    // Only run on client-side
+    if (typeof window === 'undefined') return
+    
     // Check if user has dismissed the prompt before
     const dismissed = localStorage.getItem('pwa-install-dismissed')
     const dismissedDate = dismissed ? new Date(dismissed) : null
@@ -76,8 +79,10 @@ export function PWAInstallPrompt({
     setIsVisible(false)
     setIsDismissed(true)
     
-    // Remember dismissal for 3 days
-    localStorage.setItem('pwa-install-dismissed', new Date().toISOString())
+    // Remember dismissal for 3 days (only on client-side)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pwa-install-dismissed', new Date().toISOString())
+    }
     
     onDismiss?.()
     
@@ -100,14 +105,14 @@ export function PWAInstallPrompt({
         transition={{ type: "spring", duration: 0.5 }}
         className={`fixed bottom-4 left-4 right-4 z-50 ${className}`}
       >
-        <Card className="bg-gradient-to-br from-sacred-gold/10 to-sacred-electric-indigo/10 backdrop-blur-md border border-sacred-gold/30 shadow-2xl">
+        <Card className="bg-gradient-to-br from-blue-600/10 to-indigo-600/10 backdrop-blur-md border border-blue-600/30 shadow-2xl">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
               {/* App Icon */}
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="w-16 h-16 bg-gradient-to-br from-sacred-gold to-sacred-electric-indigo rounded-xl flex items-center justify-center flex-shrink-0"
+                className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0"
               >
                 <Smartphone className="h-8 w-8 text-white" />
               </motion.div>
@@ -115,34 +120,34 @@ export function PWAInstallPrompt({
               {/* Content */}
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-lg font-bold text-sacred-digital-white">
+                  <h3 className="text-lg font-bold text-gray-800">
                     App installieren
                   </h3>
-                  <Badge className="bg-sacred-matrix-green/20 text-sacred-matrix-green border-sacred-matrix-green/30 text-xs">
+                  <Badge className="bg-green-500/20 text-green-600 border-green-500/30 text-xs">
                     <Sparkles className="h-3 w-3 mr-1" />
                     PWA
                   </Badge>
                 </div>
                 
-                <p className="text-sm text-sacred-digital-white/70 mb-4">
+                <p className="text-sm text-gray-600 mb-4">
                   Installiere die Vibe Coding Bible als App für das beste Lernerlebnis!
                 </p>
 
                 {/* Features */}
                 <div className="grid grid-cols-2 gap-2 mb-4">
-                  <div className="flex items-center gap-2 text-xs text-sacred-digital-white/80">
-                    <Wifi className="h-3 w-3 text-sacred-matrix-green" />
+                  <div className="flex items-center gap-2 text-xs text-gray-700">
+                    <Wifi className="h-3 w-3 text-green-600" />
                     Offline verfügbar
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-sacred-digital-white/80">
+                  <div className="flex items-center gap-2 text-xs text-gray-700">
                     <Zap className="h-3 w-3 text-sacred-tech-gold" />
                     Schneller Start
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-sacred-digital-white/80">
+                  <div className="flex items-center gap-2 text-xs text-gray-700">
                     <Bell className="h-3 w-3 text-sacred-electric-indigo" />
                     Push-Benachrichtigungen
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-sacred-digital-white/80">
+                  <div className="flex items-center gap-2 text-xs text-gray-700">
                     <Star className="h-3 w-3 text-sacred-gold" />
                     Native App-Feeling
                   </div>
@@ -153,7 +158,7 @@ export function PWAInstallPrompt({
                   <Button
                     onClick={handleInstall}
                     disabled={isInstalling}
-                    className="bg-gradient-to-r from-sacred-gold to-sacred-tech-gold hover:from-sacred-tech-gold hover:to-sacred-gold text-black font-medium flex-1"
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-black font-medium flex-1"
                   >
                     {isInstalling ? (
                       <motion.div
@@ -224,14 +229,14 @@ export function PWAInstallSuccess() {
                 transition={{ delay: 0.2, type: "spring" }}
                 className="w-10 h-10 bg-sacred-matrix-green/20 rounded-full flex items-center justify-center"
               >
-                <CheckCircle className="h-5 w-5 text-sacred-matrix-green" />
+                <CheckCircle className="h-5 w-5 text-green-600" />
               </motion.div>
               
               <div>
                 <h4 className="text-sm font-medium text-sacred-digital-white">
                   App erfolgreich installiert!
                 </h4>
-                <p className="text-xs text-sacred-digital-white/70">
+                <p className="text-xs text-gray-600">
                   Vibe Coding Bible ist jetzt auf deinem Gerät verfügbar
                 </p>
               </div>
@@ -275,7 +280,7 @@ export function PWAInstallButton({ variant = 'default' }: { variant?: 'default' 
     <Button
       onClick={handleInstall}
       disabled={isInstalling}
-      className="bg-gradient-to-r from-sacred-gold to-sacred-tech-gold hover:from-sacred-tech-gold hover:to-sacred-gold text-black font-medium"
+      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-black font-medium"
     >
       {isInstalling ? (
         <motion.div

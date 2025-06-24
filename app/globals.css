@@ -10,19 +10,19 @@
 
 @layer base {
   :root {
-    /* ===== UNIFIED BRAND COLOR SYSTEM ===== */
+    /* ===== VIBE CODING BIBLE UNIFIED COLOR SYSTEM ===== */
     
-    /* Primary Brand Colors - AgentLand Aligned */
-    --brand-primary-50: 239 246 255;     /* #eff6ff - Ultra light backgrounds */
-    --brand-primary-100: 219 234 254;    /* #dbeafe - Light backgrounds */
-    --brand-primary-600: 37 99 235;      /* #2563eb - Primary interactive */
-    --brand-primary-700: 29 78 216;      /* #1d4ed8 - Primary hover */
-    --brand-primary-800: 30 64 175;      /* #1e40af - Primary active */
+    /* Primary Brand Colors - Blue (Corporate Standard) */
+    --vibe-blue-50: 239 246 255;         /* #eff6ff - Ultra light */
+    --vibe-blue-100: 219 234 254;        /* #dbeafe - Light */
+    --vibe-blue-600: 37 99 235;          /* #2563eb - Primary */
+    --vibe-blue-700: 29 78 216;          /* #1d4ed8 - Hover */
+    --vibe-blue-800: 30 64 175;          /* #1e40af - Active */
     
-    /* Secondary Brand Colors */
-    --brand-secondary-100: 224 231 255;  /* #e0e7ff - Secondary backgrounds */
-    --brand-secondary-600: 79 70 229;    /* #4f46e5 - Secondary interactive */
-    --brand-secondary-700: 67 56 202;    /* #4338ca - Secondary hover */
+    /* Secondary Brand Colors - Indigo */
+    --vibe-indigo-100: 224 231 255;      /* #e0e7ff - Light */
+    --vibe-indigo-600: 79 70 229;        /* #4f46e5 - Primary */
+    --vibe-indigo-700: 67 56 202;        /* #4338ca - Hover */
     
     /* Neutral Palette - Consistent Grays */
     --neutral-50: 249 250 251;           /* #f9fafb - Lightest background */
@@ -48,56 +48,77 @@
     --semantic-error-light: 254 226 226;   /* #fee2e2 */
     --semantic-info-light: 239 246 255;    /* #eff6ff */
     
-    /* === UNIFIED DESIGN SYSTEM TOKENS === */
-    --background: var(--brand-primary-50);
+    /* === VIBE CODING BIBLE DESIGN TOKENS === */
+    --background: var(--vibe-blue-50);
     --foreground: var(--neutral-800);
-    --card: 255 255 255;                   /* Pure white for cards */
+    --card: 255 255 255;
     --card-foreground: var(--neutral-800);
     --popover: 255 255 255;
     --popover-foreground: var(--neutral-800);
-    --primary: var(--brand-primary-600);
+    --primary: var(--vibe-blue-600);
     --primary-foreground: 255 255 255;
-    --secondary: var(--brand-secondary-100);
+    --secondary: var(--vibe-indigo-100);
     --secondary-foreground: var(--neutral-800);
     --muted: var(--neutral-100);
     --muted-foreground: var(--neutral-600);
-    --accent: var(--brand-secondary-600);
+    --accent: var(--vibe-indigo-600);
     --accent-foreground: 255 255 255;
     --destructive: var(--semantic-error);
     --destructive-foreground: 255 255 255;
     --border: var(--neutral-200);
     --input: var(--neutral-200);
-    --ring: var(--brand-primary-600);
+    --ring: var(--vibe-blue-600);
     --radius: 0.5rem;
     
-    /* === LEGACY SUPPORT (DEPRECATED - USE NEW SYSTEM) === */
-    --agentland-blue-50: var(--brand-primary-50);
-    --agentland-blue-600: var(--brand-primary-600);
-    --agentland-indigo-100: var(--brand-secondary-100);
-    --agentland-indigo-600: var(--brand-secondary-600);
+    /* === LEGACY SUPPORT (UNIFIED) === */
+    --agentland-blue-50: var(--vibe-blue-50);
+    --agentland-blue-600: var(--vibe-blue-600);
+    --agentland-indigo-100: var(--vibe-indigo-100);
+    --agentland-indigo-600: var(--vibe-indigo-600);
     --agentland-gray-600: var(--neutral-600);
     --agentland-gray-800: var(--neutral-800);
     --agentland-white: 255 255 255;
-    --sacred-tech-gold: var(--agentland-blue-600);
-    --sacred-electric-indigo: var(--agentland-indigo-600);
-    --sacred-midnight-blue: var(--agentland-gray-800);
-    --sacred-cosmic-black: var(--agentland-gray-800);
+    --sacred-tech-gold: var(--vibe-blue-600);
+    --sacred-electric-indigo: var(--vibe-indigo-600);
+    --sacred-midnight-blue: var(--neutral-800);
+    --sacred-cosmic-black: var(--neutral-800);
     --sacred-digital-white: var(--agentland-white);
+  }
+  
+  /* === UTILITY CLASSES === */
+  .agentland-text {
+    background: linear-gradient(135deg, rgb(var(--vibe-blue-600)), rgb(var(--vibe-indigo-600)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  
+  .agentland-gradient {
+    background: linear-gradient(135deg, rgb(var(--vibe-blue-50)), rgb(var(--vibe-indigo-100)));
+  }
+  
+  .vibe-text-gradient {
+    background: linear-gradient(135deg, rgb(var(--vibe-blue-600)), rgb(var(--vibe-indigo-600)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   .dark {
-    /* AgentLand Dark Theme */
-    --background: var(--agentland-gray-800);
-    --foreground: var(--agentland-white);
-    --card: 31 41 55; /* Darker gray for cards */
-    --card-foreground: var(--agentland-white);
-    --popover: 31 41 55;
-    --popover-foreground: var(--agentland-white);
-    --primary: var(--agentland-blue-600);
-    --primary-foreground: var(--agentland-white);
-    --secondary: var(--agentland-indigo-600);
-    --secondary-foreground: var(--agentland-white);
-    --muted: 55 65 81; /* Muted grays */
+    /* Vibe Coding Bible Dark Theme */
+    --background: var(--neutral-800);
+    --foreground: 255 255 255;
+    --card: var(--neutral-700);
+    --card-foreground: 255 255 255;
+    --popover: var(--neutral-700);
+    --popover-foreground: 255 255 255;
+    --primary: var(--vibe-blue-600);
+    --primary-foreground: 255 255 255;
+    --secondary: var(--vibe-indigo-600);
+    --secondary-foreground: 255 255 255;
+    --muted: var(--neutral-600);
     --muted-foreground: 156 163 175;
     --accent: var(--agentland-indigo-600);
     --accent-foreground: var(--agentland-white);

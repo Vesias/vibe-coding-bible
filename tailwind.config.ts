@@ -45,19 +45,16 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // ===== UNIFIED BRAND COLOR SYSTEM =====
-        'brand-primary': {
-          50: '#eff6ff',   // Ultra light backgrounds
-          100: '#dbeafe',  // Light backgrounds 
-          600: '#2563eb',  // Primary interactive
-          700: '#1d4ed8',  // Primary hover
-          800: '#1e40af',  // Primary active
-        },
-        
-        'brand-secondary': {
-          100: '#e0e7ff',  // Secondary backgrounds
-          600: '#4f46e5',  // Secondary interactive
-          700: '#4338ca',  // Secondary hover
+        // ===== VIBE CODING BIBLE COLOR SYSTEM =====
+        'vibe': {
+          'blue-50': '#eff6ff',
+          'blue-100': '#dbeafe',
+          'blue-600': '#2563eb',
+          'blue-700': '#1d4ed8',
+          'blue-800': '#1e40af',
+          'indigo-100': '#e0e7ff',
+          'indigo-600': '#4f46e5',
+          'indigo-700': '#4338ca',
         },
         
         // ===== SEMANTIC COLOR SYSTEM =====
