@@ -4,7 +4,7 @@ import './globals.css'
 import { Providers } from '@/components/providers/Providers'
 import { DivineNavigation } from '@/components/navigation/DivineNavigation'
 import { DivineFooter } from '@/components/layout/DivineFooter'
-import { FloatingExportButton } from '@/components/export/FloatingExportButton'
+// import { FloatingExportButton } from '@/components/export/FloatingExportButton'
 // import { CookieConsentBanner } from '@/components/consent/CookieConsentBanner'
 import { OrganizationSchema, LocalBusinessSchema, WebsiteSchema } from '@/components/seo/SchemaMarkup'
 import { generateSEOMetadata } from '@/lib/seo/config'
@@ -59,7 +59,7 @@ export default function RootLayout({
               {children}
             </div>
             <DivineFooter />
-            <FloatingExportButton />
+            {/* <FloatingExportButton /> */}
             {/* <CookieConsentBanner /> */}
           </div>
         </Providers>

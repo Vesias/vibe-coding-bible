@@ -6,11 +6,13 @@ import { Layout, LogOut, User, Settings } from 'lucide-react'
 
 interface UserProfile {
   id: string
-  email: string
+  email?: string
+  full_name?: string
   prophet_rank?: string
   total_xp?: number
   avatar_url?: string
   username?: string
+  subscription_status?: string
 }
 
 interface UserMenuProps {

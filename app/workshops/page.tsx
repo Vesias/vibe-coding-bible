@@ -44,17 +44,21 @@ const useWorkshopProgress = () => {
   })
 
   useEffect(() => {
-    // Load progress from localStorage
-    const savedProgress = localStorage.getItem('vibe-coding-workshop-progress')
-    if (savedProgress) {
-      setProgress(JSON.parse(savedProgress))
+    // Load progress from localStorage (client-side only)
+    if (typeof window !== 'undefined') {
+      const savedProgress = localStorage.getItem('vibe-coding-workshop-progress')
+      if (savedProgress) {
+        setProgress(JSON.parse(savedProgress))
+      }
     }
   }, [])
 
   const updateProgress = (newProgress: Partial<WorkshopProgress>) => {
     const updated = { ...progress, ...newProgress, lastActivity: new Date() }
     setProgress(updated)
-    localStorage.setItem('vibe-coding-workshop-progress', JSON.stringify(updated))
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('vibe-coding-workshop-progress', JSON.stringify(updated))
+    }
   }
 
   return { progress, updateProgress }
@@ -206,6 +210,8 @@ const WorkshopsGrid = ({ activeFilter, progress }: { activeFilter: string, progr
   })
 
   const getWorkshopProgress = (workshopId: string) => {
+    if (typeof window === 'undefined') return 0
+    
     const savedProgress = localStorage.getItem(`workshop-progress-${workshopId}`)
     if (savedProgress) {
       const workshopProgress = JSON.parse(savedProgress)

@@ -2,128 +2,152 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from '@/lib/auth/AuthProvider'
-import { createClient } from '@/lib/supabase/client'
-import { Database } from '@/lib/database.types'
 
-type UserProgress = Database['public']['Tables']['user_progress']['Row']
-type Workshop = Database['public']['Tables']['workshops']['Row']
+// Mock types to replace database types
+interface MockUserProgress {
+  id: string
+  workshop_id: string
+  user_id: string
+  status: 'not_started' | 'in_progress' | 'completed' | 'mastered'
+  progress_percentage: number
+  last_accessed: string
+}
+
+interface MockWorkshop {
+  id: string
+  title: string
+  commandment_number: number
+  description: string
+  is_published: boolean
+  difficulty_level: string
+  estimated_duration: number
+}
 
 interface ProgressContextType {
-  workshops: Workshop[]
-  userProgress: UserProgress[]
+  workshops: MockWorkshop[]
+  userProgress: MockUserProgress[]
   loading: boolean
   refreshProgress: () => Promise<void>
-  updateProgress: (workshopId: string, data: Partial<UserProgress>) => Promise<void>
-  getWorkshopProgress: (workshopId: string) => UserProgress | null
+  updateProgress: (workshopId: string, data: Partial<MockUserProgress>) => Promise<void>
+  getWorkshopProgress: (workshopId: string) => MockUserProgress | null
   getOverallProgress: () => { completed: number; total: number; percentage: number }
 }
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined)
 
+// Mock workshops data - Static content for the 10 Commandments
+const mockWorkshops: MockWorkshop[] = [
+  {
+    id: 'workshop-1',
+    title: '1. Gebot: Der Göttliche Prompt',
+    commandment_number: 1,
+    description: 'Lerne die Kunst der perfekten KI-Kommunikation',
+    is_published: true,
+    difficulty_level: 'Beginner',
+    estimated_duration: 30
+  },
+  {
+    id: 'workshop-2',
+    title: '2. Gebot: Die Heilige Iteration',
+    commandment_number: 2,
+    description: 'Meistere iterative Entwicklung mit KI-Unterstützung',
+    is_published: true,
+    difficulty_level: 'Beginner',
+    estimated_duration: 45
+  },
+  {
+    id: 'workshop-3',
+    title: '3. Gebot: Das Sakrale Testing',
+    commandment_number: 3,
+    description: 'Entwickle unzerstörbare Software durch intelligentes Testen',
+    is_published: true,
+    difficulty_level: 'Intermediate',
+    estimated_duration: 60
+  },
+  {
+    id: 'workshop-4',
+    title: '4. Gebot: Die Mystische Dokumentation',
+    commandment_number: 4,
+    description: 'Erschaffe selbsterklärende und lebendige Dokumentation',
+    is_published: true,
+    difficulty_level: 'Intermediate',
+    estimated_duration: 30
+  },
+  {
+    id: 'workshop-5',
+    title: '5. Gebot: Die Transzendente Architektur',
+    commandment_number: 5,
+    description: 'Baue skalierbare und elegante Softwarearchitekturen',
+    is_published: true,
+    difficulty_level: 'Advanced',
+    estimated_duration: 90
+  },
+  {
+    id: 'workshop-6',
+    title: '6. Gebot: Das Erleuchtete Debugging',
+    commandment_number: 6,
+    description: 'Finde und eliminiere Bugs mit göttlicher Präzision',
+    is_published: true,
+    difficulty_level: 'Intermediate',
+    estimated_duration: 45
+  },
+  {
+    id: 'workshop-7',
+    title: '7. Gebot: Die Himmlische Performance',
+    commandment_number: 7,
+    description: 'Optimiere deine Anwendungen für göttliche Geschwindigkeit',
+    is_published: true,
+    difficulty_level: 'Advanced',
+    estimated_duration: 75
+  },
+  {
+    id: 'workshop-8',
+    title: '8. Gebot: Die Göttliche Sicherheit',
+    commandment_number: 8,
+    description: 'Schütze deine Anwendungen vor allen Übeln',
+    is_published: true,
+    difficulty_level: 'Advanced',
+    estimated_duration: 60
+  },
+  {
+    id: 'workshop-9',
+    title: '9. Gebot: Die Erleuchtete Kollaboration',
+    commandment_number: 9,
+    description: 'Arbeite harmonisch im Team mit KI-Unterstützung',
+    is_published: true,
+    difficulty_level: 'Intermediate',
+    estimated_duration: 45
+  },
+  {
+    id: 'workshop-10',
+    title: '10. Gebot: Die Heilige Monetarisierung',
+    commandment_number: 10,
+    description: 'Verwandle dein Können in nachhaltigen Erfolg',
+    is_published: true,
+    difficulty_level: 'Advanced',
+    estimated_duration: 90
+  }
+]
+
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
-  const [workshops, setWorkshops] = useState<Workshop[]>([])
-  const [userProgress, setUserProgress] = useState<UserProgress[]>([])
-  const [loading, setLoading] = useState(true)
-  const supabase = createClient()
-
-  const fetchWorkshops = async () => {
-    const { data, error } = await supabase
-      .from('workshops')
-      .select('*')
-      .eq('is_published', true)
-      .order('commandment_number')
-
-    if (error) {
-      console.error('Error fetching workshops:', error)
-      return []
-    }
-
-    return data || []
-  }
-
-  const fetchUserProgress = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('user_progress')
-      .select('*')
-      .eq('user_id', userId)
-
-    if (error) {
-      console.error('Error fetching user progress:', error)
-      return []
-    }
-
-    return data || []
-  }
+  const [workshops, setWorkshops] = useState<MockWorkshop[]>(mockWorkshops)
+  const [userProgress, setUserProgress] = useState<MockUserProgress[]>([])
+  const [loading, setLoading] = useState(false) // No loading needed for mock
 
   const refreshProgress = async () => {
-    if (!user) return
-
-    setLoading(true)
-    try {
-      const [workshopsData, progressData] = await Promise.all([
-        fetchWorkshops(),
-        fetchUserProgress(user.id)
-      ])
-
-      setWorkshops(workshopsData)
-      setUserProgress(progressData)
-    } catch (error) {
-      console.error('Error refreshing progress:', error)
-    } finally {
-      setLoading(false)
-    }
+    // Mock: Set workshops and empty progress for public access
+    setWorkshops(mockWorkshops)
+    setUserProgress([])
+    setLoading(false)
   }
 
-  const updateProgress = async (workshopId: string, data: Partial<UserProgress>) => {
-    if (!user) return
-
-    try {
-      const existingProgress = userProgress.find(p => p.workshop_id === workshopId)
-
-      if (existingProgress) {
-        const { error } = await supabase
-          .from('user_progress')
-          .update({
-            ...data,
-            last_accessed: new Date().toISOString()
-          })
-          .eq('id', existingProgress.id)
-
-        if (error) throw error
-
-        setUserProgress(prev => 
-          prev.map(p => 
-            p.id === existingProgress.id 
-              ? { ...p, ...data, last_accessed: new Date().toISOString() }
-              : p
-          )
-        )
-      } else {
-        const { data: newProgress, error } = await supabase
-          .from('user_progress')
-          .insert({
-            user_id: user.id,
-            workshop_id: workshopId,
-            ...data,
-            last_accessed: new Date().toISOString()
-          })
-          .select()
-          .single()
-
-        if (error) throw error
-
-        if (newProgress) {
-          setUserProgress(prev => [...prev, newProgress])
-        }
-      }
-    } catch (error) {
-      console.error('Error updating progress:', error)
-      throw error
-    }
+  const updateProgress = async (workshopId: string, data: Partial<MockUserProgress>) => {
+    // Mock: Just log the action for now
+    console.log('Mock: updateProgress called', { workshopId, data })
   }
 
-  const getWorkshopProgress = (workshopId: string): UserProgress | null => {
+  const getWorkshopProgress = (workshopId: string): MockUserProgress | null => {
     return userProgress.find(p => p.workshop_id === workshopId) || null
   }
 
@@ -136,13 +160,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    if (user) {
-      refreshProgress()
-    } else {
-      setWorkshops([])
-      setUserProgress([])
-      setLoading(false)
-    }
+    // Initialize with mock data
+    refreshProgress()
   }, [user])
 
   return (

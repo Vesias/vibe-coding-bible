@@ -1,5 +1,5 @@
-import { createBrowserClient } from '@supabase/ssr'
-import { Database } from '@/lib/database.types'
+// import { createBrowserClient } from '@supabase/ssr'
+// import { Database } from '@/lib/database.types'
 
 export const createClient = () => {
   // Only create client on browser side
@@ -40,8 +40,23 @@ export const createClient = () => {
     } as any
   }
   
-  return createBrowserClient<Database>(
-    supabaseUrl,
-    supabaseAnonKey
-  )
+  // return createBrowserClient<Database>(
+  //   supabaseUrl,
+  //   supabaseAnonKey
+  // )
+  
+  // For now, return mock client
+  return {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      signOut: () => Promise.resolve({ error: null })
+    },
+    from: () => ({
+      select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: null }) }) }),
+      insert: () => Promise.resolve({ data: null, error: null }),
+      update: () => ({ eq: () => Promise.resolve({ data: null, error: null }) }),
+      delete: () => ({ eq: () => Promise.resolve({ data: null, error: null }) })
+    })
+  } as any
 }

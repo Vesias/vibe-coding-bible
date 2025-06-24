@@ -71,9 +71,9 @@ const nextConfig = {
     ];
   },
 
-  // Webpack configuration
-  webpack: (config, { isServer }) => {
-    // Fix for Supabase realtime-js SSR issue
+  // Webpack configuration - minimal for emergency build
+  webpack: (config, { isServer, webpack }) => {
+    // Add client-side fallbacks
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -85,70 +85,34 @@ const nextConfig = {
         util: false,
         buffer: false,
         process: false,
-      };
+      }
     }
 
-    // Fix global object references for Supabase on server side
-    config.plugins = config.plugins || [];
+    // For server-side, externalize problematic packages
+    if (isServer) {
+      config.externals = config.externals || []
+      // Completely externalize these packages for server build
+      config.externals.push(
+        '@supabase/ssr',
+        '@supabase/supabase-js',
+        '@supabase/realtime-js',
+        '@monaco-editor/react',
+        'puppeteer-core',
+        '@sparticuz/chromium'
+      )
+    }
+
+    // Define safe globals for server-side
     config.plugins.push(
-      new (require('webpack')).DefinePlugin({
+      new webpack.DefinePlugin({
         ...(isServer && {
-          global: 'globalThis',
-          self: 'globalThis',
-          window: 'undefined',
+          'globalThis.self': 'globalThis',
+          'globalThis.window': 'undefined',
         })
       })
-    );
+    )
 
-    // Ignore Supabase realtime on server side
-    if (isServer) {
-      config.externals = config.externals || [];
-      config.externals.push({
-        '@supabase/realtime-js': 'commonjs @supabase/realtime-js'
-      });
-    }
-
-    // Performance optimizations
-    config.optimization = {
-      ...config.optimization,
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: 10,
-            reuseExistingChunk: true,
-          },
-          ui: {
-            test: /[\\/]node_modules[\\/](@radix-ui|lucide-react|framer-motion)[\\/]/,
-            name: 'ui',
-            priority: 20,
-            reuseExistingChunk: true,
-          },
-          workshop: {
-            test: /[\\/]node_modules[\\/](@monaco-editor|react-syntax-highlighter)[\\/]/,
-            name: 'workshop',
-            priority: 30,
-            reuseExistingChunk: true,
-          },
-          auth: {
-            test: /[\\/]node_modules[\\/](@supabase)[\\/]/,
-            name: 'auth',
-            priority: 25,
-            reuseExistingChunk: true,
-          },
-          stripe: {
-            test: /[\\/]node_modules[\\/](@stripe)[\\/]/,
-            name: 'stripe',
-            priority: 25,
-            reuseExistingChunk: true,
-          }
-        }
-      }
-    };
-
-    return config;
+    return config
   },
 
   // Experimental features

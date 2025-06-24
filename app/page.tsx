@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { SacredButton } from '@/components/ui/sacred-button'
-import { ExportButtons } from '@/components/export/ExportButtons'
+// import { ExportButtons } from '@/components/export/ExportButtons'
 import { FAQSection, generalFAQs } from '@/components/seo/FAQSection'
 import { CourseSchema } from '@/components/seo/SchemaMarkup'
 
@@ -289,7 +289,9 @@ const SacredExports = () => (
       </div>
       
       <div className="max-w-4xl mx-auto">
-        <ExportButtons type="complete" />
+        <div className="text-center">
+          <p className="text-slate-400">Export functionality wird bald verfügbar sein.</p>
+        </div>
       </div>
     </div>
   </section>
