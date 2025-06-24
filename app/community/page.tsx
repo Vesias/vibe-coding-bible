@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { SacredButton } from '@/components/ui/sacred-button'
+import { EnhancedCommunityHub } from '@/components/community/EnhancedCommunityHub'
 
 const CommunityHero = () => (
   <section className="min-h-screen flex items-center justify-center relative">
@@ -206,48 +207,10 @@ const CommunityFeatures = () => (
 
 export default function CommunityPage() {
   return (
-    <main className="min-h-screen" style={{
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%)'
-    }}>
-      <CommunityHero />
-      <CommunityFeatures />
-      
-      {/* CTA Section */}
-      <section className="py-20 px-6" style={{ background: 'rgba(15, 23, 42, 0.5)' }}>
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{
-            background: 'linear-gradient(90deg, #c084fc 0%, #fbbf24 50%, #c084fc 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            Bereit, der Community beizutreten?
-          </h2>
-          <p className="text-xl mb-10" style={{ color: '#cbd5e1' }}>
-            Werde Teil einer Gemeinschaft von über 12.000 Entwicklern, die KI-unterstützte Programmierung meistern
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/pricing">
-              <SacredButton size="lg" className="px-12 py-5 text-xl font-bold shadow-2xl">
-                <span className="flex items-center gap-4">
-                  <span className="text-3xl">👑</span>
-                  <span>Premium Community</span>
-                  <span className="text-3xl">👑</span>
-                </span>
-              </SacredButton>
-            </Link>
-            <Link href="/workshops">
-              <SacredButton variant="outline" size="lg" className="px-12 py-5 text-xl font-bold">
-                <span className="flex items-center gap-4">
-                  <span className="text-3xl">📚</span>
-                  <span>Kostenlos starten</span>
-                </span>
-              </SacredButton>
-            </Link>
-          </div>
-        </div>
-      </section>
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 dark:from-slate-900 dark:to-purple-900">
+      <div className="container mx-auto px-4 py-8">
+        <EnhancedCommunityHub />
+      </div>
     </main>
   )
 }

@@ -1,0 +1,545 @@
+// =============================================
+// Enterprise Connection Pooling for Supabase Edge Functions
+// =============================================
+
+import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+export interface ConnectionConfig {
+  url: string
+  key: string
+  maxConnections?: number
+  idleTimeout?: number
+  connectionTimeout?: number
+  retryAttempts?: number
+  retryDelay?: number
+}
+
+export interface PoolStats {
+  totalConnections: number
+  activeConnections: number
+  idleConnections: number
+  waitingRequests: number
+  totalRequests: number
+  failedConnections: number
+  averageConnectionTime: number
+}
+
+export interface ConnectionMetrics {
+  createdAt: number
+  lastUsed: number
+  totalQueries: number
+  isActive: boolean
+  connectionId: string
+}
+
+// Connection wrapper with metrics
+class PooledConnection {
+  public client: SupabaseClient
+  public metrics: ConnectionMetrics
+  private config: ConnectionConfig
+
+  constructor(config: ConnectionConfig, connectionId: string) {
+    this.config = config
+    this.client = createClient(config.url, config.key, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false
+      },
+      db: {
+        schema: 'public'
+      },
+      global: {
+        headers: {
+          'x-connection-id': connectionId
+        }
+      }
+    })
+
+    this.metrics = {
+      createdAt: Date.now(),
+      lastUsed: Date.now(),
+      totalQueries: 0,
+      isActive: false,
+      connectionId
+    }
+  }
+
+  async execute<T>(operation: (client: SupabaseClient) => Promise<T>): Promise<T> {
+    this.metrics.isActive = true
+    this.metrics.lastUsed = Date.now()
+    this.metrics.totalQueries++
+
+    try {
+      const result = await operation(this.client)
+      return result
+    } finally {
+      this.metrics.isActive = false
+    }
+  }
+
+  isIdle(idleTimeout: number): boolean {
+    return !this.metrics.isActive && 
+           (Date.now() - this.metrics.lastUsed) > idleTimeout
+  }
+
+  isStale(maxAge: number): boolean {
+    return (Date.now() - this.metrics.createdAt) > maxAge
+  }
+}
+
+// Enterprise connection pool
+export class SupabaseConnectionPool {
+  private config: ConnectionConfig
+  private connections: Map<string, PooledConnection> = new Map()
+  private waitQueue: Array<{
+    resolve: (connection: PooledConnection) => void
+    reject: (error: Error) => void
+    timestamp: number
+  }> = []
+  
+  private stats: PoolStats = {
+    totalConnections: 0,
+    activeConnections: 0,
+    idleConnections: 0,
+    waitingRequests: 0,
+    totalRequests: 0,
+    failedConnections: 0,
+    averageConnectionTime: 0
+  }
+
+  private connectionTimes: number[] = []
+  private cleanupInterval?: number
+
+  constructor(config: ConnectionConfig) {
+    this.config = {
+      maxConnections: 20,
+      idleTimeout: 30000, // 30 seconds
+      connectionTimeout: 10000, // 10 seconds
+      retryAttempts: 3,
+      retryDelay: 1000, // 1 second
+      ...config
+    }
+
+    this.startCleanup()
+  }
+
+  // Get a connection from the pool
+  async getConnection(): Promise<PooledConnection> {
+    this.stats.totalRequests++
+
+    // Try to get an idle connection first
+    const idleConnection = this.getIdleConnection()
+    if (idleConnection) {
+      return idleConnection
+    }
+
+    // Create new connection if under limit
+    if (this.connections.size < this.config.maxConnections!) {
+      return await this.createConnection()
+    }
+
+    // Wait for a connection to become available
+    return await this.waitForConnection()
+  }
+
+  // Execute operation with automatic connection management
+  async execute<T>(operation: (client: SupabaseClient) => Promise<T>): Promise<T> {
+    const startTime = Date.now()
+    let connection: PooledConnection | null = null
+
+    try {
+      connection = await this.getConnection()
+      const result = await connection.execute(operation)
+      
+      // Track successful connection time
+      const connectionTime = Date.now() - startTime
+      this.trackConnectionTime(connectionTime)
+      
+      return result
+    } catch (error) {
+      this.stats.failedConnections++
+      throw error
+    } finally {
+      if (connection) {
+        this.releaseConnection(connection)
+      }
+    }
+  }
+
+  // Execute multiple operations concurrently with connection pooling
+  async executeParallel<T>(
+    operations: Array<(client: SupabaseClient) => Promise<T>>
+  ): Promise<T[]> {
+    const promises = operations.map(operation => this.execute(operation))
+    return await Promise.all(promises)
+  }
+
+  // Transaction support with connection pinning
+  async transaction<T>(
+    operations: (client: SupabaseClient) => Promise<T>
+  ): Promise<T> {
+    const connection = await this.getConnection()
+    
+    try {
+      // Pin connection for the entire transaction
+      const result = await connection.execute(async (client) => {
+        return await operations(client)
+      })
+      return result
+    } finally {
+      this.releaseConnection(connection)
+    }
+  }
+
+  // Batch operations with optimized connection usage
+  async batch<T>(
+    operations: Array<(client: SupabaseClient) => Promise<T>>,
+    batchSize: number = 5
+  ): Promise<T[]> {
+    const results: T[] = []
+    
+    for (let i = 0; i < operations.length; i += batchSize) {
+      const batch = operations.slice(i, i + batchSize)
+      const batchResults = await this.executeParallel(batch)
+      results.push(...batchResults)
+    }
+    
+    return results
+  }
+
+  // Get pool statistics
+  getStats(): PoolStats {
+    this.updateStats()
+    return { ...this.stats }
+  }
+
+  // Get detailed connection metrics
+  getConnectionMetrics(): ConnectionMetrics[] {
+    return Array.from(this.connections.values()).map(conn => ({ ...conn.metrics }))
+  }
+
+  // Health check for the pool
+  async healthCheck(): Promise<{
+    healthy: boolean
+    issues: string[]
+    suggestions: string[]
+  }> {
+    const issues: string[] = []
+    const suggestions: string[] = []
+
+    // Check connection utilization
+    const utilizationRate = this.stats.activeConnections / this.config.maxConnections!
+    if (utilizationRate > 0.8) {
+      issues.push('High connection utilization (>80%)')
+      suggestions.push('Consider increasing maxConnections')
+    }
+
+    // Check wait queue
+    if (this.stats.waitingRequests > 10) {
+      issues.push('High number of waiting requests')
+      suggestions.push('Increase maxConnections or optimize query performance')
+    }
+
+    // Check failed connections
+    const failureRate = this.stats.failedConnections / this.stats.totalRequests
+    if (failureRate > 0.05) {
+      issues.push('High connection failure rate (>5%)')
+      suggestions.push('Check network connectivity and Supabase service status')
+    }
+
+    // Check average connection time
+    if (this.stats.averageConnectionTime > 5000) {
+      issues.push('Slow average connection time (>5s)')
+      suggestions.push('Optimize queries or check database performance')
+    }
+
+    // Test a simple query
+    try {
+      await this.execute(async (client) => {
+        const { error } = await client.from('profiles').select('count').limit(1)
+        if (error) throw error
+      })
+    } catch (error) {
+      issues.push('Failed to execute test query')
+      suggestions.push('Check Supabase connectivity and permissions')
+    }
+
+    return {
+      healthy: issues.length === 0,
+      issues,
+      suggestions
+    }
+  }
+
+  // Warm up the pool with initial connections
+  async warmUp(initialConnections: number = 3): Promise<void> {
+    const promises = []
+    
+    for (let i = 0; i < Math.min(initialConnections, this.config.maxConnections!); i++) {
+      promises.push(this.createConnection())
+    }
+    
+    try {
+      await Promise.all(promises)
+    } catch (error) {
+      console.error('Failed to warm up connection pool:', error)
+    }
+  }
+
+  // Graceful shutdown
+  async shutdown(): Promise<void> {
+    // Clear cleanup interval
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval)
+    }
+
+    // Reject any waiting requests
+    for (const waiting of this.waitQueue) {
+      waiting.reject(new Error('Connection pool is shutting down'))
+    }
+    this.waitQueue = []
+
+    // Close all connections
+    this.connections.clear()
+    
+    // Reset stats
+    this.stats = {
+      totalConnections: 0,
+      activeConnections: 0,
+      idleConnections: 0,
+      waitingRequests: 0,
+      totalRequests: 0,
+      failedConnections: 0,
+      averageConnectionTime: 0
+    }
+  }
+
+  // Private methods
+  private getIdleConnection(): PooledConnection | null {
+    for (const connection of this.connections.values()) {
+      if (!connection.metrics.isActive) {
+        return connection
+      }
+    }
+    return null
+  }
+
+  private async createConnection(): Promise<PooledConnection> {
+    const connectionId = `conn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const startTime = Date.now()
+
+    try {
+      const connection = new PooledConnection(this.config, connectionId)
+      
+      // Test the connection
+      await connection.execute(async (client) => {
+        const { error } = await client.from('profiles').select('count').limit(1)
+        if (error) throw error
+      })
+
+      this.connections.set(connectionId, connection)
+      this.stats.totalConnections++
+      
+      const connectionTime = Date.now() - startTime
+      this.trackConnectionTime(connectionTime)
+      
+      return connection
+    } catch (error) {
+      this.stats.failedConnections++
+      throw new Error(`Failed to create connection: ${error}`)
+    }
+  }
+
+  private async waitForConnection(): Promise<PooledConnection> {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        const index = this.waitQueue.findIndex(w => w.resolve === resolve)
+        if (index > -1) {
+          this.waitQueue.splice(index, 1)
+          this.stats.waitingRequests--
+        }
+        reject(new Error('Connection timeout'))
+      }, this.config.connectionTimeout)
+
+      this.waitQueue.push({
+        resolve: (connection) => {
+          clearTimeout(timeout)
+          resolve(connection)
+        },
+        reject: (error) => {
+          clearTimeout(timeout)
+          reject(error)
+        },
+        timestamp: Date.now()
+      })
+      
+      this.stats.waitingRequests++
+    })
+  }
+
+  private releaseConnection(connection: PooledConnection): void {
+    // If there are waiting requests, give the connection to the next in queue
+    if (this.waitQueue.length > 0) {
+      const waiting = this.waitQueue.shift()!
+      this.stats.waitingRequests--
+      waiting.resolve(connection)
+      return
+    }
+
+    // Connection returns to idle state
+    connection.metrics.isActive = false
+  }
+
+  private updateStats(): void {
+    this.stats.activeConnections = Array.from(this.connections.values())
+      .filter(conn => conn.metrics.isActive).length
+    
+    this.stats.idleConnections = this.stats.totalConnections - this.stats.activeConnections
+    this.stats.waitingRequests = this.waitQueue.length
+
+    // Calculate average connection time
+    if (this.connectionTimes.length > 0) {
+      this.stats.averageConnectionTime = 
+        this.connectionTimes.reduce((sum, time) => sum + time, 0) / this.connectionTimes.length
+    }
+  }
+
+  private trackConnectionTime(time: number): void {
+    this.connectionTimes.push(time)
+    
+    // Keep only last 100 measurements
+    if (this.connectionTimes.length > 100) {
+      this.connectionTimes.shift()
+    }
+  }
+
+  private startCleanup(): void {
+    this.cleanupInterval = setInterval(() => {
+      this.cleanup()
+    }, 30000) // Every 30 seconds
+  }
+
+  private cleanup(): void {
+    const now = Date.now()
+    const connectionsToRemove: string[] = []
+
+    for (const [id, connection] of this.connections.entries()) {
+      // Remove idle connections that have exceeded idle timeout
+      if (connection.isIdle(this.config.idleTimeout!)) {
+        connectionsToRemove.push(id)
+      }
+      
+      // Remove stale connections (older than 1 hour)
+      if (connection.isStale(3600000)) {
+        connectionsToRemove.push(id)
+      }
+    }
+
+    for (const id of connectionsToRemove) {
+      this.connections.delete(id)
+      this.stats.totalConnections--
+    }
+
+    // Clean up old waiting requests (older than connection timeout)
+    const timeoutThreshold = now - this.config.connectionTimeout!
+    this.waitQueue = this.waitQueue.filter(waiting => {
+      if (waiting.timestamp < timeoutThreshold) {
+        waiting.reject(new Error('Connection request timeout'))
+        this.stats.waitingRequests--
+        return false
+      }
+      return true
+    })
+  }
+}
+
+// Pool manager for multiple environments
+export class PoolManager {
+  private pools: Map<string, SupabaseConnectionPool> = new Map()
+  private defaultPoolName = 'default'
+
+  createPool(name: string, config: ConnectionConfig): SupabaseConnectionPool {
+    const pool = new SupabaseConnectionPool(config)
+    this.pools.set(name, pool)
+    return pool
+  }
+
+  getPool(name: string = this.defaultPoolName): SupabaseConnectionPool | null {
+    return this.pools.get(name) || null
+  }
+
+  async execute<T>(
+    operation: (client: SupabaseClient) => Promise<T>,
+    poolName: string = this.defaultPoolName
+  ): Promise<T> {
+    const pool = this.getPool(poolName)
+    if (!pool) {
+      throw new Error(`Pool '${poolName}' not found`)
+    }
+    return await pool.execute(operation)
+  }
+
+  getAllStats(): Record<string, PoolStats> {
+    const stats: Record<string, PoolStats> = {}
+    for (const [name, pool] of this.pools.entries()) {
+      stats[name] = pool.getStats()
+    }
+    return stats
+  }
+
+  async healthCheckAll(): Promise<Record<string, any>> {
+    const results: Record<string, any> = {}
+    
+    for (const [name, pool] of this.pools.entries()) {
+      results[name] = await pool.healthCheck()
+    }
+    
+    return results
+  }
+
+  async shutdownAll(): Promise<void> {
+    const promises = Array.from(this.pools.values()).map(pool => pool.shutdown())
+    await Promise.all(promises)
+    this.pools.clear()
+  }
+}
+
+// Global pool manager instance
+export const poolManager = new PoolManager()
+
+// Initialize default pool with environment variables
+export function initializeDefaultPool(): SupabaseConnectionPool {
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing required Supabase environment variables')
+  }
+
+  return poolManager.createPool('default', {
+    url: supabaseUrl,
+    key: supabaseKey,
+    maxConnections: parseInt(Deno.env.get('MAX_DB_CONNECTIONS') || '20'),
+    idleTimeout: parseInt(Deno.env.get('DB_IDLE_TIMEOUT') || '30000'),
+    connectionTimeout: parseInt(Deno.env.get('DB_CONNECTION_TIMEOUT') || '10000')
+  })
+}
+
+// Utility functions for common operations
+export async function withDatabase<T>(
+  operation: (client: SupabaseClient) => Promise<T>,
+  poolName?: string
+): Promise<T> {
+  return await poolManager.execute(operation, poolName)
+}
+
+export async function withTransaction<T>(
+  operations: (client: SupabaseClient) => Promise<T>,
+  poolName?: string
+): Promise<T> {
+  const pool = poolManager.getPool(poolName)
+  if (!pool) {
+    throw new Error(`Pool '${poolName}' not found`)
+  }
+  return await pool.transaction(operations)
+}

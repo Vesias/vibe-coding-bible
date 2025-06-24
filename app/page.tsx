@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { SacredButton } from '@/components/ui/sacred-button'
+import { Button } from '@/components/ui/button'
 // import { ExportButtons } from '@/components/export/ExportButtons'
 import { FAQSection, generalFAQs } from '@/components/seo/FAQSection'
 import { CourseSchema } from '@/components/seo/SchemaMarkup'
@@ -42,8 +42,8 @@ const SacredHero = () => (
       
       <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-gray-600">
         Meistere KI-unterstützte Entwicklung mit den{' '}
-        <span className="font-semibold text-blue-600">10 heiligen Geboten</span>
-        {' '}der göttlichen Programmierung
+        <span className="font-semibold text-blue-600">10 AgentLand Geboten</span>
+        {' '}der professionellen Programmierung
       </p>
       
       <div className="flex flex-col sm:flex-row gap-4 justify-center" role="group" aria-label="Main navigation actions">
@@ -52,19 +52,19 @@ const SacredHero = () => (
             className="px-8 py-4 text-white font-semibold text-lg rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             aria-describedby="workshops-description"
           >
-            <span aria-hidden="true">⚡</span> Heilige Reise beginnen
+            <span aria-hidden="true">⚡</span> AgentLand Reise beginnen
           </button>
           <div id="workshops-description" className="sr-only">Starte deine Lernreise mit interaktiven Workshops</div>
         </Link>
         <Link href="/dashboard" className="group">
-          <SacredButton 
+          <Button 
             variant="outline" 
             size="lg"
             aria-describedby="dashboard-description"
-            className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
           >
-            <span aria-hidden="true">🏛️</span> Göttliches Dashboard
-          </SacredButton>
+            <span aria-hidden="true">🏛️</span> AgentLand Dashboard
+          </Button>
           <div id="dashboard-description" className="sr-only">Zugang zu deinem persönlichen Lern-Dashboard</div>
         </Link>
       </div>
@@ -83,7 +83,7 @@ const SacredFeatures = () => (
         <p className="text-xl mb-4 text-gray-600">Live-Coding + KI-Mentoring + Praktische Projekte</p>
         <div className="flex justify-center gap-4 flex-wrap">
           <span className="px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-600 border border-blue-200">
-            📚 10 Heilige Gebote
+            📚 10 AgentLand Gebote
           </span>
           <span className="px-4 py-2 rounded-full text-sm font-medium bg-indigo-100 text-indigo-600 border border-indigo-200">
             🤖 KI-Integration
@@ -116,9 +116,9 @@ const SacredFeatures = () => (
               </ul>
             </div>
             <Link href="/workshops">
-              <SacredButton className="w-full py-3" aria-describedby="workshop-cta-desc">
+              <Button className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white" aria-describedby="workshop-cta-desc">
                 Jetzt starten - Kostenlos
-              </SacredButton>
+              </Button>
               <div id="workshop-cta-desc" className="sr-only">Beginne deine Lernreise mit kostenlosen interaktiven Workshops</div>
             </Link>
           </div>
@@ -144,9 +144,9 @@ const SacredFeatures = () => (
               </ul>
             </div>
             <Link href="/pricing">
-              <SacredButton variant="secondary" className="w-full py-3" aria-describedby="projects-cta-desc">
+              <Button variant="outline" className="w-full py-3 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white" aria-describedby="projects-cta-desc">
                 Premium freischalten
-              </SacredButton>
+              </Button>
               <div id="projects-cta-desc" className="sr-only">Erhalte Zugang zu allen Premium-Projekten und persönlichem Mentoring</div>
             </Link>
           </div>
@@ -172,9 +172,9 @@ const SacredFeatures = () => (
               </ul>
             </div>
             <Link href="/community">
-              <SacredButton variant="outline" className="w-full py-3" aria-describedby="community-cta-desc">
+              <Button variant="outline" className="w-full py-3 border-blue-700 text-blue-700 hover:bg-blue-700 hover:text-white" aria-describedby="community-cta-desc">
                 Community beitreten
-              </SacredButton>
+              </Button>
               <div id="community-cta-desc" className="sr-only">Tritt unserer aktiven Entwickler-Community bei und lerne von anderen</div>
             </Link>
           </div>
@@ -316,22 +316,22 @@ const SacredCTA = () => (
       
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link href="/workshops">
-          <SacredButton size="lg" className="px-12 py-5 text-xl font-bold shadow-2xl" aria-describedby="main-cta-desc">
+          <Button size="lg" className="px-12 py-5 text-xl font-bold shadow-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white" aria-describedby="main-cta-desc">
             <span className="flex items-center gap-4">
               <span className="text-3xl" aria-hidden="true">🚀</span>
               <span>Kostenlos starten</span>
               <span className="text-3xl" aria-hidden="true">🚀</span>
             </span>
-          </SacredButton>
+          </Button>
           <div id="main-cta-desc" className="sr-only">Beginne jetzt kostenlos mit den interaktiven Workshops</div>
         </Link>
         <Link href="/pricing">
-          <SacredButton variant="outline" size="lg" className="px-12 py-5 text-xl font-bold" aria-describedby="pricing-cta-desc">
+          <Button variant="outline" size="lg" className="px-12 py-5 text-xl font-bold border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white" aria-describedby="pricing-cta-desc">
             <span className="flex items-center gap-4">
               <span className="text-3xl" aria-hidden="true">📊</span>
               <span>Preise ansehen</span>
             </span>
-          </SacredButton>
+          </Button>
           <div id="pricing-cta-desc" className="sr-only">Siehe alle verfügbaren Preispläne und Premium-Features</div>
         </Link>
       </div>
@@ -344,7 +344,7 @@ export default function HomePage() {
     <>
       {/* Course Schema for the main workshops */}
       <CourseSchema
-        name="Die Vibe Coding Bibel - 10 Heilige Gebote der KI-Entwicklung"
+        name="Die Vibe Coding Bibel - 10 AgentLand Gebote der KI-Entwicklung"
         description="Meistere KI-unterstützte Programmierung mit interaktiven Workshops, Live-Coding und praktischen Projekten. Lerne Claude Code, GitHub Copilot und moderne Entwicklungstools."
         url={`${process.env.NEXT_PUBLIC_SITE_URL}/workshops`}
         image="/og-image.jpg"

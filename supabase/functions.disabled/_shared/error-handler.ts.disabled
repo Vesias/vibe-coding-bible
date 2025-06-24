@@ -1,0 +1,615 @@
+// =============================================
+// Enterprise Error Handling System for Edge Functions
+// =============================================
+
+export interface ErrorContext {
+  functionName: string
+  userId?: string
+  requestId?: string
+  timestamp: number
+  userAgent?: string
+  ip?: string
+  path?: string
+  method?: string
+  body?: any
+  headers?: Record<string, string>
+}
+
+export interface ErrorMetrics {
+  totalErrors: number
+  errorsByType: Map<string, number>
+  errorsByFunction: Map<string, number>
+  recentErrors: Array<{
+    timestamp: number
+    type: string
+    message: string
+    functionName: string
+  }>
+}
+
+export interface RetryConfig {
+  maxAttempts: number
+  backoffMultiplier: number
+  initialDelayMs: number
+  maxDelayMs: number
+  retryableErrors?: (error: Error) => boolean
+}
+
+// Custom error classes
+export class APIError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number = 500,
+    public code: string = 'INTERNAL_ERROR',
+    public details?: any
+  ) {
+    super(message)
+    this.name = 'APIError'
+  }
+}
+
+export class ValidationError extends APIError {
+  constructor(message: string, details?: any) {
+    super(message, 400, 'VALIDATION_ERROR', details)
+    this.name = 'ValidationError'
+  }
+}
+
+export class AuthenticationError extends APIError {
+  constructor(message: string = 'Authentication required') {
+    super(message, 401, 'AUTHENTICATION_ERROR')
+    this.name = 'AuthenticationError'
+  }
+}
+
+export class AuthorizationError extends APIError {
+  constructor(message: string = 'Insufficient permissions') {
+    super(message, 403, 'AUTHORIZATION_ERROR')
+    this.name = 'AuthorizationError'
+  }
+}
+
+export class NotFoundError extends APIError {
+  constructor(message: string = 'Resource not found') {
+    super(message, 404, 'NOT_FOUND')
+    this.name = 'NotFoundError'
+  }
+}
+
+export class RateLimitError extends APIError {
+  constructor(message: string = 'Rate limit exceeded', public retryAfter: number = 60) {
+    super(message, 429, 'RATE_LIMIT_EXCEEDED')
+    this.name = 'RateLimitError'
+  }
+}
+
+export class DatabaseError extends APIError {
+  constructor(message: string, details?: any) {
+    super(message, 500, 'DATABASE_ERROR', details)
+    this.name = 'DatabaseError'
+  }
+}
+
+export class ExternalServiceError extends APIError {
+  constructor(message: string, public service: string, details?: any) {
+    super(message, 502, 'EXTERNAL_SERVICE_ERROR', details)
+    this.name = 'ExternalServiceError'
+  }
+}
+
+// Circuit breaker for external services
+export class CircuitBreaker {
+  private failures = 0
+  private lastFailureTime = 0
+  private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED'
+
+  constructor(
+    private failureThreshold: number = 5,
+    private timeoutMs: number = 60000, // 1 minute
+    private retryTimeoutMs: number = 30000 // 30 seconds
+  ) {}
+
+  async execute<T>(operation: () => Promise<T>): Promise<T> {
+    if (this.state === 'OPEN') {
+      if (Date.now() - this.lastFailureTime > this.retryTimeoutMs) {
+        this.state = 'HALF_OPEN'
+      } else {
+        throw new ExternalServiceError('Circuit breaker is OPEN', 'circuit-breaker')
+      }
+    }
+
+    try {
+      const result = await Promise.race([
+        operation(),
+        new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Operation timeout')), this.timeoutMs)
+        })
+      ])
+
+      // Success - reset if we were in HALF_OPEN
+      if (this.state === 'HALF_OPEN') {
+        this.reset()
+      }
+
+      return result
+    } catch (error) {
+      this.recordFailure()
+      throw error
+    }
+  }
+
+  private recordFailure(): void {
+    this.failures++
+    this.lastFailureTime = Date.now()
+
+    if (this.failures >= this.failureThreshold) {
+      this.state = 'OPEN'
+    }
+  }
+
+  private reset(): void {
+    this.failures = 0
+    this.state = 'CLOSED'
+  }
+
+  getState(): { state: string; failures: number; lastFailureTime: number } {
+    return {
+      state: this.state,
+      failures: this.failures,
+      lastFailureTime: this.lastFailureTime
+    }
+  }
+}
+
+// Retry mechanism with exponential backoff
+export class RetryHandler {
+  static async withRetry<T>(
+    operation: () => Promise<T>,
+    config: RetryConfig
+  ): Promise<T> {
+    let lastError: Error
+    let delay = config.initialDelayMs
+
+    for (let attempt = 1; attempt <= config.maxAttempts; attempt++) {
+      try {
+        return await operation()
+      } catch (error) {
+        lastError = error as Error
+
+        // Check if error is retryable
+        if (config.retryableErrors && !config.retryableErrors(lastError)) {
+          throw lastError
+        }
+
+        // Don't retry on last attempt
+        if (attempt === config.maxAttempts) {
+          break
+        }
+
+        // Calculate next delay with exponential backoff
+        await this.sleep(delay)
+        delay = Math.min(delay * config.backoffMultiplier, config.maxDelayMs)
+      }
+    }
+
+    throw lastError!
+  }
+
+  private static sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  static isRetryableError(error: Error): boolean {
+    // Network errors, timeouts, 5xx errors are retryable
+    if (error instanceof ExternalServiceError) return true
+    if (error instanceof DatabaseError) return true
+    if (error.message.includes('timeout')) return true
+    if (error.message.includes('ECONNRESET')) return true
+    if (error.message.includes('ENOTFOUND')) return true
+    
+    return false
+  }
+}
+
+// Error metrics collector
+export class ErrorMetricsCollector {
+  private metrics: ErrorMetrics = {
+    totalErrors: 0,
+    errorsByType: new Map(),
+    errorsByFunction: new Map(),
+    recentErrors: []
+  }
+
+  recordError(
+    error: Error,
+    context: ErrorContext
+  ): void {
+    this.metrics.totalErrors++
+
+    // Track by error type
+    const errorType = error.constructor.name
+    this.metrics.errorsByType.set(
+      errorType,
+      (this.metrics.errorsByType.get(errorType) || 0) + 1
+    )
+
+    // Track by function
+    this.metrics.errorsByFunction.set(
+      context.functionName,
+      (this.metrics.errorsByFunction.get(context.functionName) || 0) + 1
+    )
+
+    // Track recent errors (keep last 100)
+    this.metrics.recentErrors.push({
+      timestamp: context.timestamp,
+      type: errorType,
+      message: error.message,
+      functionName: context.functionName
+    })
+
+    if (this.metrics.recentErrors.length > 100) {
+      this.metrics.recentErrors.shift()
+    }
+  }
+
+  getMetrics(): ErrorMetrics {
+    return {
+      ...this.metrics,
+      errorsByType: new Map(this.metrics.errorsByType),
+      errorsByFunction: new Map(this.metrics.errorsByFunction),
+      recentErrors: [...this.metrics.recentErrors]
+    }
+  }
+
+  getErrorRate(timeWindowMs: number = 300000): number {
+    const cutoff = Date.now() - timeWindowMs
+    const recentErrorCount = this.metrics.recentErrors.filter(
+      error => error.timestamp > cutoff
+    ).length
+
+    return recentErrorCount / (timeWindowMs / 60000) // errors per minute
+  }
+
+  reset(): void {
+    this.metrics = {
+      totalErrors: 0,
+      errorsByType: new Map(),
+      errorsByFunction: new Map(),
+      recentErrors: []
+    }
+  }
+}
+
+// Structured error logger
+export class ErrorLogger {
+  private static async logToSupabase(
+    error: Error,
+    context: ErrorContext,
+    supabaseClient: any
+  ): Promise<void> {
+    try {
+      await supabaseClient
+        .from('error_logs')
+        .insert({
+          function_name: context.functionName,
+          error_type: error.constructor.name,
+          error_message: error.message,
+          error_stack: error.stack,
+          context: context,
+          severity: this.getSeverity(error),
+          created_at: new Date().toISOString()
+        })
+    } catch (logError) {
+      console.error('Failed to log error to database:', logError)
+    }
+  }
+
+  private static async logToConsole(
+    error: Error,
+    context: ErrorContext
+  ): Promise<void> {
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      level: 'ERROR',
+      functionName: context.functionName,
+      errorType: error.constructor.name,
+      message: error.message,
+      stack: error.stack,
+      context: {
+        userId: context.userId,
+        requestId: context.requestId,
+        path: context.path,
+        method: context.method,
+        ip: context.ip
+      }
+    }
+
+    console.error(JSON.stringify(logEntry, null, 2))
+  }
+
+  private static async logToExternal(
+    error: Error,
+    context: ErrorContext
+  ): Promise<void> {
+    // Integration with external logging services (Sentry, LogRocket, etc.)
+    const sentryDsn = Deno.env.get('SENTRY_DSN')
+    
+    if (sentryDsn) {
+      try {
+        // This would integrate with Sentry SDK
+        console.log('Would log to Sentry:', error.message)
+      } catch (sentryError) {
+        console.error('Failed to log to Sentry:', sentryError)
+      }
+    }
+  }
+
+  static async log(
+    error: Error,
+    context: ErrorContext,
+    supabaseClient?: any
+  ): Promise<void> {
+    // Log to multiple destinations
+    await Promise.allSettled([
+      this.logToConsole(error, context),
+      supabaseClient ? this.logToSupabase(error, context, supabaseClient) : Promise.resolve(),
+      this.logToExternal(error, context)
+    ])
+  }
+
+  private static getSeverity(error: Error): string {
+    if (error instanceof ValidationError) return 'WARNING'
+    if (error instanceof AuthenticationError) return 'INFO'
+    if (error instanceof AuthorizationError) return 'INFO'
+    if (error instanceof NotFoundError) return 'INFO'
+    if (error instanceof RateLimitError) return 'WARNING'
+    if (error instanceof DatabaseError) return 'ERROR'
+    if (error instanceof ExternalServiceError) return 'ERROR'
+    
+    return 'ERROR'
+  }
+}
+
+// Main error handler class
+export class ErrorHandler {
+  private static metricsCollector = new ErrorMetricsCollector()
+  private static circuitBreakers = new Map<string, CircuitBreaker>()
+
+  static async handleError(
+    error: Error,
+    context: ErrorContext,
+    supabaseClient?: any
+  ): Promise<Response> {
+    // Record metrics
+    this.metricsCollector.recordError(error, context)
+
+    // Log error
+    await ErrorLogger.log(error, context, supabaseClient)
+
+    // Generate appropriate response
+    return this.generateErrorResponse(error, context)
+  }
+
+  static async withErrorHandling<T>(
+    operation: () => Promise<T>,
+    context: ErrorContext,
+    supabaseClient?: any
+  ): Promise<T> {
+    try {
+      return await operation()
+    } catch (error) {
+      await this.handleError(error as Error, context, supabaseClient)
+      throw error
+    }
+  }
+
+  static wrapWithRetry<T>(
+    operation: () => Promise<T>,
+    retryConfig: RetryConfig = {
+      maxAttempts: 3,
+      backoffMultiplier: 2,
+      initialDelayMs: 1000,
+      maxDelayMs: 10000,
+      retryableErrors: RetryHandler.isRetryableError
+    }
+  ): () => Promise<T> {
+    return () => RetryHandler.withRetry(operation, retryConfig)
+  }
+
+  static getCircuitBreaker(serviceName: string): CircuitBreaker {
+    if (!this.circuitBreakers.has(serviceName)) {
+      this.circuitBreakers.set(serviceName, new CircuitBreaker())
+    }
+    return this.circuitBreakers.get(serviceName)!
+  }
+
+  static wrapWithCircuitBreaker<T>(
+    operation: () => Promise<T>,
+    serviceName: string
+  ): () => Promise<T> {
+    const circuitBreaker = this.getCircuitBreaker(serviceName)
+    return () => circuitBreaker.execute(operation)
+  }
+
+  private static generateErrorResponse(
+    error: Error,
+    context: ErrorContext
+  ): Response {
+    let statusCode = 500
+    let code = 'INTERNAL_ERROR'
+    let message = 'An internal error occurred'
+    let details: any = undefined
+
+    // Handle specific error types
+    if (error instanceof APIError) {
+      statusCode = error.statusCode
+      code = error.code
+      message = error.message
+      details = error.details
+    } else if (error instanceof ValidationError) {
+      statusCode = 400
+      code = 'VALIDATION_ERROR'
+      message = error.message
+      details = error.details
+    }
+
+    const responseBody = {
+      error: true,
+      code,
+      message,
+      ...(details && { details }),
+      requestId: context.requestId,
+      timestamp: new Date().toISOString()
+    }
+
+    // Add retry-after header for rate limit errors
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+
+    if (error instanceof RateLimitError) {
+      headers['Retry-After'] = error.retryAfter.toString()
+    }
+
+    return new Response(
+      JSON.stringify(responseBody),
+      { status: statusCode, headers }
+    )
+  }
+
+  static getMetrics(): ErrorMetrics {
+    return this.metricsCollector.getMetrics()
+  }
+
+  static getCircuitBreakerStats(): Record<string, any> {
+    const stats: Record<string, any> = {}
+    
+    for (const [serviceName, breaker] of this.circuitBreakers.entries()) {
+      stats[serviceName] = breaker.getState()
+    }
+    
+    return stats
+  }
+
+  static resetMetrics(): void {
+    this.metricsCollector.reset()
+  }
+}
+
+// Validation utilities
+export class Validator {
+  static required(value: any, fieldName: string): void {
+    if (value === null || value === undefined || value === '') {
+      throw new ValidationError(`${fieldName} is required`)
+    }
+  }
+
+  static email(email: string): void {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      throw new ValidationError('Invalid email format')
+    }
+  }
+
+  static minLength(value: string, minLength: number, fieldName: string): void {
+    if (value.length < minLength) {
+      throw new ValidationError(
+        `${fieldName} must be at least ${minLength} characters long`
+      )
+    }
+  }
+
+  static maxLength(value: string, maxLength: number, fieldName: string): void {
+    if (value.length > maxLength) {
+      throw new ValidationError(
+        `${fieldName} must not exceed ${maxLength} characters`
+      )
+    }
+  }
+
+  static numeric(value: any, fieldName: string): void {
+    if (isNaN(Number(value))) {
+      throw new ValidationError(`${fieldName} must be a number`)
+    }
+  }
+
+  static uuid(value: string, fieldName: string): void {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(value)) {
+      throw new ValidationError(`${fieldName} must be a valid UUID`)
+    }
+  }
+
+  static oneOf(value: any, allowedValues: any[], fieldName: string): void {
+    if (!allowedValues.includes(value)) {
+      throw new ValidationError(
+        `${fieldName} must be one of: ${allowedValues.join(', ')}`
+      )
+    }
+  }
+}
+
+// Request context builder
+export class ContextBuilder {
+  static async buildFromRequest(
+    req: Request,
+    functionName: string
+  ): Promise<ErrorContext> {
+    const url = new URL(req.url)
+    
+    return {
+      functionName,
+      timestamp: Date.now(),
+      method: req.method,
+      path: url.pathname,
+      ip: req.headers.get('x-forwarded-for') || 
+          req.headers.get('x-real-ip') || 
+          'unknown',
+      userAgent: req.headers.get('user-agent') || 'unknown',
+      requestId: req.headers.get('x-request-id') || 
+                crypto.randomUUID(),
+      headers: Object.fromEntries(req.headers.entries())
+    }
+  }
+
+  static withUser(context: ErrorContext, userId: string): ErrorContext {
+    return { ...context, userId }
+  }
+
+  static withBody(context: ErrorContext, body: any): ErrorContext {
+    return { ...context, body }
+  }
+}
+
+// Global error metrics instance
+export const globalErrorMetrics = new ErrorMetricsCollector()
+
+// Utility functions
+export function createErrorResponse(
+  message: string,
+  statusCode: number = 500,
+  code: string = 'ERROR',
+  details?: any
+): Response {
+  return new Response(
+    JSON.stringify({
+      error: true,
+      code,
+      message,
+      ...(details && { details }),
+      timestamp: new Date().toISOString()
+    }),
+    {
+      status: statusCode,
+      headers: { 'Content-Type': 'application/json' }
+    }
+  )
+}
+
+export function isProduction(): boolean {
+  return Deno.env.get('ENVIRONMENT') === 'production'
+}
+
+export function shouldExposeStackTrace(): boolean {
+  return !isProduction() || Deno.env.get('EXPOSE_STACK_TRACE') === 'true'
+}

@@ -39,7 +39,7 @@ export function EnhancedHeroSection() {
   useEffect(() => {
     const createParticles = () => {
       const newParticles: FloatingParticle[] = []
-      const colors = ['#D4AF37', '#7C3AED', '#6366F1', '#10B981', '#EC4899']
+      const colors = ['#2563eb', '#4f46e5', '#1d4ed8', '#4338ca', '#3730a3']
       
       for (let i = 0; i < 50; i++) {
         newParticles.push({
@@ -99,10 +99,10 @@ export function EnhancedHeroSection() {
       description: 'Project completion rate'
     },
     { 
-      label: 'Active Prophets', 
+      label: 'Active Members', 
       value: '2.5K+',
       icon: Users,
-      color: 'text-vibe-accent',
+      color: 'text-indigo-700',
       description: 'Community members worldwide'
     },
   ]
@@ -118,7 +118,7 @@ export function EnhancedHeroSection() {
         style={{ y, opacity }}
       >
         {/* Primary Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-100 to-blue-600" />
         
         {/* Sacred Geometry Layers */}
         <div className="absolute inset-0 opacity-20">
@@ -255,8 +255,8 @@ export function EnhancedHeroSection() {
             transition={{ duration: 1, delay: 0.5 }}
           >
             <span className="block">Master the</span>
-            <span className="block bg-gradient-to-r from-sacred-gold via-sacred-purple to-vibe-primary bg-clip-text text-transparent font-sacred animate-pulse">
-              10 Sacred Commandments
+            <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent font-serif animate-pulse">
+              10 AgentLand Commandments
             </span>
             <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl mt-4">
               of{' '}
@@ -275,8 +275,8 @@ export function EnhancedHeroSection() {
           >
             <p className="text-xl text-blue-200 sm:text-2xl md:text-3xl leading-relaxed mb-6">
               Ascend from coding novice to{' '}
-              <span className="text-sacred-gold font-semibold bg-sacred-gold/10 px-2 py-1 rounded">
-                AI-assisted development prophet
+              <span className="text-blue-600 font-semibold bg-blue-600/10 px-2 py-1 rounded">
+                AI-assisted development expert
               </span>
             </p>
             <p className="text-lg text-blue-300 sm:text-xl leading-relaxed">
@@ -300,7 +300,7 @@ export function EnhancedHeroSection() {
               <Link href="/workshops">
                 <span className="relative z-10 flex items-center gap-3">
                   <Crown className="w-6 h-6" />
-                  Begin Your Sacred Journey
+                  Begin Your AgentLand Journey
                   <Play className="w-6 h-6 transition-transform group-hover:scale-110" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

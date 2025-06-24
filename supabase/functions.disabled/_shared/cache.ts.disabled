@@ -1,0 +1,485 @@
+// =============================================
+// Enterprise Caching Strategy for Edge Functions
+// =============================================
+
+export interface CacheEntry<T = any> {
+  data: T
+  timestamp: number
+  ttl: number
+  tags: string[]
+  size: number
+}
+
+export interface CacheOptions {
+  ttl?: number // Time to live in seconds
+  tags?: string[] // Cache tags for invalidation
+  maxSize?: number // Maximum size in bytes
+}
+
+export interface CacheStats {
+  hits: number
+  misses: number
+  evictions: number
+  size: number
+  entryCount: number
+}
+
+// Multi-level cache implementation
+export class EdgeCache {
+  private memory: Map<string, CacheEntry> = new Map()
+  private lru: string[] = [] // Least recently used tracking
+  private stats: CacheStats = { hits: 0, misses: 0, evictions: 0, size: 0, entryCount: 0 }
+  
+  private readonly maxMemorySize: number
+  private readonly maxEntries: number
+  private readonly defaultTtl: number
+  
+  constructor(
+    maxMemorySize: number = 50 * 1024 * 1024, // 50MB
+    maxEntries: number = 10000,
+    defaultTtl: number = 300 // 5 minutes
+  ) {
+    this.maxMemorySize = maxMemorySize
+    this.maxEntries = maxEntries
+    this.defaultTtl = defaultTtl
+    
+    // Start cleanup interval
+    this.startCleanup()
+  }
+
+  // Get item from cache
+  get<T = any>(key: string): T | null {
+    const entry = this.memory.get(key)
+    
+    if (!entry) {
+      this.stats.misses++
+      return null
+    }
+
+    // Check if expired
+    if (this.isExpired(entry)) {
+      this.delete(key)
+      this.stats.misses++
+      return null
+    }
+
+    // Update LRU
+    this.updateLru(key)
+    this.stats.hits++
+    
+    return entry.data as T
+  }
+
+  // Set item in cache
+  set<T = any>(key: string, data: T, options: CacheOptions = {}): void {
+    const ttl = (options.ttl || this.defaultTtl) * 1000
+    const tags = options.tags || []
+    const serializedData = JSON.stringify(data)
+    const size = new Blob([serializedData]).size
+    
+    // Check if single item exceeds max size
+    if (options.maxSize && size > options.maxSize) {
+      console.warn(`Cache item too large: ${key} (${size} bytes)`)
+      return
+    }
+
+    const entry: CacheEntry<T> = {
+      data,
+      timestamp: Date.now(),
+      ttl,
+      tags,
+      size
+    }
+
+    // Remove existing entry if it exists
+    if (this.memory.has(key)) {
+      this.delete(key)
+    }
+
+    // Ensure space available
+    this.ensureSpace(size)
+    
+    // Add to cache
+    this.memory.set(key, entry)
+    this.lru.push(key)
+    this.stats.size += size
+    this.stats.entryCount++
+  }
+
+  // Delete item from cache
+  delete(key: string): boolean {
+    const entry = this.memory.get(key)
+    if (!entry) return false
+
+    this.memory.delete(key)
+    this.removeLru(key)
+    this.stats.size -= entry.size
+    this.stats.entryCount--
+    
+    return true
+  }
+
+  // Check if item exists and is not expired
+  has(key: string): boolean {
+    const entry = this.memory.get(key)
+    if (!entry) return false
+    
+    if (this.isExpired(entry)) {
+      this.delete(key)
+      return false
+    }
+    
+    return true
+  }
+
+  // Clear all cache
+  clear(): void {
+    this.memory.clear()
+    this.lru = []
+    this.stats = { hits: 0, misses: 0, evictions: 0, size: 0, entryCount: 0 }
+  }
+
+  // Invalidate by tags
+  invalidateByTags(tags: string[]): number {
+    let invalidated = 0
+    const keysToDelete: string[] = []
+    
+    for (const [key, entry] of this.memory.entries()) {
+      if (entry.tags.some(tag => tags.includes(tag))) {
+        keysToDelete.push(key)
+      }
+    }
+    
+    for (const key of keysToDelete) {
+      this.delete(key)
+      invalidated++
+    }
+    
+    return invalidated
+  }
+
+  // Get cache statistics
+  getStats(): CacheStats {
+    return { ...this.stats }
+  }
+
+  // Get cache hit ratio
+  getHitRatio(): number {
+    const total = this.stats.hits + this.stats.misses
+    return total > 0 ? this.stats.hits / total : 0
+  }
+
+  // Helper method for conditional caching
+  async getOrSet<T = any>(
+    key: string, 
+    factory: () => Promise<T>, 
+    options: CacheOptions = {}
+  ): Promise<T> {
+    const cached = this.get<T>(key)
+    if (cached !== null) {
+      return cached
+    }
+
+    const data = await factory()
+    this.set(key, data, options)
+    return data
+  }
+
+  // Batch operations
+  getMultiple<T = any>(keys: string[]): Map<string, T> {
+    const results = new Map<string, T>()
+    
+    for (const key of keys) {
+      const value = this.get<T>(key)
+      if (value !== null) {
+        results.set(key, value)
+      }
+    }
+    
+    return results
+  }
+
+  setMultiple<T = any>(entries: Map<string, T>, options: CacheOptions = {}): void {
+    for (const [key, value] of entries.entries()) {
+      this.set(key, value, options)
+    }
+  }
+
+  // Private methods
+  private isExpired(entry: CacheEntry): boolean {
+    return Date.now() - entry.timestamp > entry.ttl
+  }
+
+  private updateLru(key: string): void {
+    const index = this.lru.indexOf(key)
+    if (index > -1) {
+      this.lru.splice(index, 1)
+    }
+    this.lru.push(key)
+  }
+
+  private removeLru(key: string): void {
+    const index = this.lru.indexOf(key)
+    if (index > -1) {
+      this.lru.splice(index, 1)
+    }
+  }
+
+  private ensureSpace(requiredSize: number): void {
+    // Check if we need to evict entries
+    while (
+      (this.stats.size + requiredSize > this.maxMemorySize || 
+       this.stats.entryCount >= this.maxEntries) &&
+      this.lru.length > 0
+    ) {
+      const lruKey = this.lru[0]
+      this.delete(lruKey)
+      this.stats.evictions++
+    }
+  }
+
+  private startCleanup(): void {
+    setInterval(() => {
+      this.cleanup()
+    }, 60000) // Every minute
+  }
+
+  private cleanup(): void {
+    const now = Date.now()
+    const expiredKeys: string[] = []
+    
+    for (const [key, entry] of this.memory.entries()) {
+      if (now - entry.timestamp > entry.ttl) {
+        expiredKeys.push(key)
+      }
+    }
+    
+    for (const key of expiredKeys) {
+      this.delete(key)
+    }
+  }
+}
+
+// Specialized cache patterns
+export class UserSessionCache extends EdgeCache {
+  constructor() {
+    super(10 * 1024 * 1024, 5000, 900) // 10MB, 5000 entries, 15 min TTL
+  }
+
+  setUserSession(userId: string, sessionData: any): void {
+    this.set(`session:${userId}`, sessionData, {
+      ttl: 900, // 15 minutes
+      tags: ['user_session', `user:${userId}`]
+    })
+  }
+
+  getUserSession(userId: string): any | null {
+    return this.get(`session:${userId}`)
+  }
+
+  invalidateUserSessions(userId: string): void {
+    this.invalidateByTags([`user:${userId}`])
+  }
+}
+
+export class ContentCache extends EdgeCache {
+  constructor() {
+    super(20 * 1024 * 1024, 2000, 1800) // 20MB, 2000 entries, 30 min TTL
+  }
+
+  setCommandmentContent(commandmentId: number, content: any): void {
+    this.set(`commandment:${commandmentId}`, content, {
+      ttl: 1800, // 30 minutes
+      tags: ['content', 'commandment', `commandment:${commandmentId}`]
+    })
+  }
+
+  getCommandmentContent(commandmentId: number): any | null {
+    return this.get(`commandment:${commandmentId}`)
+  }
+
+  setWorkshopContent(workshopId: string, content: any): void {
+    this.set(`workshop:${workshopId}`, content, {
+      ttl: 1800,
+      tags: ['content', 'workshop', `workshop:${workshopId}`]
+    })
+  }
+
+  getWorkshopContent(workshopId: string): any | null {
+    return this.get(`workshop:${workshopId}`)
+  }
+
+  invalidateContent(): void {
+    this.invalidateByTags(['content'])
+  }
+}
+
+export class DatabaseQueryCache extends EdgeCache {
+  constructor() {
+    super(15 * 1024 * 1024, 3000, 300) // 15MB, 3000 entries, 5 min TTL
+  }
+
+  setQueryResult(queryHash: string, result: any, tableName?: string): void {
+    const tags = ['query']
+    if (tableName) {
+      tags.push(`table:${tableName}`)
+    }
+
+    this.set(`query:${queryHash}`, result, {
+      ttl: 300, // 5 minutes
+      tags
+    })
+  }
+
+  getQueryResult(queryHash: string): any | null {
+    return this.get(`query:${queryHash}`)
+  }
+
+  invalidateTable(tableName: string): void {
+    this.invalidateByTags([`table:${tableName}`])
+  }
+
+  // Helper to generate consistent query hashes
+  static generateQueryHash(query: string, params: any[] = []): string {
+    const combined = query + JSON.stringify(params)
+    return btoa(combined).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32)
+  }
+}
+
+// Cache factory for creating cache instances
+export class CacheFactory {
+  private static instances: Map<string, EdgeCache> = new Map()
+
+  static getUserSessionCache(): UserSessionCache {
+    if (!this.instances.has('user_session')) {
+      this.instances.set('user_session', new UserSessionCache())
+    }
+    return this.instances.get('user_session') as UserSessionCache
+  }
+
+  static getContentCache(): ContentCache {
+    if (!this.instances.has('content')) {
+      this.instances.set('content', new ContentCache())
+    }
+    return this.instances.get('content') as ContentCache
+  }
+
+  static getDatabaseQueryCache(): DatabaseQueryCache {
+    if (!this.instances.has('db_query')) {
+      this.instances.set('db_query', new DatabaseQueryCache())
+    }
+    return this.instances.get('db_query') as DatabaseQueryCache
+  }
+
+  static getCustomCache(name: string, options?: {
+    maxMemorySize?: number
+    maxEntries?: number
+    defaultTtl?: number
+  }): EdgeCache {
+    if (!this.instances.has(name)) {
+      this.instances.set(name, new EdgeCache(
+        options?.maxMemorySize,
+        options?.maxEntries,
+        options?.defaultTtl
+      ))
+    }
+    return this.instances.get(name)!
+  }
+
+  // Get cache statistics for all instances
+  static getAllStats(): Record<string, CacheStats> {
+    const stats: Record<string, CacheStats> = {}
+    
+    for (const [name, cache] of this.instances.entries()) {
+      stats[name] = cache.getStats()
+    }
+    
+    return stats
+  }
+
+  // Clear all caches
+  static clearAll(): void {
+    for (const cache of this.instances.values()) {
+      cache.clear()
+    }
+  }
+}
+
+// Cache decorator for functions
+export function cached<T extends (...args: any[]) => Promise<any>>(
+  cacheName: string,
+  options: CacheOptions & { 
+    keyGenerator?: (...args: Parameters<T>) => string 
+  } = {}
+) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value
+
+    descriptor.value = async function (...args: Parameters<T>) {
+      const cache = CacheFactory.getCustomCache(cacheName)
+      const key = options.keyGenerator ? 
+        options.keyGenerator(...args) : 
+        `${propertyKey}:${JSON.stringify(args)}`
+
+      const cached = cache.get(key)
+      if (cached !== null) {
+        return cached
+      }
+
+      const result = await originalMethod.apply(this, args)
+      cache.set(key, result, options)
+      
+      return result
+    }
+
+    return descriptor
+  }
+}
+
+// Cache warming utility
+export class CacheWarmer {
+  private cache: EdgeCache
+  private warmupTasks: Array<{
+    key: string
+    factory: () => Promise<any>
+    options: CacheOptions
+    priority: number
+  }> = []
+
+  constructor(cache: EdgeCache) {
+    this.cache = cache
+  }
+
+  addWarmupTask(
+    key: string, 
+    factory: () => Promise<any>, 
+    options: CacheOptions = {}, 
+    priority: number = 1
+  ): void {
+    this.warmupTasks.push({ key, factory, options, priority })
+  }
+
+  async warmup(): Promise<void> {
+    // Sort by priority (higher priority first)
+    this.warmupTasks.sort((a, b) => b.priority - a.priority)
+
+    const promises = this.warmupTasks.map(async (task) => {
+      try {
+        if (!this.cache.has(task.key)) {
+          const data = await task.factory()
+          this.cache.set(task.key, data, task.options)
+        }
+      } catch (error) {
+        console.error(`Cache warmup failed for key ${task.key}:`, error)
+      }
+    })
+
+    await Promise.allSettled(promises)
+  }
+}
+
+// Export singleton instances for global use
+export const globalCache = new EdgeCache()
+export const userSessionCache = CacheFactory.getUserSessionCache()
+export const contentCache = CacheFactory.getContentCache()
+export const dbQueryCache = CacheFactory.getDatabaseQueryCache()

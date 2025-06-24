@@ -1,0 +1,477 @@
+// =============================================
+// Enterprise Rate Limiting System for Edge Functions
+// =============================================
+
+export interface RateLimitConfig {
+  maxRequests: number
+  windowMs: number
+  keyGenerator?: (req: Request) => string
+  skip?: (req: Request) => boolean
+  onLimitReached?: (req: Request, info: RateLimitInfo) => void
+}
+
+export interface RateLimitInfo {
+  totalHits: number
+  remainingRequests: number
+  resetTime: number
+  windowStart: number
+}
+
+export interface RateLimitResult {
+  allowed: boolean
+  info: RateLimitInfo
+}
+
+// Token bucket rate limiter for smooth rate limiting
+export class TokenBucketLimiter {
+  private buckets: Map<string, {
+    tokens: number
+    lastRefill: number
+    capacity: number
+    refillRate: number
+  }> = new Map()
+
+  constructor(
+    private capacity: number,
+    private refillRate: number, // tokens per second
+    private cleanupInterval: number = 300000 // 5 minutes
+  ) {
+    this.startCleanup()
+  }
+
+  isAllowed(key: string, tokens: number = 1): boolean {
+    const now = Date.now()
+    let bucket = this.buckets.get(key)
+
+    if (!bucket) {
+      bucket = {
+        tokens: this.capacity,
+        lastRefill: now,
+        capacity: this.capacity,
+        refillRate: this.refillRate
+      }
+      this.buckets.set(key, bucket)
+    }
+
+    // Refill tokens based on elapsed time
+    const elapsedMs = now - bucket.lastRefill
+    const tokensToAdd = (elapsedMs / 1000) * bucket.refillRate
+    bucket.tokens = Math.min(bucket.capacity, bucket.tokens + tokensToAdd)
+    bucket.lastRefill = now
+
+    // Check if enough tokens available
+    if (bucket.tokens >= tokens) {
+      bucket.tokens -= tokens
+      return true
+    }
+
+    return false
+  }
+
+  getRemainingTokens(key: string): number {
+    const bucket = this.buckets.get(key)
+    if (!bucket) return this.capacity
+
+    const now = Date.now()
+    const elapsedMs = now - bucket.lastRefill
+    const tokensToAdd = (elapsedMs / 1000) * bucket.refillRate
+    
+    return Math.min(bucket.capacity, bucket.tokens + tokensToAdd)
+  }
+
+  private startCleanup(): void {
+    setInterval(() => {
+      const cutoff = Date.now() - this.cleanupInterval
+      for (const [key, bucket] of this.buckets.entries()) {
+        if (bucket.lastRefill < cutoff) {
+          this.buckets.delete(key)
+        }
+      }
+    }, this.cleanupInterval)
+  }
+}
+
+// Sliding window rate limiter
+export class SlidingWindowLimiter {
+  private windows: Map<string, {
+    requests: number[]
+    windowStart: number
+  }> = new Map()
+
+  constructor(
+    private maxRequests: number,
+    private windowMs: number,
+    private cleanupInterval: number = 300000
+  ) {
+    this.startCleanup()
+  }
+
+  check(key: string): RateLimitResult {
+    const now = Date.now()
+    const windowStart = now - this.windowMs
+    
+    let window = this.windows.get(key)
+    if (!window) {
+      window = { requests: [], windowStart: now }
+      this.windows.set(key, window)
+    }
+
+    // Remove old requests outside the window
+    window.requests = window.requests.filter(timestamp => timestamp > windowStart)
+
+    const info: RateLimitInfo = {
+      totalHits: window.requests.length,
+      remainingRequests: Math.max(0, this.maxRequests - window.requests.length),
+      resetTime: Math.min(...window.requests) + this.windowMs,
+      windowStart
+    }
+
+    if (window.requests.length >= this.maxRequests) {
+      return { allowed: false, info }
+    }
+
+    // Add current request
+    window.requests.push(now)
+    info.totalHits++
+    info.remainingRequests--
+
+    return { allowed: true, info }
+  }
+
+  private startCleanup(): void {
+    setInterval(() => {
+      const cutoff = Date.now() - this.windowMs * 2
+      for (const [key, window] of this.windows.entries()) {
+        window.requests = window.requests.filter(timestamp => timestamp > cutoff)
+        if (window.requests.length === 0 && window.windowStart < cutoff) {
+          this.windows.delete(key)
+        }
+      }
+    }, this.cleanupInterval)
+  }
+}
+
+// Adaptive rate limiter that adjusts based on system load
+export class AdaptiveRateLimiter {
+  private baseLimiter: SlidingWindowLimiter
+  private loadMetrics: Array<{ timestamp: number; load: number }> = []
+  private adaptationFactor = 1.0
+
+  constructor(
+    maxRequests: number,
+    windowMs: number,
+    private loadThreshold: number = 0.8
+  ) {
+    this.baseLimiter = new SlidingWindowLimiter(maxRequests, windowMs)
+  }
+
+  check(key: string, currentLoad: number = 0): RateLimitResult {
+    this.updateLoadMetrics(currentLoad)
+    this.adjustAdaptationFactor()
+    
+    const adjustedLimit = Math.floor(this.baseLimiter['maxRequests'] * this.adaptationFactor)
+    
+    // Temporarily adjust the base limiter's max requests
+    const originalMax = this.baseLimiter['maxRequests']
+    this.baseLimiter['maxRequests'] = adjustedLimit
+    
+    const result = this.baseLimiter.check(key)
+    
+    // Restore original limit
+    this.baseLimiter['maxRequests'] = originalMax
+    
+    return result
+  }
+
+  private updateLoadMetrics(load: number): void {
+    const now = Date.now()
+    this.loadMetrics.push({ timestamp: now, load })
+    
+    // Keep only last 5 minutes of data
+    const cutoff = now - 300000
+    this.loadMetrics = this.loadMetrics.filter(metric => metric.timestamp > cutoff)
+  }
+
+  private adjustAdaptationFactor(): void {
+    if (this.loadMetrics.length === 0) return
+
+    const recentLoad = this.loadMetrics.slice(-10) // Last 10 measurements
+    const avgLoad = recentLoad.reduce((sum, metric) => sum + metric.load, 0) / recentLoad.length
+
+    if (avgLoad > this.loadThreshold) {
+      // High load: reduce rate limit
+      this.adaptationFactor = Math.max(0.5, this.adaptationFactor - 0.1)
+    } else if (avgLoad < this.loadThreshold * 0.6) {
+      // Low load: increase rate limit
+      this.adaptationFactor = Math.min(1.5, this.adaptationFactor + 0.1)
+    }
+  }
+}
+
+// Multi-tier rate limiter for different user types
+export class TieredRateLimiter {
+  private limiters: Map<string, SlidingWindowLimiter> = new Map()
+  private tiers: Map<string, { maxRequests: number; windowMs: number }> = new Map()
+
+  constructor() {
+    // Default tiers
+    this.addTier('free', { maxRequests: 100, windowMs: 60000 }) // 100/min
+    this.addTier('starter', { maxRequests: 300, windowMs: 60000 }) // 300/min
+    this.addTier('pro', { maxRequests: 1000, windowMs: 60000 }) // 1000/min
+    this.addTier('expert', { maxRequests: 5000, windowMs: 60000 }) // 5000/min
+    this.addTier('admin', { maxRequests: 10000, windowMs: 60000 }) // 10000/min
+  }
+
+  addTier(name: string, config: { maxRequests: number; windowMs: number }): void {
+    this.tiers.set(name, config)
+    this.limiters.set(name, new SlidingWindowLimiter(config.maxRequests, config.windowMs))
+  }
+
+  check(key: string, tier: string = 'free'): RateLimitResult {
+    const limiter = this.limiters.get(tier)
+    if (!limiter) {
+      throw new Error(`Unknown tier: ${tier}`)
+    }
+
+    return limiter.check(key)
+  }
+
+  getTierLimits(tier: string): { maxRequests: number; windowMs: number } | null {
+    return this.tiers.get(tier) || null
+  }
+}
+
+// Geographic rate limiter
+export class GeographicRateLimiter {
+  private limiters: Map<string, SlidingWindowLimiter> = new Map()
+  private geoConfig: Map<string, { maxRequests: number; windowMs: number }> = new Map()
+
+  constructor() {
+    // Default geographic limits
+    this.addRegion('default', { maxRequests: 1000, windowMs: 60000 })
+    this.addRegion('high-risk', { maxRequests: 100, windowMs: 60000 })
+    this.addRegion('premium', { maxRequests: 5000, windowMs: 60000 })
+  }
+
+  addRegion(region: string, config: { maxRequests: number; windowMs: number }): void {
+    this.geoConfig.set(region, config)
+    this.limiters.set(region, new SlidingWindowLimiter(config.maxRequests, config.windowMs))
+  }
+
+  check(key: string, region: string = 'default'): RateLimitResult {
+    const limiter = this.limiters.get(region)
+    if (!limiter) {
+      // Fall back to default region
+      return this.limiters.get('default')!.check(key)
+    }
+
+    return limiter.check(key)
+  }
+
+  getRegionFromIP(ip: string): string {
+    // This would integrate with a GeoIP service
+    // For now, return default
+    return 'default'
+  }
+}
+
+// Rate limit middleware factory
+export class RateLimitMiddleware {
+  static create(config: RateLimitConfig) {
+    const limiter = new SlidingWindowLimiter(config.maxRequests, config.windowMs)
+
+    return async (req: Request): Promise<Response | null> => {
+      // Skip if configured to skip
+      if (config.skip && config.skip(req)) {
+        return null
+      }
+
+      // Generate key
+      const key = config.keyGenerator ? 
+        config.keyGenerator(req) : 
+        this.defaultKeyGenerator(req)
+
+      // Check rate limit
+      const result = limiter.check(key)
+
+      if (!result.allowed) {
+        // Call onLimitReached if configured
+        if (config.onLimitReached) {
+          config.onLimitReached(req, result.info)
+        }
+
+        return new Response(
+          JSON.stringify({
+            error: 'Rate limit exceeded',
+            retryAfter: Math.ceil((result.info.resetTime - Date.now()) / 1000)
+          }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-RateLimit-Limit': config.maxRequests.toString(),
+              'X-RateLimit-Remaining': result.info.remainingRequests.toString(),
+              'X-RateLimit-Reset': Math.ceil(result.info.resetTime / 1000).toString(),
+              'Retry-After': Math.ceil((result.info.resetTime - Date.now()) / 1000).toString()
+            }
+          }
+        )
+      }
+
+      // Add rate limit headers to successful responses
+      // This would be done by the calling function
+      return null
+    }
+  }
+
+  private static defaultKeyGenerator(req: Request): string {
+    const ip = req.headers.get('x-forwarded-for') || 
+               req.headers.get('x-real-ip') || 
+               'unknown'
+    return `ip:${ip}`
+  }
+
+  static userKeyGenerator(req: Request): string {
+    const authHeader = req.headers.get('authorization')
+    if (authHeader) {
+      // Extract user ID from JWT or session
+      // This is a simplified version
+      return `user:${btoa(authHeader)}`
+    }
+    return RateLimitMiddleware.defaultKeyGenerator(req)
+  }
+
+  static endpointKeyGenerator(req: Request): string {
+    const url = new URL(req.url)
+    const ip = req.headers.get('x-forwarded-for') || 'unknown'
+    return `endpoint:${ip}:${url.pathname}`
+  }
+}
+
+// Distributed rate limiter (for multi-instance deployments)
+export class DistributedRateLimiter {
+  private localLimiter: SlidingWindowLimiter
+  private syncInterval: number
+
+  constructor(
+    maxRequests: number,
+    windowMs: number,
+    private storageAdapter: RateLimitStorageAdapter,
+    syncIntervalMs: number = 10000
+  ) {
+    this.localLimiter = new SlidingWindowLimiter(maxRequests, windowMs)
+    this.syncInterval = syncIntervalMs
+    this.startSync()
+  }
+
+  async check(key: string): Promise<RateLimitResult> {
+    // Check local first for speed
+    const localResult = this.localLimiter.check(key)
+    
+    if (!localResult.allowed) {
+      return localResult
+    }
+
+    // Then check distributed state
+    try {
+      const distributed = await this.storageAdapter.increment(key)
+      if (distributed && distributed.count > this.localLimiter['maxRequests']) {
+        return {
+          allowed: false,
+          info: {
+            totalHits: distributed.count,
+            remainingRequests: 0,
+            resetTime: distributed.resetTime,
+            windowStart: distributed.windowStart
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Distributed rate limit check failed:', error)
+      // Fall back to local limiter
+    }
+
+    return localResult
+  }
+
+  private startSync(): void {
+    setInterval(async () => {
+      try {
+        await this.storageAdapter.sync()
+      } catch (error) {
+        console.error('Rate limit sync failed:', error)
+      }
+    }, this.syncInterval)
+  }
+}
+
+// Storage adapter interface for distributed rate limiting
+export interface RateLimitStorageAdapter {
+  increment(key: string): Promise<{
+    count: number
+    resetTime: number
+    windowStart: number
+  } | null>
+  
+  sync(): Promise<void>
+}
+
+// Redis adapter for distributed rate limiting
+export class RedisRateLimitAdapter implements RateLimitStorageAdapter {
+  constructor(private redisClient: any) {}
+
+  async increment(key: string): Promise<{
+    count: number
+    resetTime: number
+    windowStart: number
+  } | null> {
+    // Implementation would use Redis MULTI/EXEC for atomic operations
+    // This is a placeholder
+    return null
+  }
+
+  async sync(): Promise<void> {
+    // Sync local state with Redis
+  }
+}
+
+// Factory for creating different types of rate limiters
+export class RateLimiterFactory {
+  static createBasic(maxRequests: number, windowMs: number): SlidingWindowLimiter {
+    return new SlidingWindowLimiter(maxRequests, windowMs)
+  }
+
+  static createTokenBucket(capacity: number, refillRate: number): TokenBucketLimiter {
+    return new TokenBucketLimiter(capacity, refillRate)
+  }
+
+  static createAdaptive(
+    maxRequests: number, 
+    windowMs: number, 
+    loadThreshold: number = 0.8
+  ): AdaptiveRateLimiter {
+    return new AdaptiveRateLimiter(maxRequests, windowMs, loadThreshold)
+  }
+
+  static createTiered(): TieredRateLimiter {
+    return new TieredRateLimiter()
+  }
+
+  static createGeographic(): GeographicRateLimiter {
+    return new GeographicRateLimiter()
+  }
+
+  static createDistributed(
+    maxRequests: number,
+    windowMs: number,
+    storageAdapter: RateLimitStorageAdapter
+  ): DistributedRateLimiter {
+    return new DistributedRateLimiter(maxRequests, windowMs, storageAdapter)
+  }
+}
+
+// Global rate limiter instances
+export const globalRateLimiter = new SlidingWindowLimiter(1000, 60000) // 1000/min
+export const tieredRateLimiter = new TieredRateLimiter()
+export const geoRateLimiter = new GeographicRateLimiter()
+export const tokenBucketLimiter = new TokenBucketLimiter(100, 5) // 100 capacity, 5/second refill

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Vibe Coding Bible</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0A0A0A 0%, #1A1A2E 50%, #16213E 100%);
+      color: #E8E9EA;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 600px;
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 30px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #FFD700, #00BFFF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      color: #B0B3B8;
+    }
+
+    .features {
+      margin: 30px 0;
+      padding: 20px;
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .features h3 {
+      color: #FFD700;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+
+    .features ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .features li {
+      padding: 8px 0;
+      color: #E8E9EA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .features li::before {
+      content: "✨";
+      margin-right: 10px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #000;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+    }
+
+    .button.secondary {
+      background: transparent;
+      border: 2px solid #FFD700;
+      color: #FFD700;
+    }
+
+    .status {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0, 191, 255, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 191, 255, 0.2);
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 10px;
+      animation: blink 2s infinite;
+    }
+
+    .offline { background-color: #FF6B6B; }
+    .online { background-color: #4ECDC4; }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.3; }
+    }
+
+    .cached-content {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .cached-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border-left: 3px solid #FFD700;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2rem; }
+      .container { padding: 20px; }
+      .button { padding: 12px 24px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📱</div>
+    
+    <h1>Offline Modus</h1>
+    
+    <p>
+      Keine Internetverbindung? Kein Problem! Die Vibe Coding Bible funktioniert auch offline 
+      und synchronisiert deine Fortschritte automatisch, sobald du wieder online bist.
+    </p>
+
+    <div class="features">
+      <h3>Verfügbare Offline-Features:</h3>
+      <ul>
+        <li>Gespeicherte Workshop-Inhalte</li>
+        <li>Offline Code-Editor</li>
+        <li>Lokale Fortschrittsspeicherung</li>
+        <li>Cached AI-Mentor Antworten</li>
+        <li>Community-Posts (nur lesen)</li>
+      </ul>
+    </div>
+
+    <div class="status">
+      <div id="connection-status">
+        <span class="status-indicator offline" id="status-indicator"></span>
+        <span id="status-text">Offline - Automatische Synchronisation bei Wiederverbindung</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+      <button class="button" onclick="retryConnection()">
+        🔄 Verbindung prüfen
+      </button>
+      
+      <button class="button secondary" onclick="viewCachedContent()">
+        📦 Offline-Inhalte anzeigen
+      </button>
+    </div>
+
+    <div id="cached-content" class="cached-content" style="display: none;">
+      <h3 style="color: #FFD700; margin-bottom: 15px;">Verfügbare Offline-Inhalte:</h3>
+      <div id="cached-list"></div>
+    </div>
+  </div>
+
+  <script>
+    // Check connection status
+    function updateConnectionStatus() {
+      const indicator = document.getElementById('status-indicator')
+      const statusText = document.getElementById('status-text')
+      
+      if (navigator.onLine) {
+        indicator.className = 'status-indicator online'
+        statusText.textContent = 'Online - Synchronisation läuft...'
+        
+        // Try to reload main app
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 1000)
+      } else {
+        indicator.className = 'status-indicator offline'
+        statusText.textContent = 'Offline - Automatische Synchronisation bei Wiederverbindung'
+      }
+    }
+
+    // Retry connection
+    function retryConnection() {
+      updateConnectionStatus()
+      
+      if (navigator.onLine) {
+        // Test actual connectivity
+        fetch('/', { method: 'HEAD', cache: 'no-cache' })
+          .then(() => {
+            window.location.href = '/'
+          })
+          .catch(() => {
+            alert('Verbindung noch nicht stabil. Versuche es in einem Moment erneut.')
+          })
+      } else {
+        alert('Keine Internetverbindung erkannt. Bitte prüfe deine Netzwerkeinstellungen.')
+      }
+    }
+
+    // View cached content
+    async function viewCachedContent() {
+      const contentDiv = document.getElementById('cached-content')
+      const listDiv = document.getElementById('cached-list')
+      
+      if (contentDiv.style.display === 'none') {
+        try {
+          // Get cached content from service worker
+          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            const channel = new MessageChannel()
+            
+            channel.port1.onmessage = (event) => {
+              if (event.data.type === 'CACHE_STATUS') {
+                listDiv.innerHTML = `
+                  <div class="cached-item">
+                    <strong>📊 Cache-Statistiken:</strong><br>
+                    Anzahl Caches: ${event.data.caches}<br>
+                    Gesamtgröße: ${event.data.totalSize}<br>
+                    Version: ${event.data.version}
+                  </div>
+                `
+                
+                // Add some mock cached items
+                const mockItems = [
+                  { name: '🏠 Dashboard', status: 'Verfügbar' },
+                  { name: '📚 Workshop: Die Heilige Vision', status: 'Verfügbar' },
+                  { name: '🤖 AI-Mentor Persönlichkeiten', status: 'Verfügbar' },
+                  { name: '👥 Community Beiträge (letzte 10)', status: 'Verfügbar' },
+                  { name: '⚙️ Benutzereinstellungen', status: 'Verfügbar' }
+                ]
+                
+                mockItems.forEach(item => {
+                  listDiv.innerHTML += `
+                    <div class="cached-item">
+                      <strong>${item.name}</strong><br>
+                      <small style="color: #4ECDC4;">${item.status}</small>
+                    </div>
+                  `
+                })
+              }
+            }
+            
+            navigator.serviceWorker.controller.postMessage(
+              { type: 'GET_CACHE_STATUS' }, 
+              [channel.port2]
+            )
+          } else {
+            listDiv.innerHTML = `
+              <div class="cached-item">
+                <strong>Service Worker nicht verfügbar</strong><br>
+                <small>Offline-Funktionen sind limitiert</small>
+              </div>
+            `
+          }
+          
+          contentDiv.style.display = 'block'
+        } catch (error) {
+          console.error('Error getting cached content:', error)
+          listDiv.innerHTML = '<div class="cached-item">Fehler beim Laden der Cache-Informationen</div>'
+          contentDiv.style.display = 'block'
+        }
+      } else {
+        contentDiv.style.display = 'none'
+      }
+    }
+
+    // Listen for connection changes
+    window.addEventListener('online', updateConnectionStatus)
+    window.addEventListener('offline', updateConnectionStatus)
+
+    // Initial status check
+    updateConnectionStatus()
+
+    // Auto-retry every 30 seconds
+    setInterval(() => {
+      if (navigator.onLine) {
+        fetch('/', { method: 'HEAD', cache: 'no-cache' })
+          .then(() => {
+            window.location.href = '/'
+          })
+          .catch(() => {
+            // Still offline
+          })
+      }
+    }, 30000)
+
+    // Service Worker messaging
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data.type === 'WORKSHOP_CACHED') {
+          console.log('Workshop cached:', event.data.workshopId)
+        }
+      })
+    }
+
+    console.log('Offline page loaded - PWA functionality active')
+  </script>
+</body>
+</html>

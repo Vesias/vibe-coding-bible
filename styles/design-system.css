@@ -160,7 +160,7 @@
   color: transparent;
 }
 
-/* Legacy gradients - updated for AgentLand alignment */
+/* AgentLand gradient text effects - corporate standard */
 .text-sacred-gradient {
   background: linear-gradient(135deg, #2563eb, #4f46e5);
   background-clip: text;
@@ -178,7 +178,7 @@
 }
 
 .text-mystical-gradient {
-  color: #1f2937; /* Use solid gray-800 for better readability */
+  color: #1f2937; /* AgentLand gray-800 for readability */
 }
 
 /* ===== DESIGN SYSTEM COMPONENTS ===== */

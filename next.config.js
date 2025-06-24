@@ -78,6 +78,12 @@ const nextConfig = {
       ...config.resolve.alias,
       '@/supabase/functions': false,
     }
+    
+    // Additional exclusions for supabase edge functions
+    config.module.rules.push({
+      test: /supabase\/functions/,
+      loader: 'ignore-loader'
+    })
 
     // Add client-side fallbacks
     if (!isServer) {

@@ -2,65 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+/* FONT LOADING MOVED TO NEXT.JS FONT OPTIMIZATION - SEE layout.tsx */
+/* This improves performance by eliminating render-blocking requests */
 
 /* Import Design System CSS */
 @import '../styles/design-system.css';
 
 @layer base {
   :root {
-    /* ===== AGENTLAND-ALIGNED COLOR SYSTEM ===== */
+    /* ===== UNIFIED BRAND COLOR SYSTEM ===== */
     
-    /* Primary AgentLand Colors */
-    --agentland-blue-50: 239 246 255; /* #eff6ff */
-    --agentland-blue-600: 37 99 235; /* #2563eb */
-    --agentland-indigo-100: 224 231 255; /* #e0e7ff */
-    --agentland-indigo-600: 79 70 229; /* #4f46e5 */
-    --agentland-gray-600: 75 85 99; /* #4b5563 */
-    --agentland-gray-800: 31 41 55; /* #1f2937 */
-    --agentland-white: 255 255 255; /* #ffffff */
+    /* Primary Brand Colors - AgentLand Aligned */
+    --brand-primary-50: 239 246 255;     /* #eff6ff - Ultra light backgrounds */
+    --brand-primary-100: 219 234 254;    /* #dbeafe - Light backgrounds */
+    --brand-primary-600: 37 99 235;      /* #2563eb - Primary interactive */
+    --brand-primary-700: 29 78 216;      /* #1d4ed8 - Primary hover */
+    --brand-primary-800: 30 64 175;      /* #1e40af - Primary active */
     
-    /* Brand Color System (Updated to AgentLand Palette) */
-    --brand-primary: var(--agentland-blue-600); /* Primary buttons, CTAs */
-    --brand-secondary: var(--agentland-indigo-600); /* Secondary elements */
-    --brand-accent: var(--agentland-indigo-100); /* Subtle accents */
-    --brand-text-primary: var(--agentland-gray-800); /* Headings */
-    --brand-text-secondary: var(--agentland-gray-600); /* Body text */
-    --brand-background-primary: var(--agentland-blue-50); /* Main background */
-    --brand-background-secondary: var(--agentland-indigo-100); /* Card backgrounds */
+    /* Secondary Brand Colors */
+    --brand-secondary-100: 224 231 255;  /* #e0e7ff - Secondary backgrounds */
+    --brand-secondary-600: 79 70 229;    /* #4f46e5 - Secondary interactive */
+    --brand-secondary-700: 67 56 202;    /* #4338ca - Secondary hover */
     
-    /* Error/Success Colors */
-    --accent-red: 221 0 0; /* #DD0000 - Keep for errors */
-    --accent-green: 34 197 94; /* #22c55e - Success states */
+    /* Neutral Palette - Consistent Grays */
+    --neutral-50: 249 250 251;           /* #f9fafb - Lightest background */
+    --neutral-100: 243 244 246;          /* #f3f4f6 - Light background */
+    --neutral-200: 229 231 235;          /* #e5e7eb - Borders */
+    --neutral-300: 209 213 219;          /* #d1d5db - Disabled elements */
+    --neutral-400: 156 163 175;          /* #9ca3af - Placeholders */
+    --neutral-500: 107 114 128;          /* #6b7280 - Secondary text */
+    --neutral-600: 75 85 99;             /* #4b5563 - Body text */
+    --neutral-700: 55 65 81;             /* #374151 - Emphasized text */
+    --neutral-800: 31 41 55;             /* #1f2937 - Headings */
+    --neutral-900: 17 24 39;             /* #111827 - Maximum contrast */
     
-    /* Legacy Sacred Colors (Gradual migration - will be deprecated) */
-    --sacred-tech-gold: var(--brand-primary); /* Migrate to blue-600 */
-    --sacred-electric-indigo: var(--brand-secondary); /* Migrate to indigo-600 */
-    --sacred-midnight-blue: var(--agentland-gray-800); /* Migrate to gray-800 */
+    /* Semantic Colors - Standardized */
+    --semantic-success: 34 197 94;       /* #22c55e - Success states */
+    --semantic-warning: 245 158 11;      /* #F59E0B - Warning states */
+    --semantic-error: 221 0 0;           /* #DD0000 - Error states */
+    --semantic-info: 37 99 235;          /* #2563eb - Info states */
+    
+    /* Semantic Light Variants */
+    --semantic-success-light: 220 252 231; /* #dcfce7 */
+    --semantic-warning-light: 254 243 199; /* #fef3c7 */
+    --semantic-error-light: 254 226 226;   /* #fee2e2 */
+    --semantic-info-light: 239 246 255;    /* #eff6ff */
+    
+    /* === UNIFIED DESIGN SYSTEM TOKENS === */
+    --background: var(--brand-primary-50);
+    --foreground: var(--neutral-800);
+    --card: 255 255 255;                   /* Pure white for cards */
+    --card-foreground: var(--neutral-800);
+    --popover: 255 255 255;
+    --popover-foreground: var(--neutral-800);
+    --primary: var(--brand-primary-600);
+    --primary-foreground: 255 255 255;
+    --secondary: var(--brand-secondary-100);
+    --secondary-foreground: var(--neutral-800);
+    --muted: var(--neutral-100);
+    --muted-foreground: var(--neutral-600);
+    --accent: var(--brand-secondary-600);
+    --accent-foreground: 255 255 255;
+    --destructive: var(--semantic-error);
+    --destructive-foreground: 255 255 255;
+    --border: var(--neutral-200);
+    --input: var(--neutral-200);
+    --ring: var(--brand-primary-600);
+    --radius: 0.5rem;
+    
+    /* === LEGACY SUPPORT (DEPRECATED - USE NEW SYSTEM) === */
+    --agentland-blue-50: var(--brand-primary-50);
+    --agentland-blue-600: var(--brand-primary-600);
+    --agentland-indigo-100: var(--brand-secondary-100);
+    --agentland-indigo-600: var(--brand-secondary-600);
+    --agentland-gray-600: var(--neutral-600);
+    --agentland-gray-800: var(--neutral-800);
+    --agentland-white: 255 255 255;
+    --sacred-tech-gold: var(--agentland-blue-600);
+    --sacred-electric-indigo: var(--agentland-indigo-600);
+    --sacred-midnight-blue: var(--agentland-gray-800);
     --sacred-cosmic-black: var(--agentland-gray-800);
     --sacred-digital-white: var(--agentland-white);
-    
-    /* Design System Colors */
-    --background: var(--agentland-blue-50);
-    --foreground: var(--agentland-gray-800);
-    --card: var(--agentland-white);
-    --card-foreground: var(--agentland-gray-800);
-    --popover: var(--agentland-white);
-    --popover-foreground: var(--agentland-gray-800);
-    --primary: var(--agentland-blue-600);
-    --primary-foreground: var(--agentland-white);
-    --secondary: var(--agentland-indigo-100);
-    --secondary-foreground: var(--agentland-gray-800);
-    --muted: var(--agentland-indigo-100);
-    --muted-foreground: var(--agentland-gray-600);
-    --accent: var(--agentland-indigo-600);
-    --accent-foreground: var(--agentland-white);
-    --destructive: var(--accent-red);
-    --destructive-foreground: var(--agentland-white);
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: var(--agentland-blue-600);
-    --radius: 0.5rem; /* More standard radius */
   }
 
   .dark {
@@ -188,6 +210,63 @@
   
   .matrix-glow {
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.3);
+  }
+
+  /* === NEW DESIGN SYSTEM UTILITIES === */
+  
+  /* Brand Gradients - Using CSS Variables */
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, hsl(var(--brand-primary-600)) 0%, hsl(var(--brand-secondary-600)) 100%);
+  }
+  
+  .bg-brand-secondary-gradient {
+    background: linear-gradient(90deg, hsl(var(--brand-primary-600)) 0%, hsl(var(--brand-primary-700)) 100%);
+  }
+  
+  .bg-neutral-gradient {
+    background: linear-gradient(90deg, hsl(var(--neutral-800)) 0%, hsl(var(--neutral-700)) 100%);
+  }
+  
+  .bg-matrix-gradient {
+    background: linear-gradient(90deg, hsl(var(--neutral-700)) 0%, hsl(var(--neutral-800)) 100%);
+  }
+  
+  .bg-brand-divine-gradient {
+    background: linear-gradient(90deg, hsl(var(--brand-primary-600)) 0%, hsl(var(--brand-secondary-600)) 50%, hsl(var(--brand-primary-600)) 100%);
+  }
+  
+  /* Shadow System - Using CSS Variables */
+  .shadow-brand-sm {
+    box-shadow: 0 2px 4px 0 hsl(var(--neutral-800) / 0.2);
+  }
+  
+  .shadow-brand-md {
+    box-shadow: 0 4px 12px 0 hsl(var(--brand-primary-600) / 0.25), 0 0 0 1px hsl(var(--brand-secondary-600) / 0.2);
+  }
+  
+  .shadow-brand-lg {
+    box-shadow: 0 8px 25px 0 hsl(var(--brand-primary-600) / 0.3), 0 0 0 1px hsl(var(--brand-secondary-600) / 0.3);
+  }
+  
+  .shadow-brand-glow {
+    box-shadow: 0 0 20px hsl(var(--brand-primary-600) / 0.4), 0 0 40px hsl(var(--brand-secondary-600) / 0.2);
+  }
+  
+  .shadow-brand-divine {
+    box-shadow: 0 0 30px hsl(var(--brand-primary-600) / 0.5), 0 0 60px hsl(var(--brand-secondary-600) / 0.3);
+  }
+  
+  .shadow-matrix-glow {
+    box-shadow: 0 0 10px hsl(var(--semantic-success) / 0.5), 0 0 20px hsl(var(--semantic-success) / 0.3);
+  }
+
+  /* Text Gradients - Unified System */
+  .text-brand-gradient {
+    background: linear-gradient(to right, hsl(var(--brand-primary-600)), hsl(var(--brand-secondary-600)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   .prophet-card {

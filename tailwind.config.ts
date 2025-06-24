@@ -17,61 +17,73 @@ const config: Config = {
         "2xl": "1400px",
       },
     },
+    
+    // PWA and Mobile optimizations
+    screens: {
+      'xs': '375px',      // Small mobile
+      'sm': '640px',      // Mobile
+      'md': '768px',      // Tablet
+      'lg': '1024px',     // Desktop
+      'xl': '1280px',     // Large desktop
+      '2xl': '1536px',    // Extra large
+      
+      // PWA specific breakpoints
+      'pwa': { 'raw': '(display-mode: standalone)' },
+      'pwa-ios': { 'raw': '(display-mode: standalone) and (-webkit-touch-callout: none)' },
+      'pwa-android': { 'raw': '(display-mode: standalone) and (orientation: portrait)' },
+      
+      // Touch device targeting
+      'touch': { 'raw': '(hover: none) and (pointer: coarse)' },
+      'no-touch': { 'raw': '(hover: hover) and (pointer: fine)' },
+      
+      // Orientation
+      'portrait': { 'raw': '(orientation: portrait)' },
+      'landscape': { 'raw': '(orientation: landscape)' },
+      
+      // High DPI displays
+      'retina': { 'raw': '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)' },
+    },
     extend: {
       colors: {
-        // ===== AGENTLAND-ALIGNED COLOR SYSTEM =====
-        agentland: {
-          // Primary blue palette
-          'blue-50': '#eff6ff',
-          'blue-600': '#2563eb',
-          // Secondary indigo palette
-          'indigo-100': '#e0e7ff',
-          'indigo-600': '#4f46e5',
-          // Neutral grays
-          'gray-600': '#4b5563',
-          'gray-800': '#1f2937',
-          'white': '#ffffff'
-        },
-        
-        // ===== UPDATED BRAND COLOR SYSTEM =====
-        brand: {
-          // Primary: AgentLand Blue
-          50: '#eff6ff',   // Ultra light background
+        // ===== UNIFIED BRAND COLOR SYSTEM =====
+        'brand-primary': {
+          50: '#eff6ff',   // Ultra light backgrounds
+          100: '#dbeafe',  // Light backgrounds 
           600: '#2563eb',  // Primary interactive
-          // Secondary: AgentLand Indigo
-          'indigo-100': '#e0e7ff', // Secondary background
-          'indigo-600': '#4f46e5', // Secondary interactive
-          // Text colors
-          'text-primary': '#1f2937',  // Gray-800 for headings
-          'text-secondary': '#4b5563', // Gray-600 for body
+          700: '#1d4ed8',  // Primary hover
+          800: '#1e40af',  // Primary active
         },
         
-        // ===== SEMANTIC COLORS (Updated) =====
-        accent: {
-          red: '#DD0000',     // Error states (keep existing)
-          green: '#22c55e',   // Success states
-          blue: '#2563eb',    // Primary CTA
-          indigo: '#4f46e5',  // Secondary CTA
+        'brand-secondary': {
+          100: '#e0e7ff',  // Secondary backgrounds
+          600: '#4f46e5',  // Secondary interactive
+          700: '#4338ca',  // Secondary hover
         },
         
-        // ===== SEMANTIC COLORS (AgentLand-aligned) =====
+        // ===== SEMANTIC COLOR SYSTEM =====
         semantic: {
-          success: '#22c55e',    // Green for success
-          warning: '#F59E0B',    // Keep existing warning
-          error: '#DD0000',      // Keep existing error
-          info: '#2563eb',       // Blue-600 for info
-          
-          // Light variants
-          successLight: '#dcfce7', // Green-100
-          warningLight: '#fef3c7', // Yellow-100
-          errorLight: '#fee2e2',   // Red-100
-          infoLight: '#eff6ff',    // Blue-50
-          
-          // Dark variants
-          successDark: '#166534',  // Green-800
-          warningDark: '#92400e',  // Yellow-800
-          errorDark: '#991b1b',    // Red-800
-          infoDark: '#1e40af'      // Blue-800
+          success: '#22c55e',       // Success states
+          'success-light': '#dcfce7', // Success backgrounds
+          warning: '#F59E0B',       // Warning states  
+          'warning-light': '#fef3c7', // Warning backgrounds
+          error: '#DD0000',         // Error states
+          'error-light': '#fee2e2',   // Error backgrounds
+          info: '#2563eb',          // Info states
+          'info-light': '#eff6ff',    // Info backgrounds
+        },
+        
+        // ===== NEUTRAL PALETTE =====
+        neutral: {
+          50: '#f9fafb',   // Lightest background
+          100: '#f3f4f6',  // Light background
+          200: '#e5e7eb',  // Borders
+          300: '#d1d5db',  // Disabled elements
+          400: '#9ca3af',  // Placeholders
+          500: '#6b7280',  // Secondary text
+          600: '#4b5563',  // Body text
+          700: '#374151',  // Emphasized text
+          800: '#1f2937',  // Headings
+          900: '#111827',  // Maximum contrast
         },
         
         // Standard Tailwind colors (kept for compatibility)
@@ -88,15 +100,27 @@ const config: Config = {
           900: '#0f172a',
           950: '#020617'
         },
-        // Standard Tailwind colors updated for AgentLand alignment
+        // ===== LEGACY COMPATIBILITY =====
+        // Maintain these for backward compatibility during migration
+        agentland: {
+          'blue-50': '#eff6ff',
+          'blue-600': '#2563eb', 
+          'indigo-100': '#e0e7ff',
+          'indigo-600': '#4f46e5',
+          'gray-600': '#4b5563',
+          'gray-800': '#1f2937',
+          'white': '#ffffff'
+        },
+        
+        // Standard Tailwind colors (kept for compatibility)
         blue: {
-          50: '#eff6ff',   // AgentLand primary background
+          50: '#eff6ff',
           100: '#dbeafe',
-          200: '#bfdbfe',
+          200: '#bfdbfe', 
           300: '#93c5fd',
           400: '#60a5fa',
           500: '#3b82f6',
-          600: '#2563eb', // AgentLand primary
+          600: '#2563eb', // Primary brand color
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
@@ -104,12 +128,12 @@ const config: Config = {
         },
         indigo: {
           50: '#eef2ff',
-          100: '#e0e7ff', // AgentLand secondary background
+          100: '#e0e7ff', // Secondary brand color
           200: '#c7d2fe',
-          300: '#a5b4fc',
+          300: '#a5b4fc', 
           400: '#818cf8',
           500: '#6366f1',
-          600: '#4f46e5', // AgentLand secondary
+          600: '#4f46e5', // Secondary brand color
           700: '#4338ca',
           800: '#3730a3',
           900: '#312e81',
@@ -122,9 +146,9 @@ const config: Config = {
           300: '#d1d5db',
           400: '#9ca3af',
           500: '#6b7280',
-          600: '#4b5563', // AgentLand body text
+          600: '#4b5563', // Body text
           700: '#374151',
-          800: '#1f2937', // AgentLand headings
+          800: '#1f2937', // Headings
           900: '#111827',
           950: '#030712'
         },
@@ -254,7 +278,24 @@ const config: Config = {
         '108': '27rem',
         '112': '28rem',
         '116': '29rem',
-        '120': '30rem'
+        '120': '30rem',
+        
+        // PWA safe area insets
+        'safe-top': 'env(safe-area-inset-top)',
+        'safe-bottom': 'env(safe-area-inset-bottom)',
+        'safe-left': 'env(safe-area-inset-left)',
+        'safe-right': 'env(safe-area-inset-right)',
+        
+        // Touch target sizes (44px minimum for accessibility)
+        'touch-target': '44px',
+        'touch-target-lg': '48px',
+        
+        // Mobile-specific spacing
+        'mobile-xs': '0.5rem',   // 8px
+        'mobile-sm': '0.75rem',  // 12px
+        'mobile-md': '1rem',     // 16px
+        'mobile-lg': '1.5rem',   // 24px
+        'mobile-xl': '2rem',     // 32px
       },
       
       borderRadius: {
@@ -270,11 +311,20 @@ const config: Config = {
       },
       
       boxShadow: {
-        'sacred-sm': '0 2px 4px 0 hsl(214, 100%, 12% / 0.2)',
-        'sacred-md': '0 4px 12px 0 hsl(214, 100%, 12% / 0.25), 0 0 0 1px #FFCE00 / 0.2',
-        'sacred-lg': '0 8px 25px 0 hsl(214, 100%, 12% / 0.3), 0 0 0 1px #FFCE00 / 0.3',
-        'sacred-glow': '0 0 20px #FFCE00 / 0.4, 0 0 40px hsl(200, 100%, 44%) / 0.2',
-        'sacred-divine': '0 0 30px #FFCE00 / 0.5, 0 0 60px hsl(205, 70%, 65%) / 0.3'
+        // Design system shadows using CSS variables
+        'brand-sm': '0 2px 4px 0 rgb(31 41 55 / 0.2)',
+        'brand-md': '0 4px 12px 0 rgb(37 99 235 / 0.25), 0 0 0 1px rgb(79 70 229 / 0.2)',
+        'brand-lg': '0 8px 25px 0 rgb(37 99 235 / 0.3), 0 0 0 1px rgb(79 70 229 / 0.3)',
+        'brand-glow': '0 0 20px rgb(37 99 235 / 0.4), 0 0 40px rgb(79 70 229 / 0.2)',
+        'brand-divine': '0 0 30px rgb(37 99 235 / 0.5), 0 0 60px rgb(79 70 229 / 0.3)',
+        'matrix-glow': '0 0 10px rgb(34 197 94 / 0.5), 0 0 20px rgb(34 197 94 / 0.3)',
+        
+        // Legacy support (deprecated)
+        'sacred-sm': '0 2px 4px 0 rgb(31 41 55 / 0.2)',
+        'sacred-md': '0 4px 12px 0 rgb(37 99 235 / 0.25), 0 0 0 1px rgb(245 158 11 / 0.2)',
+        'sacred-lg': '0 8px 25px 0 rgb(37 99 235 / 0.3), 0 0 0 1px rgb(245 158 11 / 0.3)',
+        'sacred-glow': '0 0 20px rgb(245 158 11 / 0.4), 0 0 40px rgb(37 99 235 / 0.2)',
+        'sacred-divine': '0 0 30px rgb(245 158 11 / 0.5), 0 0 60px rgb(79 70 229 / 0.3)'
       },
       keyframes: {
         "accordion-down": {
