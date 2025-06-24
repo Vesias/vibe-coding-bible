@@ -1,6 +1,7 @@
 {
-  "framework": "nextjs",
+  "framework": "nextjs", 
   "regions": ["fra1"],
+  "public": true,
   "rewrites": [
     {
       "source": "/(.*)",
