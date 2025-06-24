@@ -25,8 +25,11 @@ export const FloatingParticles: React.FC<FloatingParticlesProps> = ({
   className = ''
 }) => {
   const [particles, setParticles] = useState<Particle[]>([])
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    
     const generateParticles = () => {
       const newParticles: Particle[] = []
       
@@ -49,6 +52,11 @@ export const FloatingParticles: React.FC<FloatingParticlesProps> = ({
     generateParticles()
   }, [count, colors])
 
+  // Don't render anything on server
+  if (!mounted) {
+    return null
+  }
+
   return (
     <div className={`fixed inset-0 pointer-events-none overflow-hidden z-0 ${className}`}>
       {particles.map((particle) => (
@@ -68,23 +76,6 @@ export const FloatingParticles: React.FC<FloatingParticlesProps> = ({
             boxShadow: `0 0 ${particle.size * 2}px ${particle.color}40`
           }}
         />
-      ))}
-      
-      {/* Sacred geometry symbols as particles */}
-      {[...Array(8)].map((_, i) => (
-        <div
-          key={`symbol-${i}`}
-          className="absolute text-sacred-gold/20 animate-float"
-          style={{
-            left: `${Math.random() * 90 + 5}%`,
-            top: `${Math.random() * 80 + 10}%`,
-            fontSize: `${Math.random() * 30 + 20}px`,
-            animationDelay: `${Math.random() * 6}s`,
-            animationDuration: `${6 + Math.random() * 4}s`
-          }}
-        >
-          {['⚡', '🔮', '✨', '⭐', '💫', '🌟', '✦', '◆'][i]}
-        </div>
       ))}
     </div>
   )
