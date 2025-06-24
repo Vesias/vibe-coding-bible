@@ -73,6 +73,12 @@ const nextConfig = {
 
   // Webpack configuration - minimal for emergency build
   webpack: (config, { isServer, webpack }) => {
+    // Exclude Supabase functions from build
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@/supabase/functions': false,
+    }
+
     // Add client-side fallbacks
     if (!isServer) {
       config.resolve.fallback = {
