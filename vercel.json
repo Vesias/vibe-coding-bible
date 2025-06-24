@@ -2,6 +2,9 @@
   "framework": "nextjs", 
   "regions": ["fra1"],
   "public": true,
+  "projectSettings": {
+    "passwordProtection": false
+  },
   "rewrites": [
     {
       "source": "/(.*)",
