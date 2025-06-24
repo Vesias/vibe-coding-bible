@@ -86,7 +86,7 @@ export default function RootLayout({
         <Providers>
           <div className="relative min-h-screen">
             <DivineNavigation />
-            <div className="pt-16 md:pt-20">
+            <div style={{ paddingTop: '80px' }}>
               {children}
             </div>
           </div>
