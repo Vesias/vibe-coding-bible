@@ -59,8 +59,8 @@ export function PWAInstallPrompt({
         onInstall?.()
         
         // Track installation
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'pwa_install', {
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'pwa_install', {
             method: 'install_prompt'
           })
         }
@@ -82,8 +82,8 @@ export function PWAInstallPrompt({
     onDismiss?.()
     
     // Track dismissal
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'pwa_install_dismissed')
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'pwa_install_dismissed')
     }
   }
 

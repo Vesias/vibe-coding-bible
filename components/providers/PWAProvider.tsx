@@ -9,6 +9,9 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
   const { isSupported, isRegistered } = useServiceWorker()
 
   useEffect(() => {
+    // Only run on client-side
+    if (typeof window === 'undefined') return
+    
     // Register service worker on load
     if (isSupported && !isRegistered) {
       console.log('PWA: Initializing service worker...')
@@ -23,8 +26,8 @@ export function PWAProvider({ children }: { children: React.ReactNode }) {
       console.log('PWA: App installed successfully')
       
       // Track installation
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'pwa_install_success', {
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'pwa_install_success', {
           method: 'browser_prompt'
         })
       }

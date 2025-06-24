@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const { audioData, personality, language } = await request.json()
     
     // Get authenticated user
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user) {

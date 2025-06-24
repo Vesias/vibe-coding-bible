@@ -112,7 +112,7 @@ export function CourseSchema({
     provider: {
       '@type': 'Organization',
       name: 'Vibe Coding Academy',
-      url: process.env.NEXT_PUBLIC_SITE_URL
+      url: 'https://vibecodingbible.agentland.saarland'
     },
     ...(instructor && {
       instructor: {
@@ -228,19 +228,19 @@ export function ReviewSchema({
 export function WebsiteSchema() {
   const websiteSchema = {
     '@type': 'WebSite',
-    '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#website`,
-    url: process.env.NEXT_PUBLIC_SITE_URL,
+    '@id': 'https://vibecodingbible.agentland.saarland/#website',
+    url: 'https://vibecodingbible.agentland.saarland',
     name: 'Die Vibe Coding Bibel',
     description: 'Meistere KI-unterstützte Entwicklung mit interaktiven Workshops',
     publisher: {
-      '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#organization`
+      '@id': 'https://vibecodingbible.agentland.saarland/#organization'
     },
     potentialAction: [
       {
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL}/search?q={search_term_string}`
+          urlTemplate: 'https://vibecodingbible.agentland.saarland/search?q={search_term_string}'
         },
         'query-input': 'required name=search_term_string'
       }

@@ -29,6 +29,7 @@ import {
   Settings,
   Play,
   Pause,
+  Loader2,
   Calendar,
   MapPin,
   Zap,
@@ -47,7 +48,7 @@ import {
   Download,
   Upload,
   Presentation,
-  Screen,
+  Monitor as Screen,
   PenTool,
   MousePointer,
   Layers,
@@ -333,11 +334,16 @@ export function AdvancedCollaborationSuite({
     const sessionData = {
       ...newSession,
       id: Date.now().toString(),
-      host: currentUser,
+      host: {
+        name: currentUser.name,
+        avatar: currentUser.avatar,
+        role: currentUser.tier
+      },
       participants: [],
       status: 'active' as const,
       startTime: new Date().toISOString(),
-      chat: []
+      chat: [],
+      tools: ['editor', 'whiteboard', 'voice', 'video']
     }
 
     setSessions(prev => [sessionData as CollaborationSession, ...prev])

@@ -10,7 +10,7 @@ import { useNetworkStatus, useServiceWorker } from '@/lib/pwa/hooks'
 import { 
   Wifi, 
   WifiOff, 
-  Sync, 
+  RotateCw as Sync, 
   Download, 
   AlertTriangle, 
   CheckCircle,

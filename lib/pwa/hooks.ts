@@ -10,7 +10,9 @@ export function usePWA() {
   const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
-    // Check if running in standalone mode
+    // Check if running in standalone mode (only on client)
+    if (typeof window === 'undefined') return
+    
     const standalone = window.matchMedia('(display-mode: standalone)').matches ||
                      (window.navigator as any).standalone ||
                      document.referrer.includes('android-app://')
@@ -79,6 +81,8 @@ export function useServiceWorker() {
   const [isOnline, setIsOnline] = useState(true)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     if ('serviceWorker' in navigator) {
       setIsSupported(true)
       registerServiceWorker()
@@ -197,6 +201,8 @@ export function useNetworkStatus() {
   const [effectiveType, setEffectiveType] = useState<string>('4g')
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     const updateOnlineStatus = () => {
       setIsOnline(navigator.onLine)
     }
@@ -271,7 +277,9 @@ export function useOfflineStorage(key: string) {
       // Schedule background sync if supported
       if ('serviceWorker' in navigator && 'sync' in ServiceWorkerRegistration.prototype) {
         const registration = await navigator.serviceWorker.ready
-        await registration.sync.register(`${key}-sync`)
+        if ((registration as any).sync) {
+          await (registration as any).sync.register(`${key}-sync`)
+        }
       }
     } catch (error) {
       console.error('Failed to save offline data:', error)
@@ -302,6 +310,8 @@ export function usePushNotifications() {
   const [subscription, setSubscription] = useState<PushSubscription | null>(null)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     const supported = 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window
     setIsSupported(supported)
 
@@ -346,17 +356,17 @@ export function usePushNotifications() {
       const registration = await navigator.serviceWorker.ready
       const newSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_KEY
+        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_KEY || 'default-key'
       })
 
       setSubscription(newSubscription)
       setIsSubscribed(true)
 
       // Send subscription to server
-      await fetch('/api/notifications/subscribe', {
+      await fetch('/api/pwa/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSubscription)
+        body: JSON.stringify({ subscription: newSubscription, action: 'subscribe' })
       })
 
       return true
@@ -375,10 +385,10 @@ export function usePushNotifications() {
       setIsSubscribed(false)
 
       // Remove subscription from server
-      await fetch('/api/notifications/unsubscribe', {
+      await fetch('/api/pwa/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(subscription)
+        body: JSON.stringify({ subscription, action: 'unsubscribe' })
       })
 
       return true

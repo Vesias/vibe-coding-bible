@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const { messages, personality, model, context } = await request.json()
     
     // Get authenticated user (optional for demo)
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     
     // Initialize AI provider

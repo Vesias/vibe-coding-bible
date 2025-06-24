@@ -111,13 +111,10 @@ export default function DashboardPage() {
         <EnhancedDashboard 
           user={user}
           profile={profile}
-          tier={profile?.subscription_tier || 'free'}
+          tier={(profile as any)?.subscription_tier || 'free'}
           dashboardData={dashboardData}
         />
       </div>
     </main>
-  )
-}
-
   )
 }

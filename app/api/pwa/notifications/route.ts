@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const { subscription, action } = await request.json()
 
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -82,7 +82,7 @@ export async function PUT(request: NextRequest) {
     const { userId, title, body, data, badge, icon } = await request.json()
 
     // Validate admin access or user permission
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -111,7 +111,7 @@ export async function PUT(request: NextRequest) {
 
     // Send notifications to all user devices
     const results = await Promise.allSettled(
-      subscriptions.map(sub => 
+      subscriptions.map((sub: any) => 
         sendPushNotification(sub.subscription_data, {
           title,
           body,
@@ -144,7 +144,7 @@ export async function PUT(request: NextRequest) {
 // Get notification settings
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {

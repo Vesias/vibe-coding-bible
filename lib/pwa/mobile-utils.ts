@@ -141,15 +141,15 @@ export async function requestWakeLock(): Promise<WakeLockSentinel | null> {
 
 // Orientation utilities
 export function lockOrientation(orientation: 'portrait' | 'landscape'): Promise<void> {
-  if (screen.orientation && screen.orientation.lock) {
-    return screen.orientation.lock(orientation as OrientationLockType)
+  if (screen.orientation && (screen.orientation as any).lock) {
+    return (screen.orientation as any).lock(orientation)
   }
   return Promise.reject('Orientation lock not supported')
 }
 
 export function unlockOrientation(): void {
-  if (screen.orientation && screen.orientation.unlock) {
-    screen.orientation.unlock()
+  if (screen.orientation && (screen.orientation as any).unlock) {
+    (screen.orientation as any).unlock()
   }
 }
 

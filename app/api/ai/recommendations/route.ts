@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId')
     
     // Get authenticated user
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user || (userId && user.id !== userId)) {
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     const profileForAI = {
       level: userProfile?.level || 1,
       xp: userProfile?.total_xp || 0,
-      completedWorkshops: workshopProgress?.map(p => p.workshop_id) || [],
+      completedWorkshops: workshopProgress?.map((p: any) => p.workshop_id) || [],
       currentStrengths: userProfile?.strengths || ['Beginner Programming'],
       improvementAreas: userProfile?.improvement_areas || ['All Areas'],
       learningGoals: userProfile?.learning_goals || ['Master AI-Assisted Development'],
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
   try {
     const { feedback, recommendationId, action } = await request.json()
     
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user) {

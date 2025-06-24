@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -346,7 +348,7 @@ export default function HomePage() {
       <CourseSchema
         name="Die Vibe Coding Bibel - 10 AgentLand Gebote der KI-Entwicklung"
         description="Meistere KI-unterstützte Programmierung mit interaktiven Workshops, Live-Coding und praktischen Projekten. Lerne Claude Code, GitHub Copilot und moderne Entwicklungstools."
-        url={`${process.env.NEXT_PUBLIC_SITE_URL}/workshops`}
+        url="https://vibecodingbible.agentland.saarland/workshops"
         image="/og-image.jpg"
         instructor="Vibe Coding Academy"
         price={79}
