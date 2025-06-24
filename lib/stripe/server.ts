@@ -260,6 +260,7 @@ export async function createPortalSession({
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: returnUrl,
+      locale: 'de',
     })
 
     return { url: session.url }
@@ -311,6 +312,181 @@ export function generateReferralCode(userId: string): string {
 export async function calculateReferralCommission(amount: number, currency: string = 'EUR'): Promise<number> {
   const commissionRate = 0.15 // 15%
   return Math.floor(amount * commissionRate) // Always round down for commissions
+}
+
+export async function changeSubscriptionPlan({
+  subscriptionId,
+  newPriceId,
+  prorationBehavior = 'create_prorations'
+}: {
+  subscriptionId: string
+  newPriceId: string
+  prorationBehavior?: 'create_prorations' | 'none' | 'always_invoice'
+}) {
+  try {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+    
+    const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+      items: [{
+        id: subscription.items.data[0].id,
+        price: newPriceId,
+      }],
+      proration_behavior: prorationBehavior,
+      billing_cycle_anchor: 'unchanged',
+    })
+
+    return updatedSubscription
+  } catch (error) {
+    console.error('Error changing subscription plan:', error)
+    throw new Error('Failed to change subscription plan')
+  }
+}
+
+export async function cancelSubscription({
+  subscriptionId,
+  cancelImmediately = false,
+  cancellationReason
+}: {
+  subscriptionId: string
+  cancelImmediately?: boolean
+  cancellationReason?: string
+}) {
+  try {
+    if (cancelImmediately) {
+      const canceledSubscription = await stripe.subscriptions.cancel(subscriptionId)
+      return canceledSubscription
+    } else {
+      // Cancel at period end (German law compliance - 14 days notice)
+      const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true,
+        metadata: {
+          cancellation_reason: cancellationReason || 'User requested cancellation',
+          cancelled_at: new Date().toISOString()
+        }
+      })
+      return updatedSubscription
+    }
+  } catch (error) {
+    console.error('Error canceling subscription:', error)
+    throw new Error('Failed to cancel subscription')
+  }
+}
+
+export async function pauseSubscription({
+  subscriptionId,
+  pauseUntil
+}: {
+  subscriptionId: string
+  pauseUntil?: Date
+}) {
+  try {
+    const pauseCollection = pauseUntil ? {
+      behavior: 'void' as const,
+      resumes_at: Math.floor(pauseUntil.getTime() / 1000)
+    } : {
+      behavior: 'mark_uncollectible' as const
+    }
+    
+    const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+      pause_collection: pauseCollection
+    })
+
+    return updatedSubscription
+  } catch (error) {
+    console.error('Error pausing subscription:', error)
+    throw new Error('Failed to pause subscription')
+  }
+}
+
+export async function createTrialSubscription({
+  customerId,
+  priceId,
+  trialDays = 14
+}: {
+  customerId: string
+  priceId: string
+  trialDays?: number
+}) {
+  try {
+    const trialEndTimestamp = Math.floor((Date.now() + (trialDays * 24 * 60 * 60 * 1000)) / 1000)
+    
+    const subscription = await stripe.subscriptions.create({
+      customer: customerId,
+      items: [{ price: priceId }],
+      trial_end: trialEndTimestamp,
+      payment_behavior: 'default_incomplete',
+      payment_settings: {
+        save_default_payment_method: 'on_subscription'
+      },
+      expand: ['latest_invoice.payment_intent'],
+    })
+
+    return subscription
+  } catch (error) {
+    console.error('Error creating trial subscription:', error)
+    throw new Error('Failed to create trial subscription')
+  }
+}
+
+export async function createDiscountCode({
+  name,
+  percentOff,
+  amountOff,
+  currency = 'eur',
+  duration = 'once',
+  durationInMonths,
+  maxRedemptions,
+  redeemBy
+}: {
+  name: string
+  percentOff?: number
+  amountOff?: number
+  currency?: string
+  duration?: 'once' | 'repeating' | 'forever'
+  durationInMonths?: number
+  maxRedemptions?: number
+  redeemBy?: Date
+}) {
+  try {
+    // Create coupon first
+    const couponData: any = {
+      name,
+      duration,
+    }
+
+    if (percentOff) {
+      couponData.percent_off = percentOff
+    } else if (amountOff) {
+      couponData.amount_off = amountOff
+      couponData.currency = currency
+    }
+
+    if (duration === 'repeating' && durationInMonths) {
+      couponData.duration_in_months = durationInMonths
+    }
+
+    if (maxRedemptions) {
+      couponData.max_redemptions = maxRedemptions
+    }
+
+    if (redeemBy) {
+      couponData.redeem_by = Math.floor(redeemBy.getTime() / 1000)
+    }
+
+    const coupon = await stripe.coupons.create(couponData)
+
+    // Create promotion code
+    const promotionCode = await stripe.promotionCodes.create({
+      coupon: coupon.id,
+      code: name.toUpperCase().replace(/[^A-Z0-9]/g, ''),
+      active: true,
+    })
+
+    return { coupon, promotionCode }
+  } catch (error) {
+    console.error('Error creating discount code:', error)
+    throw new Error('Failed to create discount code')
+  }
 }
 
 export async function createStripeProduct(plan: PricingPlan): Promise<string> {

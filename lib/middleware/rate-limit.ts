@@ -14,7 +14,7 @@ export interface RateLimitOptions {
   }
 }
 
-export function withRateLimit(
+export function rateLimit(
   handler: (request: NextRequest) => Promise<NextResponse>,
   options: RateLimitOptions
 ) {
@@ -178,7 +178,7 @@ export function createRateLimitedHandler(
   handler: (request: NextRequest) => Promise<NextResponse>,
   configKey: keyof typeof rateLimitConfigs
 ) {
-  return withRateLimit(handler, rateLimitConfigs[configKey])
+  return rateLimit(handler, rateLimitConfigs[configKey])
 }
 
 // Redis-based rate limiter for production use

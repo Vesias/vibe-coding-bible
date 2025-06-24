@@ -35,13 +35,25 @@ interface SacredAIMentorProps {
     title: string
     currentLesson?: string
     currentExercise?: string
+    progress?: {
+      lessonsCompleted: string[]
+      exercisesCompleted: string[]
+      totalXPEarned: number
+      completionPercentage: number
+    }
+    userCode?: string
+    lastError?: string
   }
   onSuggestion?: (suggestion: string) => void
+  onCodeSuggestion?: (code: string) => void
+  onHint?: (hint: string) => void
 }
 
 const SacredAIMentor: React.FC<SacredAIMentorProps> = ({ 
   workshopContext, 
-  onSuggestion 
+  onSuggestion,
+  onCodeSuggestion,
+  onHint 
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -180,7 +192,27 @@ Was beschäftigt dich heute?`
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
 
     const lowerInput = input.toLowerCase()
+    
+    // Contextual responses based on current workshop and progress
+    if (context && context.userCode && lowerInput.includes('fehler')) {
+      return analyzeCodeError(context.userCode, context.lastError)
+    }
+    
+    if (context && context.currentExercise && lowerInput.includes('hilfe')) {
+      return provideExerciseHelp(context.currentExercise, context.commandmentNumber)
+    }
+    
+    if (context && context.progress && lowerInput.includes('fortschritt')) {
+      return analyzeProgress(context.progress, context.commandmentNumber)
+    }
 
+    // Workshop-specific responses
+    if (context && context.commandmentNumber) {
+      const response = getWorkshopSpecificResponse(lowerInput, context.commandmentNumber, context)
+      if (response) return response
+    }
+
+    // General responses
     if (lowerInput.includes('vision') || lowerInput.includes('produktidee')) {
       return {
         content: `🎯 **Vision Development Guidance**
@@ -193,18 +225,216 @@ Für eine kristallklare Vision solltest du diese Schritte befolgen:
 - Was sind die aktuellen Workarounds?
 
 **2. Solution Hypothesis**
-- Was ist dein einzigartiger Lösungsansatz?
-- Warum ist er 10x besser als Alternativen?
+- Wie löst deine Idee das Problem?
+- Was ist der Kern-Value Proposition?
+- Warum ist es besser als bestehende Lösungen?
+
+**3. Market Validation**
+- Gibt es einen Markt dafür?
+- Wer ist die Zielgruppe genau?
+- Wie groß ist das Problem wirklich?
+
+Soll ich dir mit einem konkreten Beispiel helfen?`,
+        type: 'explanation'
+      }
+    }
+
+    if (lowerInput.includes('code') || lowerInput.includes('programmier')) {
+      return {
+        content: `💻 **Code-Assistance Ready!**
+
+Ich kann dir bei verschiedenen Code-Herausforderungen helfen:
+
+🐛 **Debugging**: Zeig mir deinen Code und ich helfe beim Fehler finden
+⚡ **Optimization**: Code-Verbesserungen und Performance-Tipps  
+🏗️ **Architecture**: Struktur- und Design-Pattern Beratung
+📚 **Best Practices**: Moderne Entwicklungsstandards
+🤖 **AI Integration**: Wie du AI-Tools optimal nutzt
+
+Was ist deine konkrete Code-Frage?`,
+        type: 'code'
+      }
+    }
+
+    // Default helpful response
+    return {
+      content: `🤔 Interessante Frage! Ich bin hier um zu helfen.
+
+Lass mich dir ein paar Wege zeigen, wie ich dich unterstützen kann:
+
+🎯 **Konzepte erklären** - Frag nach Details zu Lektionen
+💡 **Praktische Beispiele** - Ich zeige dir How-to's  
+🔧 **Problem lösen** - Debugging und Troubleshooting
+📈 **Fortschritt optimieren** - Lernstrategien und Tipps
+
+Kannst du deine Frage spezifischer stellen? Je mehr Kontext du gibst, desto besser kann ich helfen!`,
+      type: 'explanation'
+    }
+  }
+
+  // Helper functions for enhanced contextual responses
+  const analyzeCodeError = (code: string, error?: string): {content: string, type: ChatMessage['type']} => {
+    return {
+      content: `🐛 **Code Error Analysis**
+
+Ich sehe, du hast einen Fehler in deinem Code. Lass mich dir helfen:
+
+**Dein Code:**
+\`\`\`javascript
+${code.substring(0, 200)}...
+\`\`\`
+
+${error ? `**Fehler:** ${error}` : ''}
+
+**Häufige Ursachen:**
+1. Syntax-Fehler (fehlende Klammern, Semikolons)
+2. Undefined Variables oder Functions
+3. Type-Mismatches
+4. Logic-Fehler in Conditions
+
+**Debugging-Steps:**
+1. Überprüfe die Browser-Console auf Details
+2. Nutze console.log() für Variable-Tracking  
+3. Teste isolierte Code-Teile einzeln
+
+Soll ich dir einen korrigierten Code-Vorschlag machen?`,
+      type: 'code'
+    }
+  }
+
+  const provideExerciseHelp = (exerciseId: string, commandment: string): {content: string, type: ChatMessage['type']} => {
+    return {
+      content: `🎯 **Exercise Guidance**
+
+Du arbeitest an einer Übung aus Commandment ${commandment}. Hier ist meine Hilfe:
+
+**Approach-Strategy:**
+1. **Verstehe das Problem** - Lies die Anweisungen nochmal
+2. **Teile es auf** - Kleine Schritte statt alles auf einmal  
+3. **Teste früh** - Teste jeden kleinen Fortschritt
+4. **Nutze AI** - Ich kann dir bei jedem Schritt helfen
+
+**Quick-Tipps:**
+- Starte mit der einfachsten Lösung
+- Verwende aussagekräftige Variablennamen
+- Kommentiere komplexe Logik
+- Teste Edge-Cases
+
+Zeig mir deinen aktuellen Ansatz und ich gebe dir spezifisches Feedback!`,
+      type: 'exercise'
+    }
+  }
+
+  const analyzeProgress = (progress: any, commandment: string): {content: string, type: ChatMessage['type']} => {
+    return {
+      content: `📊 **Progress Analysis - Commandment ${commandment}**
+
+**Aktueller Stand:**
+- Completion: ${progress.completionPercentage}%
+- XP Earned: ${progress.totalXPEarned}
+- Lessons: ${progress.lessonsCompleted.length} abgeschlossen
+- Exercises: ${progress.exercisesCompleted.length} abgeschlossen
+
+**Feedback:**
+${progress.completionPercentage < 25 ? 
+  "🚀 Du fängst gerade an - perfekt! Nimm dir Zeit für die Grundlagen." :
+  progress.completionPercentage < 50 ?
+  "💪 Guter Fortschritt! Du bist auf dem richtigen Weg." :
+  progress.completionPercentage < 75 ?
+  "⭐ Exzellent! Du meisterst das Commandment bereits sehr gut." :
+  "🏆 Fast am Ziel! Du wirst bald zum Meister dieses Commandments."
+}
+
+**Nächste Schritte:**
+- Fokus auf praktische Übungen
+- Experimentiere mit eigenen Variationen
+- Teile deine Erfahrungen und Fragen
+
+Wo brauchst du am meisten Unterstützung?`,
+      type: 'suggestion'
+    }
+  }
+
+  const getWorkshopSpecificResponse = (input: string, commandment: string, context: any): {content: string, type: ChatMessage['type']} | null => {
+    switch (commandment) {
+      case 'I':
+        if (input.includes('vision') || input.includes('mvp')) {
+          return {
+            content: `👁️ **Commandment I: Die Heilige Vision**
+
+**Vision Refinement Process:**
+1. **Raw Idea** → **Structured Concept**
+2. **Market Research** → **Validation**
+3. **MVP Definition** → **Feature Prioritization**
+
+**AI-Enhanced Vision Development:**
+\`\`\`markdown
+Ich möchte [PRODUKTIDEE] entwickeln für [ZIELGRUPPE], 
+die das Problem [KONKRETES PROBLEM] haben.
+
+Hilf mir dabei, diese Vision zu schärfen...
+\`\`\`
+
+**Pro-Tip:** Nutze den Vision Refinement Template aus der Lektion!
+
+Hast du schon eine konkrete Produktidee, die wir zusammen schärfen können?`,
+            type: 'explanation'
+          }
+        }
+        break
+
+      case 'III':
+        if (input.includes('prompt') || input.includes('ai')) {
+          return {
+            content: `🗣️ **Commandment III: Die Prompt-Kunst**
+
+**Advanced Prompting Strategies:**
+
+**1. Structure Template:**
+\`\`\`
+[ROLE] Du bist ein erfahrener [EXPERT_TYPE]
+[TASK] Deine Aufgabe ist es, [SPECIFIC_TASK]
+[CONTEXT] Gegeben: [RELEVANT_CONTEXT]  
+[CONSTRAINTS] Beachte: [LIMITATIONS]
+[OUTPUT] Formatiere als: [FORMAT]
+\`\`\`
+
+**2. Chain-of-Thought:**
+"Löse das Schritt für Schritt und erkläre deine Überlegungen"
+
+**3. Few-Shot Learning:**
+Gib 2-3 Beispiele für gewünschtes Verhalten
+
+Willst du einen spezifischen Prompt zusammen optimieren?`,
+            type: 'code'
+          }
+        }
+        break
+      
+      default:
+        return null
+    }
+    return null
+  }
+
+  const getValidationPlan = () => {
+    return `
 - Welche Annahmen machst du?
 
 **3. Validation Plan**
 - Wie testest du deine Hypothesen?
 - Mit welchen 5 Kunden sprichst du zuerst?
 
-Möchtest du eine spezifische Produktidee durchgehen?`,
-        type: 'explanation'
-      }
+Möchtest du eine spezifische Produktidee durchgehen?`
+  }
+
+  // Rest of the mentor logic continues here...
+  if (lowerInput.includes('validation') || lowerInput.includes('test')) {
+    return {
+      response: getValidationPlan(),
+      type: 'explanation'
     }
+  }
 
     if (lowerInput.includes('tech stack') || lowerInput.includes('technologie')) {
       return {
@@ -294,7 +524,7 @@ const SacredButton: React.FC<SacredButtonProps> = ({
 
   return (
     <button
-      className={\`px-4 py-2 rounded transition-colors \${variantStyles[variant]}\`}
+      className={\\\`px-4 py-2 rounded transition-colors \\\${variantStyles[variant]}\\\`}
       onClick={onClick}
       disabled={loading}
     >

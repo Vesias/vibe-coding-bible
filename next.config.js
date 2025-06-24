@@ -1,3 +1,6 @@
+// Import polyfills at the very top
+require('./polyfills.js');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Production optimizations
@@ -70,7 +73,7 @@ const nextConfig = {
 
   // Webpack configuration
   webpack: (config, { isServer }) => {
-    // Client-side fallbacks for Node.js modules
+    // Fix for Supabase realtime-js SSR issue
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -85,12 +88,73 @@ const nextConfig = {
       };
     }
 
+    // Fix global object references for Supabase on server side
+    config.plugins = config.plugins || [];
+    config.plugins.push(
+      new (require('webpack')).DefinePlugin({
+        ...(isServer && {
+          global: 'globalThis',
+          self: 'globalThis',
+          window: 'undefined',
+        })
+      })
+    );
+
+    // Ignore Supabase realtime on server side
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push({
+        '@supabase/realtime-js': 'commonjs @supabase/realtime-js'
+      });
+    }
+
+    // Performance optimizations
+    config.optimization = {
+      ...config.optimization,
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          ui: {
+            test: /[\\/]node_modules[\\/](@radix-ui|lucide-react|framer-motion)[\\/]/,
+            name: 'ui',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+          workshop: {
+            test: /[\\/]node_modules[\\/](@monaco-editor|react-syntax-highlighter)[\\/]/,
+            name: 'workshop',
+            priority: 30,
+            reuseExistingChunk: true,
+          },
+          auth: {
+            test: /[\\/]node_modules[\\/](@supabase)[\\/]/,
+            name: 'auth',
+            priority: 25,
+            reuseExistingChunk: true,
+          },
+          stripe: {
+            test: /[\\/]node_modules[\\/](@stripe)[\\/]/,
+            name: 'stripe',
+            priority: 25,
+            reuseExistingChunk: true,
+          }
+        }
+      }
+    };
+
     return config;
   },
 
   // Experimental features
   experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+    webVitalsAttribution: ['CLS', 'LCP'],
   },
 
   // Output configuration

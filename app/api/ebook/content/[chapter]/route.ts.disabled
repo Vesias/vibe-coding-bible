@@ -1,0 +1,258 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import fs from 'fs'
+import path from 'path'
+
+// Chapter configuration
+const CHAPTERS = {
+  'introduction': { isPremium: false, file: 'vibe-coding-bibel.md', section: 'introduction' },
+  'commandment-i': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-i' },
+  'commandment-ii': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-ii' },
+  'commandment-iii': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-iii' },
+  'commandment-iv': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-iv' },
+  'commandment-v': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-v' },
+  'commandment-vi': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-vi' },
+  'commandment-vii': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-vii' },
+  'commandment-viii': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-viii' },
+  'commandment-ix': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-ix' },
+  'commandment-x': { isPremium: true, file: 'vibe-coding-bibel.md', section: 'commandment-x' }
+}
+
+async function logEbookAccess(userId: string, chapterId: string, success: boolean, reason?: string) {
+  try {
+    const supabase = await createClient()
+    await supabase.from('ebook_access_logs').insert({
+      user_id: userId,
+      chapter_id: chapterId,
+      access_granted: success,
+      access_reason: reason,
+      accessed_at: new Date().toISOString(),
+      ip_address: process.env.NODE_ENV === 'development' ? '127.0.0.1' : undefined,
+      user_agent: 'API Access'
+    })
+  } catch (error) {
+    console.error('Failed to log ebook access:', error)
+  }
+}
+
+async function extractChapterContent(file: string, section: string): Promise<string> {
+  try {
+    const filePath = path.join(process.cwd(), 'content', file)
+    const content = fs.readFileSync(filePath, 'utf-8')
+    
+    // Parse markdown content based on section
+    const lines = content.split('\n')
+    const sectionHeaders = {
+      'introduction': ['# VIBE CODING BIBLE', '## Vorwort:', '## Über AgentLand:'],
+      'commandment-i': ['#### I. DIE HEILIGE VISION', '## Die Essenz der Heiligen Vision'],
+      'commandment-ii': ['#### II. DER RECHTE STACK', '## Die Essenz des Rechten Stacks'],
+      'commandment-iii': ['#### III. DIE PROMPT-KUNST', '## Die Essenz der Prompt-Kunst'],
+      'commandment-iv': ['#### IV. MULTI-CONTEXT PROGRAMMING', '## Multi-Context Programming'],
+      'commandment-v': ['#### V. DIE HEILIGE ITERATION', '## Die Heilige Iteration'],
+      'commandment-vi': ['#### VI. DAS GÖTTLICHE DEBUGGING', '## Das Göttliche Debugging'],
+      'commandment-vii': ['#### VII. DIE KUNST DES VERTRAUENS', '## Die Kunst des Vertrauens'],
+      'commandment-viii': ['#### VIII. DIE SKALIERUNGSSTUFEN', '## Die Skalierungsstufen'],
+      'commandment-ix': ['#### IX. DIE ZUSAMMENARBEIT DER PROPHETEN', '## Die Zusammenarbeit der Propheten'],
+      'commandment-x': ['#### X. DIE MONETARISIERUNG', '## Die Monetarisierung']
+    } as const
+    
+    const headers = sectionHeaders[section as keyof typeof sectionHeaders]
+    if (!headers) {
+      return `# Kapitel: ${section}\n\nInhalt wird geladen...`
+    }
+    
+    // Find section start
+    let startIndex = -1
+    let endIndex = lines.length
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim()
+      if (headers.some(header => line.includes(header))) {
+        startIndex = i
+        break
+      }
+    }
+    
+    // Find section end (next major header)
+    if (startIndex >= 0) {
+      for (let i = startIndex + 1; i < lines.length; i++) {
+        const line = lines[i].trim()
+        if (line.startsWith('####') && !headers.some(header => line.includes(header))) {
+          endIndex = i
+          break
+        }
+      }
+    }
+    
+    if (startIndex >= 0) {
+      return lines.slice(startIndex, endIndex).join('\n')
+    }
+    
+    // Fallback content
+    return generateFallbackContent(section)
+    
+  } catch (error) {
+    console.error('Error extracting chapter content:', error)
+    return generateFallbackContent(section)
+  }
+}
+
+function generateFallbackContent(section: string): string {
+  const fallbackContent = {
+    'introduction': `
+# Einführung zur Vibe Coding Bible
+
+## Vorwort: Die Offenbarung der Vibe Coding Bible
+
+*"Am Anfang war das Chaos der Entwicklung, und die Developers wandelten orientierungslos in der Dunkelheit der Legacy-Systeme. Da sprach ein Entwickler: 'Es werde Licht!' Und es ward das Licht der KI-unterstützten Entwicklung."*
+
+In einer Zeit, da sich die Welt der Softwareentwicklung rasant verändert und KI-Tools wie **Claude**, **GitHub Copilot**, **Cursor** und **Continue** den Entwicklungsalltag revolutionieren, brauchen wir neue Gebote und Weisheiten.
+
+Die **Vibe Coding Bible** ist entstanden aus der Praxis für die Praxis - basierend auf jahrelanger Erfahrung mit KI-unterstützter Entwicklung und inspiriert von Erfolgsgeschichten wie **AgentLand**, Deutschlands führender DSGVO-konformen KI-Agentur.
+
+Diese Bible ist mehr als nur ein technisches Handbuch. Sie ist:
+
+- **Eine praktische Anleitung** für die Arbeit mit KI-Tools in der Softwareentwicklung
+- **Ein philosophischer Leitfaden** für die Balance zwischen menschlicher Kreativität und KI-Effizienz  
+- **Ein bewährtes Framework** für erfolgreiche Projekte von MVP bis Enterprise-Scale
+- **Eine Inspiration** für nachhaltige und profitable Entwicklung
+
+## Warum "Vibe Coding"?
+
+**Vibe Coding** beschreibt einen neuen Entwicklungsansatz, bei dem:
+
+- **Intuition und Algorithmus** harmonisch zusammenwirken
+- **Menschliche Kreativität** durch KI verstärkt wird
+- **Flow-Zustände** in der Entwicklung entstehen
+- **Nachhaltige und profitable** Software entsteht
+
+Die zehn Gebote dieser Bible führen Sie Schritt für Schritt zu diesem neuen Level der Entwicklungsmeisterschaft.
+    `,
+    'commandment-i': `
+# I. Das Erste Gebot: Die Heilige Vision 👁️
+
+> *"Ohne Vision geht das Volk zugrunde, aber wohl dem, der das Gesetz befolgt."* - Sprüche 29,18
+
+## Die Essenz der Heiligen Vision
+
+Das erste und wichtigste Gebot der Vibe Coding Bible lautet: **Du sollst eine klare Vision haben, bevor du auch nur eine Zeile Code schreibst.**
+
+### Warum Vision vor Code?
+
+In der traditionellen Entwicklung beginnen viele Projekte mit der Frage: "Welche Technologie sollen wir verwenden?" Doch die Vibe Coding Bible lehrt uns einen anderen Weg:
+
+**Falsch:** "Lass uns eine React-App mit Node.js Backend bauen..."
+**Richtig:** "Wir wollen das Problem X für Zielgruppe Y lösen, indem wir Z ermöglichen..."
+
+[Der Inhalt würde hier weiter ausgeführt...]
+    `
+  }
+  
+  return fallbackContent[section as keyof typeof fallbackContent] || `
+# Kapitel: ${section}
+
+Dieser Inhalt wird geladen. Bitte versuchen Sie es später erneut.
+
+## Premium-Inhalte
+
+Dieses Kapitel enthält erweiterte Inhalte, die für Premium-Nutzer verfügbar sind.
+
+Upgrade auf Premium, um Zugang zu allen Kapiteln der Vibe Coding Bible zu erhalten.
+  `
+}
+
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ chapter: string }> }
+) {
+  try {
+    const params = await context.params
+    const chapterId = params.chapter
+    const chapter = CHAPTERS[chapterId as keyof typeof CHAPTERS]
+    
+    if (!chapter) {
+      return NextResponse.json(
+        { error: 'Chapter not found' },
+        { status: 404 }
+      )
+    }
+
+    // Basic rate limiting check could be added here if needed
+
+    // Get user session
+    const supabase = await createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      await logEbookAccess('anonymous', chapterId, false, 'No authentication')
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    // Get user profile to check subscription
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('subscription_status')
+      .eq('id', user.id)
+      .single()
+
+    if (profileError || !profile) {
+      await logEbookAccess(user.id, chapterId, false, 'Profile not found')
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 403 }
+      )
+    }
+
+    // Check premium access
+    const isPremiumUser = profile.subscription_status !== 'free'
+    const hasAccess = !chapter.isPremium || isPremiumUser
+
+    if (!hasAccess) {
+      await logEbookAccess(user.id, chapterId, false, 'Premium required')
+      return NextResponse.json(
+        { 
+          error: 'Premium subscription required',
+          isPremium: chapter.isPremium,
+          userStatus: profile.subscription_status
+        },
+        { status: 403 }
+      )
+    }
+
+    // Extract chapter content
+    const content = await extractChapterContent(chapter.file, chapter.section)
+
+    // Log successful access
+    await logEbookAccess(user.id, chapterId, true, 'Access granted')
+
+    // Add user watermark to content
+    const watermarkedContent = `${content}
+
+---
+
+**Lizenzierter Inhalt für:** ${user.email}  
+**Zugriff am:** ${new Date().toLocaleString('de-DE')}  
+**Kapitel-ID:** ${chapterId}  
+**© 2024 VibeCodingBibel™ - Alle Rechte vorbehalten**
+`
+
+    return NextResponse.json({
+      content: watermarkedContent,
+      title: chapter.section,
+      isPremium: chapter.isPremium,
+      hasAccess: true,
+      userEmail: user.email,
+      accessTime: new Date().toISOString()
+    })
+
+  } catch (error) {
+    console.error('Error in ebook content API:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}

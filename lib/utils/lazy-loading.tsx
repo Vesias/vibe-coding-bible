@@ -132,3 +132,39 @@ export function LazyRender({
     </div>
   )
 }
+
+// Preload components for critical path
+export const preloadComponent = (importFunc: () => Promise<any>) => {
+  if (typeof window !== 'undefined') {
+    // Preload on idle or after user interaction
+    const preload = () => importFunc()
+    
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(preload)
+    } else {
+      setTimeout(preload, 1)
+    }
+  }
+}
+
+// Enhanced lazy loading with priority support
+export function withPriorityLazyLoading<T = any>(
+  importFunc: () => Promise<{ default: ComponentType<T> }>,
+  priority: 'high' | 'medium' | 'low' = 'medium',
+  fallback?: React.ReactNode
+) {
+  const LazyComponent = lazy(importFunc)
+  
+  // Preload high-priority components
+  if (priority === 'high') {
+    preloadComponent(importFunc)
+  }
+  
+  return function PriorityLazyWrapper(props: T) {
+    return (
+      <Suspense fallback={fallback || <LazyLoadingFallback />}>
+        <LazyComponent {...(props as any)} />
+      </Suspense>
+    )
+  }
+}

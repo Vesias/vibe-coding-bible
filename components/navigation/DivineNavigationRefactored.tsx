@@ -7,7 +7,11 @@ import {
   Users, 
   Sparkles, 
   Home,
-  Layout
+  Layout,
+  Euro,
+  MessageSquare,
+  FileText,
+  HelpCircle
 } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthProvider'
 import { NavigationLogo, NavigationItems, UserMenu, MobileMenu, NavigationItem } from './parts'
@@ -15,39 +19,57 @@ import { NavigationLogo, NavigationItems, UserMenu, MobileMenu, NavigationItem }
 // Navigation items that are always visible
 const publicNavigationItems: NavigationItem[] = [
   {
-    name: 'Sacred Home',
+    name: 'Home',
     href: '/',
     icon: Home,
-    description: 'Return to the divine realm'
+    description: 'AgentLand Startseite'
   },
   {
-    name: 'Sacred Workshops',
+    name: 'Workshops',
     href: '/workshops',
     icon: BookOpen,
-    description: 'Master the 10 commandments',
+    description: 'Interaktive Coding Workshops',
     badge: '10'
+  },
+  {
+    name: 'Preise',
+    href: '/pricing',
+    icon: Euro,
+    description: 'Pricing und Pläne'
+  },
+  {
+    name: 'Community',
+    href: '/community',
+    icon: Users,
+    description: 'Entwickler Community'
+  },
+  {
+    name: 'Blog',
+    href: '/blog',
+    icon: FileText,
+    description: 'News und Tutorials'
+  },
+  {
+    name: 'Hilfe',
+    href: '/help',
+    icon: HelpCircle,
+    description: 'Support und Dokumentation'
   }
 ]
 
 // Navigation items only for authenticated users
 const authenticatedNavigationItems: NavigationItem[] = [
   {
-    name: 'Prophet Dashboard',
+    name: 'Dashboard',
     href: '/dashboard',
     icon: Layout,
-    description: 'Track your divine progress'
+    description: 'Persönliches Dashboard'
   },
   {
-    name: 'Prophets Community',
-    href: '/community',
-    icon: Users,
-    description: 'Connect with fellow seekers'
-  },
-  {
-    name: 'Collaboration',
+    name: 'Kollaboration',
     href: '/collaboration',
     icon: Sparkles,
-    description: 'Mystical pair programming'
+    description: 'Pair Programming Tools'
   }
 ]
 
@@ -79,7 +101,7 @@ export const DivineNavigationRefactored: React.FC = () => {
 
   // Combine navigation items based on authentication state
   const navigationItems = user 
-    ? [...publicNavigationItems, ...authenticatedNavigationItems]
+    ? [...publicNavigationItems.filter(item => !['Community'].includes(item.name)), ...authenticatedNavigationItems]
     : publicNavigationItems
 
   return (

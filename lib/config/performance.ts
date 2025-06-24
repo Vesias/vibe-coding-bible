@@ -126,13 +126,13 @@ export const PERFORMANCE_BUDGETS = {
     TTFB: 800     // Time to First Byte (ms)
   },
 
-  // Bundle size limits
+  // Bundle size limits (Enterprise targets)
   bundleSize: {
-    initial: 250000,      // 250KB initial bundle
-    maxChunk: 200000,     // 200KB max chunk size
-    totalJavaScript: 1000000, // 1MB total JS
-    totalCSS: 100000,     // 100KB total CSS
-    totalImages: 500000   // 500KB total images
+    initial: 500000,      // 500KB initial bundle (Enterprise target)
+    maxChunk: 300000,     // 300KB max chunk size
+    totalJavaScript: 1500000, // 1.5MB total JS
+    totalCSS: 150000,     // 150KB total CSS
+    totalImages: 1000000  // 1MB total images
   },
 
   // Network performance

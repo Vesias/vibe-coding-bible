@@ -1,12 +1,67 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { SacredButton } from '@/components/ui/sacred-button'
-
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { getAllWorkshops } from '@/lib/workshop/workshop-content-migrated'
+import { 
+  BookOpen, 
+  Trophy, 
+  Star, 
+  Clock, 
+  CheckCircle, 
+  Circle,
+  Download,
+  Award,
+  Target,
+  Zap,
+  Users,
+  BarChart3
+} from 'lucide-react'
+
+// Workshop Progress Management
+interface WorkshopProgress {
+  completedWorkshops: string[]
+  totalXPEarned: number
+  currentStreak: number
+  certificatesEarned: string[]
+  startedAt: Date
+  lastActivity: Date
+}
+
+const useWorkshopProgress = () => {
+  const [progress, setProgress] = useState<WorkshopProgress>({
+    completedWorkshops: [],
+    totalXPEarned: 0,
+    currentStreak: 0,
+    certificatesEarned: [],
+    startedAt: new Date(),
+    lastActivity: new Date()
+  })
+
+  useEffect(() => {
+    // Load progress from localStorage
+    const savedProgress = localStorage.getItem('vibe-coding-workshop-progress')
+    if (savedProgress) {
+      setProgress(JSON.parse(savedProgress))
+    }
+  }, [])
+
+  const updateProgress = (newProgress: Partial<WorkshopProgress>) => {
+    const updated = { ...progress, ...newProgress, lastActivity: new Date() }
+    setProgress(updated)
+    localStorage.setItem('vibe-coding-workshop-progress', JSON.stringify(updated))
+  }
+
+  return { progress, updateProgress }
+}
 
 const commandments = getAllWorkshops().map(workshop => ({
+  id: workshop.id,
   number: workshop.commandmentNumber,
   title: workshop.title,
   description: workshop.description,
@@ -14,7 +69,9 @@ const commandments = getAllWorkshops().map(workshop => ({
   xp: workshop.totalXP,
   readTime: workshop.estimatedTime,
   sacredSymbol: workshop.sacredSymbol,
-  preview: workshop.sacredWisdom
+  preview: workshop.sacredWisdom,
+  lessons: workshop.lessons.length,
+  exercises: workshop.exercises.length
 }))
 
 // Sacred Components
@@ -85,30 +142,53 @@ const WorkshopsHero = () => (
   </section>
 )
 
-const WorkshopsFilter = () => {
-  const [activeFilter, setActiveFilter] = React.useState('All')
-  const filters = ['All', 'Beginner', 'Intermediate', 'Advanced', 'Expert']
+const WorkshopsFilter = ({ activeFilter, setActiveFilter, progress }: { 
+  activeFilter: string
+  setActiveFilter: (filter: string) => void 
+  progress: WorkshopProgress
+}) => {
+  const filters = [
+    { id: 'All', label: 'Alle Workshops', count: commandments.length },
+    { id: 'Beginner', label: 'Einsteiger', count: commandments.filter(c => c.difficulty === 'Beginner').length },
+    { id: 'Intermediate', label: 'Fortgeschrittene', count: commandments.filter(c => c.difficulty === 'Intermediate').length },
+    { id: 'Advanced', label: 'Experten', count: commandments.filter(c => c.difficulty === 'Advanced').length },
+    { id: 'Expert', label: 'Meister', count: commandments.filter(c => c.difficulty === 'Expert').length },
+    { id: 'Completed', label: 'Abgeschlossen', count: progress.completedWorkshops.length }
+  ]
   
   return (
     <div className="flex justify-center mb-12 gap-2 flex-wrap">
-      {filters.map((filter) => (
-        <button
-          key={filter}
-          onClick={() => setActiveFilter(filter)}
-          className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-            activeFilter === filter
-              ? 'bg-gradient-to-r from-amber-500 to-purple-600 text-white shadow-lg'
-              : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
-          }`}
-        >
-          {filter}
-        </button>
-      ))}
+      {filters.map((filter) => {
+        const isCompleted = filter.id === 'Completed'
+        const completedCount = isCompleted ? filter.count : commandments.filter(c => 
+          progress.completedWorkshops.includes(c.id) && 
+          (filter.id === 'All' || c.difficulty === filter.id)
+        ).length
+        
+        return (
+          <button
+            key={filter.id}
+            onClick={() => setActiveFilter(filter.id)}
+            className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 relative ${
+              activeFilter === filter.id
+                ? 'bg-gradient-to-r from-amber-500 to-purple-600 text-white shadow-lg'
+                : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              {filter.label}
+              <Badge variant="secondary" className="text-xs">
+                {isCompleted ? completedCount : `${completedCount}/${filter.count}`}
+              </Badge>
+            </span>
+          </button>
+        )
+      })}
     </div>
   )
 }
 
-const WorkshopsGrid = () => {
+const WorkshopsGrid = ({ activeFilter, progress }: { activeFilter: string, progress: WorkshopProgress }) => {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Beginner': return 'bg-green-500/20 text-green-400 border-green-500/30'
@@ -119,100 +199,258 @@ const WorkshopsGrid = () => {
     }
   }
 
+  const filteredCommandments = commandments.filter(commandment => {
+    if (activeFilter === 'All') return true
+    if (activeFilter === 'Completed') return progress.completedWorkshops.includes(commandment.id)
+    return commandment.difficulty === activeFilter
+  })
+
+  const getWorkshopProgress = (workshopId: string) => {
+    const savedProgress = localStorage.getItem(`workshop-progress-${workshopId}`)
+    if (savedProgress) {
+      const workshopProgress = JSON.parse(savedProgress)
+      const workshop = getAllWorkshops().find(w => w.id === workshopId)
+      if (workshop) {
+        const totalTasks = workshop.lessons.length + workshop.exercises.length
+        const completedTasks = (workshopProgress.lessonsCompleted?.length || 0) + (workshopProgress.exercisesCompleted?.length || 0)
+        return Math.round((completedTasks / totalTasks) * 100) || 0
+      }
+    }
+    return 0
+  }
+
   return (
-    <section className="py-20 px-6">
-      <div className="max-w-7xl mx-auto">
-        <WorkshopsFilter />
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {commandments.map((commandment, index) => (
-            <div key={commandment.number} className="group relative">
-              <div className="absolute inset-0 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300" style={{
-                background: 'linear-gradient(135deg, rgba(255, 206, 0, 0.2) 0%, rgba(0, 158, 224, 0.2) 100%)'
-              }} />
-              <div className="relative backdrop-blur-sm p-6 rounded-xl border transition-all duration-300" style={{
-                background: 'rgba(30, 41, 59, 0.8)',
-                borderColor: '#475569'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 206, 0, 0.5)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '#475569'
-              }}>
-                
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{
-                    background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)'
+    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {filteredCommandments.map((commandment, index) => {
+        const isCompleted = progress.completedWorkshops.includes(commandment.id)
+        const workshopProgress = getWorkshopProgress(commandment.id)
+        const isInProgress = workshopProgress > 0 && workshopProgress < 100
+        
+        return (
+          <div key={commandment.number} className="group relative">
+            <div className={`absolute inset-0 rounded-xl blur-xl group-hover:blur-lg transition-all duration-300`} style={{
+              background: isCompleted 
+                ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(16, 185, 129, 0.3) 100%)'
+                : isInProgress
+                ? 'linear-gradient(135deg, rgba(255, 206, 0, 0.3) 0%, rgba(0, 158, 224, 0.3) 100%)'
+                : 'linear-gradient(135deg, rgba(255, 206, 0, 0.2) 0%, rgba(0, 158, 224, 0.2) 100%)'
+            }} />
+            <div className="relative backdrop-blur-sm p-6 rounded-xl border transition-all duration-300" style={{
+              background: 'rgba(30, 41, 59, 0.8)',
+              borderColor: '#475569'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 206, 0, 0.5)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#475569'
+            }}>
+              
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center`} style={{
+                    background: isCompleted 
+                      ? 'linear-gradient(90deg, #22c55e 0%, #10b981 100%)'
+                      : 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)'
                   }}>
-                    <span className="text-white font-bold text-lg">{commandment.number}</span>
+                    {isCompleted ? (
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    ) : (
+                      <span className="text-white font-bold text-lg">{commandment.number}</span>
+                    )}
                   </div>
-                  <div className="text-3xl">{commandment.sacredSymbol}</div>
+                  {isInProgress && (
+                    <Badge variant="secondary" className="text-xs">
+                      {workshopProgress}%
+                    </Badge>
+                  )}
                 </div>
-                
-                {/* Title */}
-                <h3 className="text-xl font-bold mb-3" style={{ color: '#FFCE00' }}>
-                  {commandment.title}
-                </h3>
-                
-                {/* Description */}
-                <p className="mb-4 text-sm" style={{ color: '#cbd5e1' }}>
-                  {commandment.description}
-                </p>
-                
-                {/* Meta Info */}
-                <div className="flex items-center justify-between mb-4 text-xs" style={{ color: '#94a3b8' }}>
+                <div className="text-3xl">{commandment.sacredSymbol}</div>
+              </div>
+              
+              {/* Title */}
+              <h3 className="text-xl font-bold mb-3" style={{ color: '#2563eb' }}>
+                {commandment.title}
+              </h3>
+              
+              {/* Description */}
+              <p className="mb-4 text-sm" style={{ color: '#cbd5e1' }}>
+                {commandment.description}
+              </p>
+              
+              {/* Meta Info */}
+              <div className="grid grid-cols-2 gap-2 mb-4 text-xs" style={{ color: '#94a3b8' }}>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
                   <span>{commandment.readTime} min</span>
-                  <span className={`px-2 py-1 rounded border ${getDifficultyColor(commandment.difficulty)}`}>
-                    {commandment.difficulty}
-                  </span>
-                  <span className="font-semibold" style={{ color: '#FFCE00' }}>{commandment.xp} XP</span>
                 </div>
-                
-                {/* Preview */}
-                <div className="mb-6 p-3 rounded-lg border" style={{
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  borderColor: 'rgba(255, 206, 0, 0.2)'
-                }}>
-                  <p className="text-xs mb-1" style={{ color: '#FFCE00' }}>Sacred Preview:</p>
-                  <p className="text-xs italic" style={{ color: '#cbd5e1' }}>
-                    "{commandment.preview}"
-                  </p>
+                <div className="flex items-center gap-1">
+                  <BookOpen className="w-3 h-3" />
+                  <span>{commandment.lessons} Lektionen</span>
                 </div>
-                
-                {/* Actions */}
-                <div className="space-y-2">
-                  <Link href={`/workshops/${commandment.number.toLowerCase()}`}>
-                    <SacredButton className="w-full py-3">
-                      Begin Sacred Journey
-                    </SacredButton>
-                  </Link>
-                  <button 
-                    className="w-full py-2 border font-medium rounded-lg transition-colors duration-300" 
-                    style={{
-                      borderColor: '#475569',
-                      color: '#94a3b8'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#374151'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent'
-                    }}
-                  >
-                    Preview Wisdom
-                  </button>
+                <div className="flex items-center gap-1">
+                  <Target className="w-3 h-3" />
+                  <span>{commandment.exercises} Übungen</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star className="w-3 h-3" style={{ color: '#2563eb' }} />
+                  <span className="font-semibold" style={{ color: '#2563eb' }}>{commandment.xp} XP</span>
                 </div>
               </div>
+              
+              <div className="flex justify-center mb-4">
+                <span className={`px-3 py-1 rounded-full border text-xs ${getDifficultyColor(commandment.difficulty)}`}>
+                  {commandment.difficulty}
+                </span>
+              </div>
+              
+              {/* Progress Bar for In-Progress Workshops */}
+              {isInProgress && (
+                <div className="mb-4">
+                  <div className="flex justify-between text-xs mb-2" style={{ color: '#94a3b8' }}>
+                    <span>Fortschritt</span>
+                    <span>{workshopProgress}%</span>
+                  </div>
+                  <Progress value={workshopProgress} className="h-2" />
+                </div>
+              )}
+              
+              {/* Preview */}
+              <div className="mb-6 p-3 rounded-lg border" style={{
+                background: 'rgba(15, 23, 42, 0.5)',
+                borderColor: isCompleted ? 'rgba(34, 197, 94, 0.3)' : 'rgba(255, 206, 0, 0.2)'
+              }}>
+                <p className="text-xs mb-1" style={{ color: isCompleted ? '#22c55e' : '#FFCE00' }}>
+                  {isCompleted ? 'Abgeschlossen' : 'Sacred Preview'}:
+                </p>
+                <p className="text-xs italic" style={{ color: '#cbd5e1' }}>
+                  "{commandment.preview}"
+                </p>
+              </div>
+              
+              {/* Actions */}
+              <div className="space-y-2">
+                <Link href={`/workshops/${commandment.id}`}>
+                  <SacredButton className="w-full py-3">
+                    {isCompleted ? (
+                      <span className="flex items-center gap-2">
+                        <Trophy className="w-4 h-4" />
+                        Revisit Mastery
+                      </span>
+                    ) : isInProgress ? (
+                      <span className="flex items-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        Continue Journey
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <BookOpen className="w-4 h-4" />
+                        Begin Sacred Journey
+                      </span>
+                    )}
+                  </SacredButton>
+                </Link>
+                {isCompleted && (
+                  <Button 
+                    variant="outline"
+                    className="w-full py-2"
+                    onClick={() => {
+                      // TODO: Implement certificate download
+                      console.log('Download certificate for', commandment.id)
+                    }}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Certificate
+                  </Button>
+                )}
+              </div>
             </div>
-          ))}
+          </div>
+        )
+      })}
+      
+      {filteredCommandments.length === 0 && (
+        <div className="col-span-full text-center py-20">
+          <div className="text-6xl mb-4">🔍</div>
+          <h3 className="text-2xl font-bold mb-2" style={{ color: '#FFCE00' }}>
+            Keine Workshops gefunden
+          </h3>
+          <p style={{ color: '#94a3b8' }}>
+            Versuche einen anderen Filter oder starte mit den Grundlagen.
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+const ProgressOverview = ({ progress }: { progress: WorkshopProgress }) => {
+  const totalWorkshops = commandments.length
+  const completedWorkshops = progress.completedWorkshops.length
+  const totalXP = commandments.reduce((sum, w) => sum + w.xp, 0)
+  const completionPercentage = (completedWorkshops / totalWorkshops) * 100
+  
+  return (
+    <section className="py-20 px-6" style={{ background: 'rgba(15, 23, 42, 0.3)' }}>
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{
+            background: 'linear-gradient(90deg, #fbbf24 0%, #c084fc 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Dein Sacred Progress
+          </h2>
+          <p className="text-xl" style={{ color: '#94a3b8' }}>Verfolge deinen Weg zur Vibe Coding Meisterschaft</p>
+        </div>
+        
+        {/* Progress Stats */}
+        <div className="grid md:grid-cols-4 gap-6 mb-12">
+          <Card style={{ background: 'rgba(30, 41, 59, 0.8)', borderColor: '#475569' }}>
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold mb-2" style={{ color: '#FFCE00' }}>
+                {completedWorkshops}/{totalWorkshops}
+              </div>
+              <div className="text-sm" style={{ color: '#94a3b8' }}>Workshops Completed</div>
+              <Progress value={completionPercentage} className="mt-3 h-2" />
+            </CardContent>
+          </Card>
+          
+          <Card style={{ background: 'rgba(30, 41, 59, 0.8)', borderColor: '#475569' }}>
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold mb-2" style={{ color: '#009EE0' }}>
+                {progress.totalXPEarned}
+              </div>
+              <div className="text-sm" style={{ color: '#94a3b8' }}>XP Earned</div>
+              <div className="text-xs mt-1" style={{ color: '#64748b' }}>von {totalXP} gesamt</div>
+            </CardContent>
+          </Card>
+          
+          <Card style={{ background: 'rgba(30, 41, 59, 0.8)', borderColor: '#475569' }}>
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold mb-2" style={{ color: '#22c55e' }}>
+                {progress.currentStreak}
+              </div>
+              <div className="text-sm" style={{ color: '#94a3b8' }}>Day Streak</div>
+            </CardContent>
+          </Card>
+          
+          <Card style={{ background: 'rgba(30, 41, 59, 0.8)', borderColor: '#475569' }}>
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold mb-2" style={{ color: '#8b5cf6' }}>
+                {progress.certificatesEarned.length}
+              </div>
+              <div className="text-sm" style={{ color: '#94a3b8' }}>Certificates</div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
   )
 }
 
-const LearningPath = () => (
+const LearningPath = ({ progress }: { progress: WorkshopProgress }) => (
   <section className="py-20 px-6" style={{ background: 'rgba(30, 41, 59, 0.3)' }}>
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-16">
@@ -357,13 +595,22 @@ const WorkshopsCTA = () => (
 )
 
 export default function WorkshopsPage() {
+  const { progress } = useWorkshopProgress()
+  const [activeFilter, setActiveFilter] = useState('All')
+  
   return (
     <main className="min-h-screen" style={{
       background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%)'
     }}>
       <WorkshopsHero />
-      <LearningPath />
-      <WorkshopsGrid />
+      <ProgressOverview progress={progress} />
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <WorkshopsFilter activeFilter={activeFilter} setActiveFilter={setActiveFilter} progress={progress} />
+          <WorkshopsGrid activeFilter={activeFilter} progress={progress} />
+        </div>
+      </section>
+      <LearningPath progress={progress} />
       <WorkshopsCTA />
     </main>
   )

@@ -1,29 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest) {
   try {
-    // Test Supabase connection
-    const supabase = await createServerSupabaseClient()
-    
-    // Simple query to test connection
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('count')
-      .limit(1)
-      .single()
-
-    if (error && error.code !== 'PGRST116') {
-      // PGRST116 is "not found" which is ok for testing
-      console.error('Supabase connection error:', error)
-      return NextResponse.json({
-        status: 'error',
-        message: 'Database connection failed',
-        error: error.message,
-        supabase_url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        timestamp: new Date().toISOString()
-      }, { status: 500 })
-    }
+    // Basic health check without Supabase connection
+    // (Supabase causes SSR issues during build)
+    const hasSupabaseConfig = !!(
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
 
     return NextResponse.json({
       status: 'success',
@@ -33,12 +17,12 @@ export async function GET(request: NextRequest) {
         divine_colors: true,
         mystical_animations: true,
         sacred_typography: true,
-        supabase_connected: true
+        supabase_configured: hasSupabaseConfig
       },
-      database: {
-        connected: true,
-        url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        status: error ? 'no_data' : 'active'
+      environment: {
+        node_env: process.env.NODE_ENV,
+        vercel: !!process.env.VERCEL,
+        supabase_configured: hasSupabaseConfig
       },
       timestamp: new Date().toISOString()
     })

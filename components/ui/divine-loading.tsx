@@ -9,11 +9,11 @@ const loadingSpinnerVariants = cva(
     variants: {
       variant: {
         default: "border-t-primary border-r-primary/50",
-        sacred: "border-t-sacred-tech-gold border-r-sacred-electric-indigo/50 shadow-sacred-glow",
-        divine: "border-t-sacred-electric-indigo border-r-sacred-tech-gold/50 shadow-mystical-glow",
-        mystical: "border-t-sacred-mystic-purple border-r-sacred-rose/50 shadow-matrix-glow",
-        matrix: "border-t-sacred-matrix-green border-r-sacred-matrix-green/50 shadow-matrix-glow",
-        prophet: "border-t-vibe-primary border-r-vibe-secondary/50"
+        sacred: "border-t-blue-600 border-r-indigo-600/50",
+        divine: "border-t-indigo-600 border-r-blue-600/50",
+        mystical: "border-t-blue-700 border-r-indigo-500/50",
+        matrix: "border-t-green-500 border-r-green-500/50",
+        prophet: "border-t-blue-600 border-r-indigo-600/50"
       },
       size: {
         sm: "h-4 w-4 border",
@@ -147,9 +147,9 @@ const skeletonVariants = cva(
     variants: {
       variant: {
         default: "bg-muted",
-        sacred: "bg-gradient-to-r from-sacred-tech-gold/10 via-sacred-electric-indigo/10 to-sacred-tech-gold/10",
-        divine: "bg-gradient-to-r from-sacred-midnight-blue/20 via-sacred-electric-indigo/20 to-sacred-midnight-blue/20",
-        mystical: "bg-gradient-to-r from-sacred-mystic-purple/10 via-sacred-rose/10 to-sacred-mystic-purple/10"
+        sacred: "bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-blue-600/10",
+        divine: "bg-gradient-to-r from-gray-800/20 via-indigo-600/20 to-gray-800/20",
+        mystical: "bg-gradient-to-r from-indigo-600/10 via-blue-500/10 to-indigo-600/10"
       }
     },
     defaultVariants: {
@@ -195,10 +195,10 @@ export const SacredProgressRing = React.forwardRef<
   }
   
   const colorClasses = {
-    sacred: "stroke-sacred-tech-gold",
-    divine: "stroke-sacred-electric-indigo", 
-    mystical: "stroke-sacred-mystic-purple",
-    matrix: "stroke-sacred-matrix-green"
+    sacred: "stroke-blue-600",
+    divine: "stroke-indigo-600", 
+    mystical: "stroke-blue-700",
+    matrix: "stroke-green-500"
   }
   
   const radius = 16
@@ -235,7 +235,7 @@ export const SacredProgressRing = React.forwardRef<
           strokeLinecap="round"
           className={cn("transition-all duration-500", colorClasses[variant])}
           style={{
-            filter: `drop-shadow(0 0 6px var(--sacred-${variant === 'sacred' ? 'tech-gold' : variant === 'divine' ? 'electric-indigo' : variant === 'mystical' ? 'mystic-purple' : 'matrix-green'}))`
+            filter: `drop-shadow(0 0 6px ${variant === 'sacred' ? '#2563eb' : variant === 'divine' ? '#4f46e5' : variant === 'mystical' ? '#1d4ed8' : '#22c55e'})`
           }}
         />
       </svg>

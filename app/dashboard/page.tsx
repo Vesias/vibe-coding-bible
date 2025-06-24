@@ -461,15 +461,15 @@ export default function DashboardPage() {
               background: 'rgba(30, 41, 59, 0.8)',
               borderColor: '#475569'
             }}>
-              <h3 className="text-xl font-bold mb-6" style={{ color: '#004A8F' }}>
-                💡 Divine Guidance
+              <h3 className="text-xl font-bold mb-6" style={{ color: '#2563eb' }}>
+                💡 AgentLand Guidance
               </h3>
               {dashboardData.recommendations.length > 0 ? (
                 <div className="space-y-4">
                   {dashboardData.recommendations.map((rec) => (
                     <div key={rec.id} className="p-3 rounded-lg border" style={{
                       background: 'rgba(15, 23, 42, 0.5)',
-                      borderColor: 'rgba(0, 74, 143, 0.2)'
+                      borderColor: 'rgba(37, 99, 235, 0.2)'
                     }}>
                       <p className="font-semibold mb-1" style={{ color: '#fff' }}>
                         {rec.title}

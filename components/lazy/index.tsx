@@ -1,6 +1,6 @@
 // Lazy-loaded components for better performance
 import React from 'react'
-import { withLazyLoading } from '@/lib/utils/lazy-loading'
+import { withLazyLoading, withPriorityLazyLoading } from '@/lib/utils/lazy-loading'
 import { 
   WorkshopLoadingFallback, 
   DashboardLoadingFallback,
@@ -8,16 +8,18 @@ import {
   LazyLoadingFallback
 } from '@/lib/utils/lazy-loading'
 
-// TODO: Workshop Components - temporarily disabled for deployment
-// export const LazyInteractiveWorkshop = withLazyLoading(
-//   () => import('@/components/workshop/InteractiveWorkshopRefactored'),
-//   <WorkshopLoadingFallback />
-// )
+// High-priority Workshop Components (preloaded)
+export const LazyInteractiveWorkshop = withPriorityLazyLoading(
+  () => import('@/components/workshop/InteractiveWorkshopRefactored'),
+  'high',
+  <WorkshopLoadingFallback />
+)
 
-// export const LazySacredWorkshopEngine = withLazyLoading(
-//   () => import('@/components/workshop/SacredWorkshopEngine'),
-//   <WorkshopLoadingFallback />
-// )
+export const LazySacredWorkshopEngine = withPriorityLazyLoading(
+  () => import('@/components/workshop/SacredWorkshopEngine'),
+  'high',
+  <WorkshopLoadingFallback />
+)
 
 // TODO: Fix other lazy-loaded components - temporarily disabled for deployment
 // Navigation Components

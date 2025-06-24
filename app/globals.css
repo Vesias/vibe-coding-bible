@@ -606,12 +606,12 @@
   0%, 100% { 
     transform: scale(1);
     opacity: 0.8;
-    box-shadow: 0 0 10px rgba(255, 206, 0, 0.3);
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
   }
   50% { 
     transform: scale(1.05);
     opacity: 1;
-    box-shadow: 0 0 30px rgba(255, 206, 0, 0.6), 0 0 60px rgba(0, 158, 224, 0.4);
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.6), 0 0 60px rgba(79, 70, 229, 0.4);
   }
 }
 
@@ -628,21 +628,21 @@
 
 @keyframes sacred-pulse {
   0%, 100% { 
-    box-shadow: 0 0 10px rgba(255, 206, 0, 0.3), 0 0 20px rgba(0, 158, 224, 0.2);
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3), 0 0 20px rgba(79, 70, 229, 0.2);
     transform: scale(1);
   }
   50% { 
-    box-shadow: 0 0 30px rgba(255, 206, 0, 0.6), 0 0 60px rgba(0, 158, 224, 0.4);
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.6), 0 0 60px rgba(79, 70, 229, 0.4);
     transform: scale(1.05);
   }
 }
 
 @keyframes mystical-glow {
   0%, 100% {
-    text-shadow: 0 0 5px rgba(0, 158, 224, 0.5);
+    text-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
   }
   50% {
-    text-shadow: 0 0 20px rgba(0, 158, 224, 0.8), 0 0 30px rgba(255, 206, 0, 0.5);
+    text-shadow: 0 0 20px rgba(79, 70, 229, 0.8), 0 0 30px rgba(37, 99, 235, 0.5);
   }
 }
 
@@ -733,7 +733,7 @@
 }
 
 .divine-shimmer-animation {
-  background: linear-gradient(90deg, transparent, rgba(255, 206, 0, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.4), transparent);
   background-size: 200% 100%;
   animation: divine-shimmer 2s ease-in-out infinite;
 }
@@ -770,7 +770,7 @@
 
 .divine-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 15px 35px rgba(0, 158, 224, 0.25), 0 0 0 1px rgba(255, 206, 0, 0.3);
+  box-shadow: 0 15px 35px rgba(79, 70, 229, 0.25), 0 0 0 1px rgba(37, 99, 235, 0.3);
 }
 
 .mystical-hover {
@@ -1124,7 +1124,7 @@
   
   /* Enhanced mobile text readability */
   .sacred-text {
-    text-shadow: 0 0 10px rgba(255, 206, 0, 0.5);
+    text-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
   }
   
   /* Enhanced focus for interactive elements */
@@ -1370,11 +1370,11 @@
 
 /* Sacred Selection */
 ::selection {
-  background: rgba(255, 206, 0, 0.2);
-  color: hsl(var(--sacred-midnight-blue));
+  background: rgba(37, 99, 235, 0.2);
+  color: hsl(var(--agentland-gray-800));
 }
 
 ::-moz-selection {
-  background: rgba(255, 206, 0, 0.2);
-  color: hsl(var(--sacred-midnight-blue));
+  background: rgba(37, 99, 235, 0.2);
+  color: hsl(var(--agentland-gray-800));
 }

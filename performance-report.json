@@ -1,0 +1,12 @@
+{
+  "bundleSize": {},
+  "buildTime": 0,
+  "errors": [
+    "Bundle analysis failed: Command failed: npm run build\n ⚠ Compiled with warnings in 3.0s\n\n./node_modules/.pnpm/@supabase+realtime-js@2.11.10/node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js\nCritical dependency: the request of a dependency is an expression\n\nImport trace for requested module:\n./node_modules/.pnpm/@supabase+realtime-js@2.11.10/node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js\n./node_modules/.pnpm/@supabase+realtime-js@2.11.10/node_modules/@supabase/realtime-js/dist/main/index.js\n./node_modules/.pnpm/@supabase+supabase-js@2.50.0/node_modules/@supabase/supabase-js/dist/module/index.js\n./node_modules/.pnpm/@supabase+ssr@0.6.1_@supabase+supabase-js@2.50.0/node_modules/@supabase/ssr/dist/module/createServerClient.js\n./node_modules/.pnpm/@supabase+ssr@0.6.1_@supabase+supabase-js@2.50.0/node_modules/@supabase/ssr/dist/module/index.js\n./lib/supabase/server.ts\n./app/api/health/route.ts\n\nunhandledRejection ReferenceError: self is not defined\n    at Object.<anonymous> (.next/server/vendors.js:1:1) {\n  type: 'ReferenceError'\n}\n",
+    "Build failed: Command failed: npm run build\n ⚠ Compiled with warnings in 3.0s\n\n./node_modules/.pnpm/@supabase+realtime-js@2.11.10/node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js\nCritical dependency: the request of a dependency is an expression\n\nImport trace for requested module:\n./node_modules/.pnpm/@supabase+realtime-js@2.11.10/node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js\n./node_modules/.pnpm/@supabase+realtime-js@2.11.10/node_modules/@supabase/realtime-js/dist/main/index.js\n./node_modules/.pnpm/@supabase+supabase-js@2.50.0/node_modules/@supabase/supabase-js/dist/module/index.js\n./node_modules/.pnpm/@supabase+ssr@0.6.1_@supabase+supabase-js@2.50.0/node_modules/@supabase/ssr/dist/module/createServerClient.js\n./node_modules/.pnpm/@supabase+ssr@0.6.1_@supabase+supabase-js@2.50.0/node_modules/@supabase/ssr/dist/module/index.js\n./lib/supabase/server.ts\n./app/api/health/route.ts\n\nunhandledRejection ReferenceError: self is not defined\n    at Object.<anonymous> (.next/server/vendors.js:1:1) {\n  type: 'ReferenceError'\n}\n"
+  ],
+  "warnings": [],
+  "recommendations": [
+    "Add @next/bundle-analyzer for detailed bundle analysis"
+  ]
+}

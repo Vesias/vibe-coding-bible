@@ -42,7 +42,7 @@ const getDifficultyColor = (difficulty: string) => {
 }
 
 export function ExerciseCard({ exercise, onStart }: ExerciseCardProps) {
-  const Icon = getExerciseIcon(exercise.type || 'default')
+  const Icon = getExerciseIcon((exercise as any).type || 'default')
 
   return (
     <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300">

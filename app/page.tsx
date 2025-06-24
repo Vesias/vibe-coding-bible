@@ -1,6 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import { SacredButton } from '@/components/ui/sacred-button'
+import { ExportButtons } from '@/components/export/ExportButtons'
+import { FAQSection, generalFAQs } from '@/components/seo/FAQSection'
+import { CourseSchema } from '@/components/seo/SchemaMarkup'
 
 // Sacred Components
 const SacredHero = () => (
@@ -273,6 +276,25 @@ const SacredTestimonials = () => (
   </section>
 )
 
+const SacredExports = () => (
+  <section className="py-20 px-6 bg-white">
+    <div className="max-w-6xl mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 agentland-text">
+          VibeCodingBibel™ als eBook
+        </h2>
+        <p className="text-xl text-gray-600">
+          Lade das vollständige Kompendium in professioneller Buchqualität herunter
+        </p>
+      </div>
+      
+      <div className="max-w-4xl mx-auto">
+        <ExportButtons type="complete" />
+      </div>
+    </div>
+  </section>
+)
+
 const SacredCTA = () => (
   <section className="py-20 px-6 bg-indigo-50">
     <div className="max-w-4xl mx-auto text-center">
@@ -317,12 +339,44 @@ const SacredCTA = () => (
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      <SacredHero />
-      <SacredFeatures />
-      <SacredStats />
-      <SacredTestimonials />
-      <SacredCTA />
-    </main>
+    <>
+      {/* Course Schema for the main workshops */}
+      <CourseSchema
+        name="Die Vibe Coding Bibel - 10 Heilige Gebote der KI-Entwicklung"
+        description="Meistere KI-unterstützte Programmierung mit interaktiven Workshops, Live-Coding und praktischen Projekten. Lerne Claude Code, GitHub Copilot und moderne Entwicklungstools."
+        url={`${process.env.NEXT_PUBLIC_SITE_URL}/workshops`}
+        image="/og-image.jpg"
+        instructor="Vibe Coding Academy"
+        price={79}
+        duration="P3M"
+        level="Beginner to Advanced"
+        prerequisites={["Grundkenntnisse in Programmierung", "Computer mit Internetverbindung"]}
+        learningOutcomes={[
+          "KI-unterstützte Programmierung mit Claude Code",
+          "Effektive Nutzung von GitHub Copilot",
+          "Moderne Web-Entwicklung mit Next.js und TypeScript",
+          "SaaS-Entwicklung und Monetarisierung",
+          "Agile Entwicklungsmethoden mit KI-Tools"
+        ]}
+      />
+      
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <SacredHero />
+        <SacredFeatures />
+        <SacredStats />
+        <SacredTestimonials />
+        
+        {/* FAQ Section for better SEO */}
+        <FAQSection 
+          title="Häufig gestellte Fragen"
+          description="Antworten auf die wichtigsten Fragen zur Vibe Coding Bibel und unseren Workshops"
+          faqs={generalFAQs}
+          className="bg-gray-50"
+        />
+        
+        <SacredExports />
+        <SacredCTA />
+      </main>
+    </>
   )
 }

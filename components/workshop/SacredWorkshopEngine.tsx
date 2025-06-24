@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import SacredAIMentor from './SacredAIMentor'
+import SacredAIMentor from './SacredAIMentorSimple'
+import SacredCertificate from './SacredCertificate'
+import PDFExporter from './PDFExporter'
 import { 
   BookOpen, 
   Code, 
@@ -21,8 +23,20 @@ import {
   Zap,
   Brain,
   Users,
-  Eye
+  Eye,
+  Award,
+  Download,
+  Settings,
+  Play,
+  Pause,
+  RotateCcw,
+  Timer,
+  BookmarkCheck,
+  Flame,
+  Coffee
 } from 'lucide-react'
+import { ExportButtons } from '@/components/export/ExportButtons'
+import { InteractiveCodePlayground } from '@/components/ui/interactive-code-playground'
 
 interface WorkshopProgress {
   lessonsCompleted: string[]
@@ -31,6 +45,16 @@ interface WorkshopProgress {
   currentLesson: string
   startedAt: Date
   lastActivity: Date
+  sessionTime: number // total time spent in minutes
+  streak: number // consecutive days
+}
+
+interface SessionState {
+  isActive: boolean
+  startTime: Date | null
+  totalTime: number // in seconds
+  isPaused: boolean
+  currentFocus: 'lesson' | 'exercise' | 'overview' | null
 }
 
 interface SacredWorkshopEngineProps {
@@ -48,20 +72,69 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
     totalXPEarned: 0,
     currentLesson: workshop.lessons[0]?.id || '',
     startedAt: new Date(),
-    lastActivity: new Date()
+    lastActivity: new Date(),
+    sessionTime: 0,
+    streak: 0
+  })
+
+  const [sessionState, setSessionState] = useState<SessionState>({
+    isActive: false,
+    startTime: null,
+    totalTime: 0,
+    isPaused: false,
+    currentFocus: null
   })
 
   const [activeTab, setActiveTab] = useState('overview')
   const [selectedLesson, setSelectedLesson] = useState<WorkshopLesson | null>(null)
   const [selectedExercise, setSelectedExercise] = useState<WorkshopExercise | null>(null)
+  const [showCertificate, setShowCertificate] = useState(false)
+  const [sessionTimer, setSessionTimer] = useState(0)
 
   useEffect(() => {
     // Load progress from localStorage if available
     const savedProgress = localStorage.getItem(`workshop-progress-${workshop.id}`)
     if (savedProgress) {
-      setProgress(JSON.parse(savedProgress))
+      const parsed = JSON.parse(savedProgress)
+      setProgress({
+        ...parsed,
+        sessionTime: parsed.sessionTime || 0,
+        streak: parsed.streak || 0
+      })
+    }
+    
+    // Load session state
+    const savedSession = localStorage.getItem(`workshop-session-${workshop.id}`)
+    if (savedSession) {
+      const parsedSession = JSON.parse(savedSession)
+      setSessionState(parsedSession)
+      setSessionTimer(parsedSession.totalTime || 0)
     }
   }, [workshop.id])
+
+  // Session timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+    
+    if (sessionState.isActive && !sessionState.isPaused) {
+      interval = setInterval(() => {
+        setSessionTimer(prev => prev + 1)
+        setSessionState(prev => ({
+          ...prev,
+          totalTime: prev.totalTime + 1
+        }))
+      }, 1000)
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [sessionState.isActive, sessionState.isPaused])
+
+  // Save session state
+  useEffect(() => {
+    localStorage.setItem(`workshop-session-${workshop.id}`, JSON.stringify(sessionState))
+  }, [sessionState, workshop.id])
 
   useEffect(() => {
     // Save progress to localStorage
@@ -69,16 +142,68 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
     onProgress?.(progress)
   }, [progress, workshop.id, onProgress])
 
+  // Session management functions
+  const startSession = (focus: 'lesson' | 'exercise' | 'overview') => {
+    setSessionState({
+      isActive: true,
+      startTime: new Date(),
+      totalTime: sessionTimer,
+      isPaused: false,
+      currentFocus: focus
+    })
+  }
+
+  const pauseSession = () => {
+    setSessionState(prev => ({
+      ...prev,
+      isPaused: !prev.isPaused
+    }))
+  }
+
+  const endSession = () => {
+    const sessionMinutes = Math.floor(sessionTimer / 60)
+    setProgress(prev => ({
+      ...prev,
+      sessionTime: prev.sessionTime + sessionMinutes,
+      lastActivity: new Date()
+    }))
+    
+    setSessionState({
+      isActive: false,
+      startTime: null,
+      totalTime: 0,
+      isPaused: false,
+      currentFocus: null
+    })
+    
+    setSessionTimer(0)
+  }
+
+  const formatTime = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = seconds % 60
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    }
+    return `${minutes}:${secs.toString().padStart(2, '0')}`
+  }
+
   const completeLesson = (lessonId: string) => {
     if (!progress.lessonsCompleted.includes(lessonId)) {
       const lesson = workshop.lessons.find(l => l.id === lessonId)
       if (lesson) {
-        setProgress(prev => ({
-          ...prev,
-          lessonsCompleted: [...prev.lessonsCompleted, lessonId],
-          totalXPEarned: prev.totalXPEarned + lesson.xp,
+        const newProgress = {
+          ...progress,
+          lessonsCompleted: [...progress.lessonsCompleted, lessonId],
+          totalXPEarned: progress.totalXPEarned + lesson.xp,
           lastActivity: new Date()
-        }))
+        }
+        setProgress(newProgress)
+        
+        // Check if workshop is completed and update global progress
+        checkWorkshopCompletion(newProgress)
       }
     }
   }
@@ -87,13 +212,58 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
     if (!progress.exercisesCompleted.includes(exerciseId)) {
       const exercise = workshop.exercises.find(e => e.id === exerciseId)
       if (exercise) {
-        setProgress(prev => ({
-          ...prev,
-          exercisesCompleted: [...prev.exercisesCompleted, exerciseId],
-          totalXPEarned: prev.totalXPEarned + exercise.xp,
+        const newProgress = {
+          ...progress,
+          exercisesCompleted: [...progress.exercisesCompleted, exerciseId],
+          totalXPEarned: progress.totalXPEarned + exercise.xp,
           lastActivity: new Date()
-        }))
+        }
+        setProgress(newProgress)
+        
+        // Check if workshop is completed and update global progress
+        checkWorkshopCompletion(newProgress)
       }
+    }
+  }
+
+  const checkWorkshopCompletion = (currentProgress: WorkshopProgress) => {
+    const totalLessons = workshop.lessons.length
+    const totalExercises = workshop.exercises.length
+    const completedLessons = currentProgress.lessonsCompleted.length
+    const completedExercises = currentProgress.exercisesCompleted.length
+    
+    // Workshop is complete if all lessons and exercises are done
+    const isComplete = completedLessons === totalLessons && completedExercises === totalExercises
+    
+    if (isComplete) {
+      // Update global workshop progress
+      const globalProgress = localStorage.getItem('vibe-coding-workshop-progress')
+      if (globalProgress) {
+        const parsed = JSON.parse(globalProgress)
+        if (!parsed.completedWorkshops.includes(workshop.id)) {
+          const updatedGlobal = {
+            ...parsed,
+            completedWorkshops: [...parsed.completedWorkshops, workshop.id],
+            totalXPEarned: parsed.totalXPEarned + workshop.totalXP,
+            lastActivity: new Date()
+          }
+          localStorage.setItem('vibe-coding-workshop-progress', JSON.stringify(updatedGlobal))
+          
+          // Show completion celebration
+          showCompletionCelebration()
+          // Show certificate after completion
+          setShowCertificate(true)
+        }
+      }
+    }
+  }
+
+  const showCompletionCelebration = () => {
+    // Simple completion notification - could be enhanced with a modal
+    const message = `🎉 Congratulations! You've completed ${workshop.title}! 🎉`
+    if (typeof window !== 'undefined') {
+      // You could replace this with a proper toast/modal system
+      setTimeout(() => alert(message), 500)
     }
   }
 
@@ -126,8 +296,86 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
     }
   }
 
+  // Session Control Component
+  const SessionControl = () => (
+    <Card style={{ background: 'rgba(30, 41, 59, 0.8)', borderColor: '#475569' }} className="mb-6">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Timer className="w-5 h-5" style={{ color: sessionState.isActive ? '#22c55e' : '#FFCE00' }} />
+              <span className="text-lg font-mono" style={{ color: '#FFCE00' }}>
+                {formatTime(sessionTimer)}
+              </span>
+            </div>
+            {sessionState.isActive && (
+              <Badge 
+                variant="secondary" 
+                className={`${sessionState.isPaused ? 'bg-yellow-500/20 text-yellow-400' : 'bg-green-500/20 text-green-400'}`}
+              >
+                {sessionState.isPaused ? 'Paused' : 'Active'}
+              </Badge>
+            )}
+            {sessionState.currentFocus && (
+              <div className="flex items-center gap-2 text-sm" style={{ color: '#94a3b8' }}>
+                <Flame className="w-4 h-4" />
+                <span>Focus: {sessionState.currentFocus}</span>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-2">
+            {!sessionState.isActive ? (
+              <Button 
+                onClick={() => startSession('overview')}
+                size="sm"
+                style={{ background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)' }}
+              >
+                <Play className="w-4 h-4 mr-2" />
+                Start Session
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  onClick={pauseSession}
+                  size="sm"
+                  variant="outline"
+                  style={{ borderColor: '#FFCE00', color: '#FFCE00' }}
+                >
+                  {sessionState.isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+                </Button>
+                <Button 
+                  onClick={endSession}
+                  size="sm"
+                  variant="outline"
+                  style={{ borderColor: '#dc2626', color: '#dc2626' }}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+        
+        {progress.sessionTime > 0 && (
+          <div className="mt-3 text-xs" style={{ color: '#94a3b8' }}>
+            Total Learning Time: {Math.floor(progress.sessionTime / 60)}h {progress.sessionTime % 60}m
+            {progress.streak > 0 && (
+              <span className="ml-4">
+                🔥 {progress.streak} day streak
+              </span>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+
   const WorkshopOverview = () => (
     <div className="space-y-6">
+      {/* Session Control */}
+      <SessionControl />
+      
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="text-6xl mb-4">{workshop.sacredSymbol}</div>
@@ -234,6 +482,21 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
           </CardContent>
         </Card>
       </div>
+
+      {/* Export Section */}
+      <Card style={{ background: 'rgba(30, 41, 59, 0.8)', borderColor: '#475569' }}>
+        <CardHeader>
+          <CardTitle style={{ color: '#FFCE00' }}>Workshop als eBook</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ExportButtons 
+            type="workshop" 
+            workshopId={workshop.id}
+            title={`${workshop.title} - Workshop`}
+            variant="compact"
+          />
+        </CardContent>
+      </Card>
     </div>
   )
 
@@ -254,7 +517,14 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
                 background: 'rgba(30, 41, 59, 0.8)', 
                 borderColor: isCompleted ? '#22c55e' : '#475569' 
               }}
-              onClick={() => setSelectedLesson(lesson)}
+              onClick={() => {
+                setSelectedLesson(lesson)
+                if (!sessionState.isActive) {
+                  startSession('lesson')
+                } else {
+                  setSessionState(prev => ({ ...prev, currentFocus: 'lesson' }))
+                }
+              }}
             >
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -310,7 +580,14 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
                 background: 'rgba(30, 41, 59, 0.8)', 
                 borderColor: isCompleted ? '#22c55e' : '#475569' 
               }}
-              onClick={() => setSelectedExercise(exercise)}
+              onClick={() => {
+                setSelectedExercise(exercise)
+                if (!sessionState.isActive) {
+                  startSession('exercise')
+                } else {
+                  setSessionState(prev => ({ ...prev, currentFocus: 'exercise' }))
+                }
+              }}
             >
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -418,7 +695,11 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
     </div>
   )
 
-  const ExerciseModal = ({ exercise }: { exercise: WorkshopExercise }) => (
+  const ExerciseModal = ({ exercise }: { exercise: WorkshopExercise }) => {
+    const [exerciseCode, setExerciseCode] = useState('')
+    const [isValidated, setIsValidated] = useState(false)
+    
+    return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <Card className="max-w-4xl w-full max-h-[80vh] overflow-y-auto" style={{ 
         background: 'rgba(15, 23, 42, 0.95)', 
@@ -460,19 +741,27 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
             <p style={{ color: '#cbd5e1' }}>{exercise.expectedOutput}</p>
           </div>
           
-          {exercise.hints.length > 0 && (
-            <div>
-              <h4 className="font-semibold mb-2" style={{ color: '#009EE0' }}>
-                <Lightbulb className="w-4 h-4 inline mr-1" />
-                Hilfreiche Tipps
-              </h4>
-              <ul className="list-disc list-inside space-y-1" style={{ color: '#cbd5e1' }}>
-                {exercise.hints.map((hint, index) => (
-                  <li key={index}>{hint}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Interactive Code Playground */}
+          <div>
+            <h4 className="font-semibold mb-2" style={{ color: '#009EE0' }}>
+              <Code className="w-4 h-4 inline mr-1" />
+              Interactive Code Environment
+            </h4>
+            <InteractiveCodePlayground
+              initialCode={`// ${exercise.title}\n// ${exercise.description}\n\n// Your code here...`}
+              language="javascript"
+              expectedOutput={exercise.expectedOutput}
+              hints={exercise.hints}
+              onCodeChange={setExerciseCode}
+              onValidate={(valid, output) => {
+                setIsValidated(valid)
+                if (valid) {
+                  // Could trigger celebration or auto-completion
+                  console.log('Exercise validated successfully!')
+                }
+              }}
+            />
+          </div>
           
           <div className="flex justify-between items-center pt-4 border-t" style={{ borderColor: '#475569' }}>
             <div className="flex items-center gap-4 text-sm" style={{ color: '#94a3b8' }}>
@@ -497,17 +786,24 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
                   completeExercise(exercise.id)
                   setSelectedExercise(null)
                 }}
-                style={{ background: 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)' }}
+                disabled={!isValidated}
+                style={{ 
+                  background: isValidated 
+                    ? 'linear-gradient(90deg, #FFCE00 0%, #009EE0 100%)' 
+                    : 'rgba(100, 116, 139, 0.5)',
+                  cursor: isValidated ? 'pointer' : 'not-allowed'
+                }}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Übung Abschließen
+                {isValidated ? 'Übung Abschließen' : 'Löse die Übung, um fortzufahren'}
               </Button>
             )}
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+    )
+  }
 
   return (
     <div className="min-h-screen" style={{ 
@@ -515,7 +811,7 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
     }}>
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3" style={{ 
+          <TabsList className="grid w-full grid-cols-5" style={{ 
             background: 'rgba(30, 41, 59, 0.8)',
             borderColor: '#475569'
           }}>
@@ -531,6 +827,14 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
               <Target className="w-4 h-4" />
               Übungen ({progress.exercisesCompleted.length}/{workshop.exercises.length})
             </TabsTrigger>
+            <TabsTrigger value="certificate" className="flex items-center gap-2">
+              <Award className="w-4 h-4" />
+              Certificate
+            </TabsTrigger>
+            <TabsTrigger value="export" className="flex items-center gap-2">
+              <Download className="w-4 h-4" />
+              Export
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -544,6 +848,62 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
           <TabsContent value="exercises">
             <ExercisesView />
           </TabsContent>
+
+          <TabsContent value="certificate">
+            <div className="space-y-6">
+              {getProgressPercentage() === 100 ? (
+                <SacredCertificate
+                  workshop={workshop}
+                  completionDate={new Date(progress.lastActivity)}
+                  userInfo={{
+                    name: 'Sacred Developer' // Could be enhanced to get actual user info
+                  }}
+                  xpEarned={progress.totalXPEarned}
+                  onDownload={() => console.log('Certificate downloaded')}
+                  onShare={() => console.log('Certificate shared')}
+                />
+              ) : (
+                <Card style={{ background: 'rgba(30, 41, 59, 0.8)', borderColor: '#475569' }}>
+                  <CardContent className="p-8 text-center">
+                    <Trophy className="w-16 h-16 mx-auto mb-4" style={{ color: '#64748b' }} />
+                    <h3 className="text-2xl font-bold mb-2" style={{ color: '#FFCE00' }}>
+                      Certificate noch nicht verfügbar
+                    </h3>
+                    <p className="mb-4" style={{ color: '#94a3b8' }}>
+                      Vervollständige alle Lektionen und Übungen, um dein Sacred Certificate zu erhalten.
+                    </p>
+                    <div className="mb-6">
+                      <div className="text-sm mb-2" style={{ color: '#94a3b8' }}>
+                        Fortschritt: {Math.round(getProgressPercentage())}%
+                      </div>
+                      <Progress value={getProgressPercentage()} className="h-3" />
+                    </div>
+                    <div className="text-sm" style={{ color: '#64748b' }}>
+                      Noch benötigt:
+                      <ul className="mt-2 space-y-1">
+                        {progress.lessonsCompleted.length < workshop.lessons.length && (
+                          <li>• {workshop.lessons.length - progress.lessonsCompleted.length} Lektionen</li>
+                        )}
+                        {progress.exercisesCompleted.length < workshop.exercises.length && (
+                          <li>• {workshop.exercises.length - progress.exercisesCompleted.length} Übungen</li>
+                        )}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="export">
+            <PDFExporter
+              workshop={workshop}
+              progress={progress}
+              includeProgress={true}
+              includeExercises={true}
+              includeNotes={false}
+            />
+          </TabsContent>
         </Tabs>
 
         {selectedLesson && <LessonModal lesson={selectedLesson} />}
@@ -553,10 +913,9 @@ const SacredWorkshopEngine: React.FC<SacredWorkshopEngineProps> = ({
       {/* Sacred AI Mentor */}
       <SacredAIMentor 
         workshopContext={{
-          commandmentNumber: workshop.commandmentNumber,
-          title: workshop.title,
-          currentLesson: selectedLesson?.id,
-          currentExercise: selectedExercise?.id
+          currentStep: selectedLesson?.id || 'intro',
+          progress: 50,
+          commandment: workshop.title
         }}
         onSuggestion={(suggestion) => {
           // Handle AI suggestions if needed
