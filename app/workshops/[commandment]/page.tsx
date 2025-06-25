@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { getWorkshopById, getAllWorkshops } from '@/lib/workshop/commandments'
 import SacredWorkshopEngine from '@/components/workshop/SacredWorkshopEngine'
 import { Card, CardContent } from '@/components/ui/card'
@@ -152,11 +155,32 @@ const WorkshopNavigation = ({ currentWorkshop }: { currentWorkshop: any }) => {
   )
 }
 
-export default async function CommandmentPage({ params }: PageProps) {
-  const resolvedParams = await params
-  const workshopId = resolvedParams.commandment.toLowerCase()
-
-  const workshop = getWorkshopById(workshopId)
+export default function CommandmentPage({ params }: PageProps) {
+  const [workshopId, setWorkshopId] = useState<string>('')
+  const [workshop, setWorkshop] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    const loadWorkshop = async () => {
+      const resolvedParams = await params
+      const id = resolvedParams.commandment.toLowerCase()
+      setWorkshopId(id)
+      
+      const workshopData = getWorkshopById(id)
+      setWorkshop(workshopData)
+      setLoading(false)
+    }
+    
+    loadWorkshop()
+  }, [params])
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    )
+  }
   
   if (!workshop) {
     return (
@@ -189,29 +213,4 @@ export default async function CommandmentPage({ params }: PageProps) {
   )
 }
 
-// Export metadata for SEO
-export async function generateMetadata({ params }: PageProps) {
-  const resolvedParams = await params
-  const workshopId = resolvedParams.commandment
-  
-  const workshopTitles: Record<string, string> = {
-    'i': 'Die Heilige Vision - Sacred Foundation of AI Development',
-    'ii': 'Der Rechte Stack - Choosing Sacred Technologies',
-    'iii': 'Die Prompt-Kunst - Mastering AI Communication',
-    'iv': 'Multi-Context Programming - Advanced AI Workflows',
-    'v': 'Die Heilige Iteration - Continuous Divine Improvement',
-    'vi': 'Göttliches Debugging - Sacred Problem Solving',
-    'vii': 'Kunst des Vertrauens - Trust in AI Partnerships',
-    'viii': 'Skalierungsstufen - Scaling Divine Applications',
-    'ix': 'Zusammenarbeit Propheten - Collaborative Development',
-    'x': 'Monetarisierung - Sacred Business Models'
-  }
-  
-  const title = workshopTitles[workshopId] || 'Sacred Workshop'
-  
-  return {
-    title: `${title} | Vibe Coding Bible`,
-    description: `Master the sacred art of AI-assisted development with Commandment ${workshopId.toUpperCase()}. Interactive lessons, divine exercises, and AI mentor guidance.`,
-    keywords: ['AI development', 'Vibe Coding', 'Programming', 'Claude Code', 'Interactive Workshop'],
-  }
-}
+// SEO metadata removed due to 'use client' directive requirement
