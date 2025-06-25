@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { getAllWorkshops } from '@/lib/workshop/workshop-content-migrated'
+import { getAllWorkshops } from '@/lib/workshop/commandments'
 import { 
   BookOpen, 
   Trophy, 

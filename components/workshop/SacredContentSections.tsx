@@ -93,7 +93,7 @@ function SacredTextContent({ workshop }: { workshop: WorkshopData }) {
         return (
           <motion.h1 
             key={index} 
-            className="text-3xl font-bold mb-6 bg-gradient-to-r from-sacred-gold via-white to-sacred-purple bg-clip-text text-transparent"
+            className="text-3xl font-bold mb-6 bg-gradient-to-r from-yellow-400 via-white to-purple-400 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
@@ -105,7 +105,7 @@ function SacredTextContent({ workshop }: { workshop: WorkshopData }) {
         return (
           <motion.h2 
             key={index} 
-            className="text-2xl font-semibold mb-4 text-sacred-gold mt-8 flex items-center gap-2"
+            className="text-2xl font-semibold mb-4 text-yellow-400 mt-8 flex items-center gap-2"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
@@ -123,7 +123,7 @@ function SacredTextContent({ workshop }: { workshop: WorkshopData }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.03 }}
           >
-            <Star className="h-5 w-5 text-sacred-purple" />
+            <Star className="h-5 w-5 text-purple-400" />
             {line.slice(4)}
           </motion.h3>
         )
@@ -164,7 +164,7 @@ function SacredTextContent({ workshop }: { workshop: WorkshopData }) {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-sacred-gold/30 hover:border-sacred-gold/50 transition-all duration-300">
+      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-yellow-400/30 hover:border-yellow-400/50 transition-all duration-300"
         <CardContent className="p-8">
           <ScrollArea className="h-[600px] pr-4">
             <div className="prose prose-lg prose-invert max-w-none">
@@ -219,7 +219,7 @@ function DivineTasksContent({
       <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-sacred-purple/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
-            <Target className="h-5 w-5 text-sacred-purple" />
+            <Target className="h-5 w-5 text-purple-400" />
             Divine Challenges
           </CardTitle>
           <CardDescription className="text-blue-200">
@@ -239,7 +239,7 @@ function DivineTasksContent({
                   className={cn(
                     "p-4 rounded-lg border cursor-pointer transition-all duration-300",
                     selectedExercise?.id === exercise.id 
-                      ? "bg-sacred-gold/10 border-sacred-gold/40" 
+                      ? "bg-yellow-400/10 border-yellow-400/40" 
                       : "bg-white/5 border-white/20 hover:bg-white/10 hover:border-white/30",
                     isCompleted && "ring-2 ring-green-400/30"
                   )}
@@ -252,7 +252,7 @@ function DivineTasksContent({
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-sacred-purple/20 flex items-center justify-center text-sacred-purple font-semibold text-sm">
+                      <div className="w-8 h-8 rounded-full bg-purple-400/20 flex items-center justify-center text-purple-400 font-semibold text-sm">
                         {index + 1}
                       </div>
                       <h3 className="font-medium text-white">{exercise.title}</h3>
@@ -267,7 +267,7 @@ function DivineTasksContent({
                   </div>
                   <p className="text-sm text-blue-200 mb-2">{exercise.description}</p>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-sacred-gold flex items-center gap-1">
+                    <span className="text-yellow-400 flex items-center gap-1">
                       <Award className="h-3 w-3" />
                       {exercise.xpReward} XP
                     </span>
@@ -284,11 +284,11 @@ function DivineTasksContent({
 
       {/* Exercise Workspace */}
       {selectedExercise && (
-        <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-sacred-gold/30">
+        <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-yellow-400/30">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-white">
-                <Code className="h-5 w-5 text-sacred-gold" />
+                <Code className="h-5 w-5 text-yellow-400" />
                 {selectedExercise.title}
               </CardTitle>
               <div className="flex gap-2">
@@ -316,7 +316,7 @@ function DivineTasksContent({
                 value={userCode}
                 onChange={(e) => setUserCode(e.target.value)}
                 placeholder="// Begin your divine coding journey here..."
-                className="min-h-[300px] font-mono text-sm bg-black/60 border-sacred-gold/30 text-green-400 resize-none"
+                className="min-h-[300px] font-mono text-sm bg-black/60 border-yellow-400/30 text-green-400 resize-none"
                 style={{
                   fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
                   lineHeight: '1.5'
@@ -409,10 +409,10 @@ function AIGuideContent({ workshop }: { workshop: WorkshopData }) {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-sacred-gold/30">
+      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-yellow-400/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
-            <Users className="h-5 w-5 text-sacred-gold" />
+            <Users className="h-5 w-5 text-yellow-400" />
             Divine AI Mentor: {workshop.mentor}
           </CardTitle>
           <CardDescription className="text-blue-200">
@@ -460,17 +460,17 @@ function MasteryContent({
       className="space-y-6"
     >
       {/* Mastery Overview */}
-      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-sacred-gold/30">
+      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-yellow-400/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
-            <Crown className="h-5 w-5 text-sacred-gold" />
+            <Crown className="h-5 w-5 text-yellow-400" />
             Mastery Progress
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">
             <motion.div
-              className="text-6xl font-bold bg-gradient-to-r from-sacred-gold to-sacred-purple bg-clip-text text-transparent mb-2"
+              className="text-6xl font-bold bg-gradient-to-r from-yellow-400 to-purple-400 bg-clip-text text-transparent mb-2"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
@@ -483,12 +483,12 @@ function MasteryContent({
           <SacredProgress value={completionPercentage} variant="divine" showLabel={false} />
           
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="bg-sacred-gold/10 rounded-lg p-4 border border-sacred-gold/20">
-              <div className="text-2xl font-bold text-sacred-gold">{earnedXP}</div>
+            <div className="bg-yellow-400/10 rounded-lg p-4 border border-yellow-400/20">
+              <div className="text-2xl font-bold text-yellow-400">{earnedXP}</div>
               <div className="text-xs text-blue-300">XP Earned</div>
             </div>
-            <div className="bg-sacred-purple/10 rounded-lg p-4 border border-sacred-purple/20">
-              <div className="text-2xl font-bold text-sacred-purple">{completedCount}/{totalCount}</div>
+            <div className="bg-purple-400/10 rounded-lg p-4 border border-purple-400/20">
+              <div className="text-2xl font-bold text-purple-400">{completedCount}/{totalCount}</div>
               <div className="text-xs text-blue-300">Tasks Done</div>
             </div>
             <div className="bg-blue-400/10 rounded-lg p-4 border border-blue-400/20">
@@ -500,10 +500,10 @@ function MasteryContent({
       </Card>
 
       {/* Achievement Badges */}
-      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-sacred-purple/30">
+      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-purple-400/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
-            <Trophy className="h-5 w-5 text-sacred-purple" />
+            <Trophy className="h-5 w-5 text-purple-400" />
             Sacred Achievements
           </CardTitle>
         </CardHeader>
@@ -537,11 +537,11 @@ function MasteryContent({
             <motion.div
               className={cn(
                 "p-4 rounded-lg border text-center",
-                completionPercentage >= 100 ? "bg-sacred-gold/10 border-sacred-gold/30" : "bg-gray-400/10 border-gray-400/30 opacity-50"
+                completionPercentage >= 100 ? "bg-yellow-400/10 border-yellow-400/30" : "bg-gray-400/10 border-gray-400/30 opacity-50"
               )}
               whileHover={{ scale: 1.05 }}
             >
-              <Crown className={cn("h-8 w-8 mx-auto mb-2", completionPercentage >= 100 ? "text-sacred-gold" : "text-gray-400")} />
+              <Crown className={cn("h-8 w-8 mx-auto mb-2", completionPercentage >= 100 ? "text-yellow-400" : "text-gray-400")} />
               <div className="text-xs font-medium">Master</div>
               <div className="text-xs text-blue-300">100% mastery</div>
             </motion.div>
@@ -549,11 +549,11 @@ function MasteryContent({
             <motion.div
               className={cn(
                 "p-4 rounded-lg border text-center",
-                Object.keys(userProgress.hintsUsed).length === 0 && completedCount > 0 ? "bg-sacred-purple/10 border-sacred-purple/30" : "bg-gray-400/10 border-gray-400/30 opacity-50"
+                Object.keys(userProgress.hintsUsed).length === 0 && completedCount > 0 ? "bg-purple-400/10 border-purple-400/30" : "bg-gray-400/10 border-gray-400/30 opacity-50"
               )}
               whileHover={{ scale: 1.05 }}
             >
-              <Flame className={cn("h-8 w-8 mx-auto mb-2", Object.keys(userProgress.hintsUsed).length === 0 && completedCount > 0 ? "text-sacred-purple" : "text-gray-400")} />
+              <Flame className={cn("h-8 w-8 mx-auto mb-2", Object.keys(userProgress.hintsUsed).length === 0 && completedCount > 0 ? "text-purple-400" : "text-gray-400")} />
               <div className="text-xs font-medium">No Hints</div>
               <div className="text-xs text-blue-300">Zero hints used</div>
             </motion.div>

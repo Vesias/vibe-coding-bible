@@ -1,4 +1,4 @@
-import { getWorkshopById, getAllWorkshops } from '@/lib/workshop/workshop-content-migrated'
+import { getWorkshopById, getAllWorkshops } from '@/lib/workshop/commandments'
 import SacredWorkshopEngine from '@/components/workshop/SacredWorkshopEngine'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -21,6 +21,9 @@ const WorkshopNavigation = ({ currentWorkshop }: { currentWorkshop: any }) => {
   const checkPrerequisites = (workshop: any): boolean => {
     if (!workshop || !workshop.prerequisites) return true
     
+    // Check if we're on the client side
+    if (typeof window === 'undefined') return false
+    
     // Get completed workshops from localStorage
     const progressData = localStorage.getItem('vibe-coding-progress')
     if (!progressData) return workshop.prerequisites.length === 0
@@ -42,6 +45,9 @@ const WorkshopNavigation = ({ currentWorkshop }: { currentWorkshop: any }) => {
 
   // Calculate overall progress
   const getOverallProgress = (): number => {
+    // Check if we're on the client side
+    if (typeof window === 'undefined') return 0
+    
     const progressData = localStorage.getItem('vibe-coding-progress')
     if (!progressData) return 0
     

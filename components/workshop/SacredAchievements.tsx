@@ -161,10 +161,10 @@ export function SacredAchievements({
         }
       case 'legendary':
         return {
-          color: 'text-sacred-gold',
-          bg: 'bg-sacred-gold/10',
-          border: 'border-sacred-gold/30',
-          glow: 'shadow-sacred-gold/20'
+          color: 'text-yellow-400',
+          bg: 'bg-yellow-400/10',
+          border: 'border-yellow-400/30',
+          glow: 'shadow-yellow-400/20'
         }
     }
   }
@@ -174,7 +174,7 @@ export function SacredAchievements({
       case 'learning': return { icon: BookOpen, color: 'text-green-400' }
       case 'coding': return { icon: Code, color: 'text-blue-400' }
       case 'collaboration': return { icon: Users, color: 'text-purple-400' }
-      case 'mastery': return { icon: Crown, color: 'text-sacred-gold' }
+      case 'mastery': return { icon: Crown, color: 'text-yellow-400' }
     }
   }
 
@@ -263,7 +263,7 @@ export function SacredAchievements({
                   transition={{ delay: 1.1, type: "spring" }}
                   className="flex items-center justify-center gap-2 mt-4"
                 >
-                  <Award className="w-5 h-5 text-sacred-gold" />
+                  <Award className="w-5 h-5 text-yellow-400" />
                   <span className="text-sacred-gold font-semibold">
                     +{showUnlockAnimation.xpReward} XP
                   </span>
@@ -278,7 +278,7 @@ export function SacredAchievements({
               >
                 <Button
                   onClick={onClose}
-                  className="bg-gradient-to-r from-sacred-gold/30 to-sacred-purple/30 hover:from-sacred-gold/50 hover:to-sacred-purple/50"
+                  className="bg-gradient-to-r from-yellow-400/30 to-purple-400/30 hover:from-yellow-400/50 hover:to-purple-400/50"
                 >
                   Continue Learning
                 </Button>
@@ -289,11 +289,11 @@ export function SacredAchievements({
       </AnimatePresence>
 
       {/* Main Achievement Panel */}
-      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-sacred-gold/30">
+      <Card className="bg-gradient-to-br from-black/40 to-black/60 backdrop-blur-sm border border-yellow-400/30">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-white">
-              <Trophy className="h-6 w-6 text-sacred-gold" />
+              <Trophy className="h-6 w-6 text-yellow-400" />
               Sacred Achievements
             </CardTitle>
             {onClose && (
@@ -306,7 +306,7 @@ export function SacredAchievements({
           <div className="space-y-4">
             {/* Progress Overview */}
             <div className="text-center space-y-2">
-              <div className="text-3xl font-bold text-sacred-gold">
+              <div className="text-3xl font-bold text-yellow-400">
                 {unlockedCount}/{achievements.length}
               </div>
               <p className="text-blue-200 text-sm">Achievements Unlocked</p>
@@ -347,7 +347,7 @@ export function SacredAchievements({
                 id="unlocked-only"
                 checked={showUnlockedOnly}
                 onChange={(e) => setShowUnlockedOnly(e.target.checked)}
-                className="rounded border-sacred-gold/30"
+                className="rounded border-yellow-400/30"
               />
               <label htmlFor="unlocked-only" className="text-sm text-blue-200">
                 Show unlocked only
@@ -427,10 +427,10 @@ export function SacredAchievements({
                         <div className="flex items-center gap-1 text-xs">
                           <Award className={cn(
                             "w-3 h-3",
-                            isUnlocked ? "text-sacred-gold" : "text-gray-500"
+                            isUnlocked ? "text-yellow-400" : "text-gray-500"
                           )} />
                           <span className={cn(
-                            isUnlocked ? "text-sacred-gold" : "text-gray-500"
+                            isUnlocked ? "text-yellow-400" : "text-gray-500"
                           )}>
                             {achievement.xpReward} XP
                           </span>

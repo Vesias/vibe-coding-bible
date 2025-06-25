@@ -76,7 +76,7 @@ const SacredCard = React.forwardRef<HTMLDivElement, SacredCardProps>(
         onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
           // Enhanced hover effects
           e.currentTarget.style.transform = 'translateY(-4px)'
-          e.currentTarget.style.boxShadow = '0 20px 40px rgba(37, 99, 235, 0.2), 0 0 0 1px rgba(37, 99, 235, 0.2), inset 0 1px 0 rgba(37, 99, 235, 0.2)'
+          e.currentTarget.style.boxShadow = '0 20px 40px rgba(30, 64, 175, 0.2), 0 0 0 1px rgba(30, 64, 175, 0.3), inset 0 1px 0 rgba(30, 64, 175, 0.1)'
           ;(props as any).onMouseEnter?.(e)
         }}
         onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -112,11 +112,11 @@ const SacredCardTitle = React.forwardRef<
       className
     )}
     style={{
-      color: '#1f2937',
+      color: '#111827', /* Darker for better contrast */
       ...style
     }}
     onMouseEnter={(e: React.MouseEvent<HTMLHeadingElement>) => {
-      e.currentTarget.style.background = 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)'
+      e.currentTarget.style.background = 'linear-gradient(90deg, #1e40af 0%, #3730a3 100%)'
       e.currentTarget.style.webkitBackgroundClip = 'text'
       e.currentTarget.style.webkitTextFillColor = 'transparent'
       e.currentTarget.style.backgroundClip = 'text'
@@ -124,7 +124,7 @@ const SacredCardTitle = React.forwardRef<
     onMouseLeave={(e: React.MouseEvent<HTMLHeadingElement>) => {
       e.currentTarget.style.background = 'none'
       e.currentTarget.style.webkitBackgroundClip = 'unset'
-      e.currentTarget.style.webkitTextFillColor = '#1f2937'
+      e.currentTarget.style.webkitTextFillColor = '#111827'
       e.currentTarget.style.backgroundClip = 'unset'
     }}
     {...props}
@@ -140,7 +140,7 @@ const SacredCardDescription = React.forwardRef<
     ref={ref}
     className={cn("leading-relaxed", className)}
     style={{
-      color: '#4b5563',
+      color: '#374151', /* Darker for better contrast */
       ...style
     }}
     {...props}

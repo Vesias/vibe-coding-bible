@@ -22,14 +22,7 @@ const publicRoutes = [
 ]
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  
-  // Allow access to public routes
-  if (publicRoutes.some(route => pathname.startsWith(route))) {
-    return NextResponse.next()
-  }
-  
-  // For all other routes, continue normally (they can handle auth internally)
+  // Temporarily disabled to debug window.location issue
   return NextResponse.next()
 }
 

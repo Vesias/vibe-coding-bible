@@ -12,21 +12,21 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:scale-105 transition-all duration-300",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:scale-105 transition-all duration-300",
+          "border-2 border-blue-600 bg-background text-blue-600 hover:bg-blue-600 hover:text-white hover:scale-105 transition-all duration-300",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-105 transition-all duration-300",
-        ghost: "hover:bg-accent hover:text-accent-foreground hover:scale-105 transition-all duration-300",
-        link: "text-primary underline-offset-4 hover:underline hover:scale-105 transition-all duration-300",
-        // Sacred Variants - Now using CSS variables
-        sacred: "bg-brand-gradient text-white hover:scale-105 transition-all duration-300 backdrop-blur-sm relative overflow-hidden shadow-brand-md",
-        divine: "bg-neutral-gradient text-white border border-brand-primary/30 hover:scale-105 transition-all duration-300 backdrop-blur-md shadow-brand-sm",
-        mystical: "bg-brand-secondary-gradient text-white hover:scale-105 transition-all duration-300 shadow-brand-glow",
-        matrix: "bg-matrix-gradient text-semantic-success border border-semantic-success/30 hover:scale-105 transition-all duration-300 font-mono shadow-matrix-glow",
-        prophet: "bg-brand-gradient text-white hover:scale-105 shadow-lg hover:shadow-xl transition-all duration-300",
+          "bg-gray-100 text-gray-900 hover:bg-gray-200 hover:scale-105 transition-all duration-300",
+        ghost: "text-gray-900 hover:bg-gray-100 hover:scale-105 transition-all duration-300",
+        link: "text-blue-600 underline-offset-4 hover:underline hover:text-blue-800 hover:scale-105 transition-all duration-300",
+        // Sacred Variants - Enhanced for better contrast
+        sacred: "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:scale-105 transition-all duration-300 backdrop-blur-sm relative overflow-hidden shadow-lg",
+        divine: "bg-gradient-to-r from-gray-800 to-gray-900 text-white border border-gray-600 hover:from-gray-900 hover:to-black hover:scale-105 transition-all duration-300 backdrop-blur-md shadow-md",
+        mystical: "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 hover:scale-105 transition-all duration-300 shadow-lg",
+        matrix: "bg-gradient-to-r from-gray-900 to-black text-green-400 border border-green-400 hover:bg-black hover:scale-105 transition-all duration-300 font-mono shadow-lg",
+        prophet: "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:scale-105 shadow-lg hover:shadow-xl transition-all duration-300",
         // Premium Sacred Variants
-        "divine-primary": "bg-brand-divine-gradient text-white font-bold hover:scale-105 transition-all duration-300 backdrop-blur-sm shadow-brand-divine",
-        "sacred-ghost": "text-brand-primary hover:bg-brand-primary/10 hover:scale-105 border border-transparent hover:border-brand-primary/30 transition-all duration-300",
-        "mystical-outline": "border-2 border-brand-secondary text-brand-secondary hover:bg-brand-secondary hover:text-white hover:scale-105 transition-all duration-300"
+        "divine-primary": "bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white font-bold hover:from-blue-700 hover:via-indigo-700 hover:to-blue-800 hover:scale-105 transition-all duration-300 backdrop-blur-sm shadow-xl",
+        "sacred-ghost": "text-blue-600 hover:bg-blue-50 hover:scale-105 border border-transparent hover:border-blue-300 transition-all duration-300",
+        "mystical-outline": "border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white hover:scale-105 transition-all duration-300"
       },
       size: {
         default: "h-10 px-4 py-2",

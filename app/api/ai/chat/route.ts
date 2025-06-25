@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAIProvider } from '@/lib/ai/provider'
+import { getServerAIProvider } from '@/lib/ai/server-provider'
 import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     
     // Initialize AI provider
-    const aiProvider = getAIProvider()
+    const aiProvider = getServerAIProvider()
     
     // Generate AI response with personality
     const response = await aiProvider.generateResponse(messages, {

@@ -3,7 +3,7 @@
  * Tests payment flows, webhooks, and German compliance features
  */
 
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals'
+// Jest globals are automatically available, no need to import them
 import Stripe from 'stripe'
 import { createEnhancedCheckoutSession, createTrialCheckoutSession, validateDiscountCode } from '../lib/stripe/enhanced-checkout'
 import { changeSubscriptionPlan, cancelSubscription, pauseSubscription } from '../lib/stripe/server'

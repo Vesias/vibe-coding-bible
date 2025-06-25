@@ -239,7 +239,7 @@ export function EnhancedHeroSection() {
           >
             <Badge 
               variant="outline" 
-              className="border-sacred-gold/50 bg-sacred-gold/10 text-sacred-gold px-8 py-3 text-base font-medium hover:bg-sacred-gold/20 transition-all duration-300 shadow-lg shadow-sacred-gold/20"
+              className="border-yellow-400 bg-yellow-400/20 text-yellow-400 px-8 py-3 text-base font-medium hover:bg-yellow-400/30 transition-all duration-300 shadow-lg backdrop-blur-sm"
             >
               <Zap className="w-5 h-5 mr-3 animate-pulse" />
               Transform Your Development Journey in 30 Days
@@ -273,13 +273,13 @@ export function EnhancedHeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
           >
-            <p className="text-xl text-blue-200 sm:text-2xl md:text-3xl leading-relaxed mb-6">
+            <p className="text-xl text-white sm:text-2xl md:text-3xl leading-relaxed mb-6">
               Ascend from coding novice to{' '}
-              <span className="text-blue-600 font-semibold bg-blue-600/10 px-2 py-1 rounded">
+              <span className="text-gray-900 font-semibold bg-white/90 px-2 py-1 rounded">
                 AI-assisted development expert
               </span>
             </p>
-            <p className="text-lg text-blue-300 sm:text-xl leading-relaxed">
+            <p className="text-lg text-gray-100 sm:text-xl leading-relaxed">
               Build production-ready SaaS applications without writing a single line of code manually. 
               Experience the divine fusion of human creativity and artificial intelligence.
             </p>
@@ -339,26 +339,26 @@ export function EnhancedHeroSection() {
                 >
                   <div className="prophet-card bg-white/5 backdrop-blur-sm border border-white/10 p-8 text-center hover:bg-white/10 transition-all duration-500 hover:scale-105 hover:shadow-2xl relative overflow-hidden">
                     {/* Background Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-sacred-gold/5 via-transparent to-sacred-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
                     {/* Icon with Mystical Effect */}
                     <div className="relative mb-4">
-                      <div className="absolute inset-0 bg-gradient-to-r from-sacred-gold to-sacred-purple rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300 blur-lg" />
-                      <Icon className={`relative w-12 h-12 mx-auto mb-4 ${stat.color} group-hover:scale-110 transition-transform duration-300`} />
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300 blur-lg" />
+                      <Icon className="relative w-12 h-12 mx-auto mb-4 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     
                     {/* Value */}
-                    <div className="text-4xl font-bold text-white mb-2 font-sacred group-hover:text-sacred-gold transition-colors duration-300">
+                    <div className="text-4xl font-bold text-white mb-2 font-sacred group-hover:text-yellow-300 transition-colors duration-300">
                       {stat.value}
                     </div>
                     
                     {/* Label */}
-                    <div className="text-sm font-medium text-blue-300 mb-2 group-hover:text-white transition-colors duration-300">
+                    <div className="text-sm font-medium text-gray-200 mb-2 group-hover:text-white transition-colors duration-300">
                       {stat.label}
                     </div>
                     
                     {/* Description */}
-                    <div className="text-xs text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       {stat.description}
                     </div>
                   </div>
@@ -374,14 +374,14 @@ export function EnhancedHeroSection() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.5 }}
           >
-            <p className="text-lg text-blue-300 font-medium">
+            <p className="text-lg text-white font-medium">
               Powered by the most sacred AI tools
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-8 opacity-70">
+            <div className="flex flex-wrap items-center justify-center gap-8">
               {['OpenAI GPT-4', 'Anthropic Claude', 'Cursor IDE', 'GitHub Copilot', 'v0.dev'].map((brand, index) => (
                 <motion.div 
                   key={brand} 
-                  className="h-12 px-6 bg-white/10 rounded-xl flex items-center justify-center text-white/80 text-sm font-medium hover:bg-white/20 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10"
+                  className="h-12 px-6 bg-white/90 rounded-xl flex items-center justify-center text-gray-900 text-sm font-medium hover:bg-white transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/20"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 1.7 + index * 0.1 }}
@@ -399,7 +399,7 @@ export function EnhancedHeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 2 }}
           >
-            <div className="flex flex-col items-center text-sacred-gold animate-bounce">
+            <div className="flex flex-col items-center text-white animate-bounce">
               <span className="text-sm font-medium mb-2">Discover the Sacred Wisdom</span>
               <ArrowDown className="w-6 h-6" />
             </div>

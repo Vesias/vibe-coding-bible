@@ -145,40 +145,40 @@
 /* ===== BRAND GRADIENT TEXT EFFECTS ===== */
 
 .text-brand-gradient {
-  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  background: linear-gradient(135deg, #1e40af, #3730a3);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #1e40af; /* Fallback for accessibility */
 }
 
 .text-agentland-gradient {
-  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  background: linear-gradient(135deg, #1e40af, #3730a3);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #1e40af; /* Fallback for accessibility */
 }
 
 /* AgentLand gradient text effects - corporate standard */
 .text-sacred-gradient {
-  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  background: linear-gradient(135deg, #1e40af, #3730a3);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #1e40af; /* Fallback for accessibility */
 }
 
 .text-divine-gradient {
-  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  background: linear-gradient(90deg, #1e40af, #3730a3);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #1e40af; /* Fallback for accessibility */
 }
 
 .text-mystical-gradient {
-  color: #1f2937; /* AgentLand gray-800 for readability */
+  color: #111827; /* Darker gray for maximum readability */
 }
 
 /* ===== DESIGN SYSTEM COMPONENTS ===== */
@@ -240,30 +240,30 @@
 
 /* Button Variants */
 .btn-primary {
-  background: #2563eb;
+  background: #1e40af;
   color: white;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: #1e3a8a;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
 }
 
 .btn-primary:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.3);
 }
 
 .btn-secondary {
-  background: #e0e7ff;
-  color: #1f2937;
-  border: 1px solid #4f46e5;
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #374151;
 }
 
 .btn-secondary:hover {
-  background: #4f46e5;
+  background: #374151;
   color: white;
   transform: translateY(-2px);
 }
@@ -317,15 +317,15 @@
 }
 
 .card-sacred {
-  background: linear-gradient(to bottom right, white, hsl(205, 85%, 95%));
-  border: 1px solid hsl(205, 70%, 65% / 0.3);
-  box-shadow: 0 8px 32px hsl(214, 100%, 28% / 0.15);
+  background: linear-gradient(to bottom right, white, #f8fafc);
+  border: 1px solid rgba(30, 64, 175, 0.2);
+  box-shadow: 0 8px 32px rgba(30, 64, 175, 0.1);
   backdrop-filter: blur(12px);
 }
 
 .card-sacred:hover {
-  border-color: #FFCE00 / 0.4;
-  box-shadow: 0 20px 40px hsl(214, 100%, 28% / 0.2), 0 0 0 1px #FFCE00 / 0.2;
+  border-color: rgba(30, 64, 175, 0.4);
+  box-shadow: 0 20px 40px rgba(30, 64, 175, 0.15), 0 0 0 1px rgba(30, 64, 175, 0.2);
 }
 
 .card-divine {
@@ -345,7 +345,7 @@
 .input-base {
   width: 100%;
   border-radius: 0.5rem;
-  border: 1px solid hsl(205, 70%, 65% / 0.3);
+  border: 2px solid #d1d5db;
   background: white;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 1rem;
@@ -354,8 +354,8 @@
 }
 
 .input-base:focus {
-  border-color: hsl(200, 100%, 44%);
-  box-shadow: 0 0 0 3px hsl(200, 100%, 44% / 0.1);
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
 }
 
 .input-base:disabled {
@@ -431,9 +431,9 @@
 }
 
 .badge-sacred {
-  background: linear-gradient(135deg, #FFCE00, hsl(200, 100%, 44%));
+  background: linear-gradient(135deg, #1e40af, #3730a3);
   color: white;
-  box-shadow: 0 4px 8px #FFCE00 / 0.3;
+  box-shadow: 0 4px 8px rgba(30, 64, 175, 0.3);
 }
 
 /* Alert System */

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import { getAIProvider } from '@/lib/ai/provider'
+import { getServerAIProvider } from '@/lib/ai/server-provider'
 
 export async function GET() {
   try {
-    const aiProvider = getAIProvider()
+    const aiProvider = getServerAIProvider()
     const personalities = aiProvider.getPersonalities()
     
     // Enhanced personality data with additional features

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getAIProvider } from '@/lib/ai/provider'
+import { getServerAIProvider } from '@/lib/ai/server-provider'
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Initialize AI provider
-    const aiProvider = getAIProvider()
+    const aiProvider = getServerAIProvider()
     
     // Analyze file content based on analysis type
     let analysisPrompt = ''
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     })
     
     // Extract code snippets if any
-    const codeSnippets = aiProvider['extractCodeBlocks'](response.content)
+    const codeSnippets = response.codeSnippets || []
     
     // Save file analysis to database
     try {

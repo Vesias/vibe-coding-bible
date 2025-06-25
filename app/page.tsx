@@ -42,7 +42,7 @@ const SacredHero = () => (
         Die Vibe Coding Bibel
       </h1>
       
-      <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-gray-600">
+      <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-gray-700">
         Meistere KI-unterstützte Entwicklung mit den{' '}
         <span className="font-semibold text-blue-600">10 AgentLand Geboten</span>
         {' '}der professionellen Programmierung
@@ -82,7 +82,7 @@ const SacredFeatures = () => (
         <h2 className="text-4xl md:text-5xl font-bold mb-4 agentland-text" id="features-heading">
           Interaktive E-Book Workshops
         </h2>
-        <p className="text-xl mb-4 text-gray-600">Live-Coding + KI-Mentoring + Praktische Projekte</p>
+        <p className="text-xl mb-4 text-gray-700">Live-Coding + KI-Mentoring + Praktische Projekte</p>
         <div className="flex justify-center gap-4 flex-wrap">
           <span className="px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-600 border border-blue-200">
             📚 10 AgentLand Gebote
@@ -106,12 +106,12 @@ const SacredFeatures = () => (
           <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
             <div className="text-4xl mb-4">📖</div>
             <h3 className="text-2xl font-bold mb-4 text-blue-600">Live E-Book Workshops</h3>
-            <p className="mb-6 text-gray-600">
+            <p className="mb-6 text-gray-700">
               Interaktive digitale Bücher mit eingebetteten Code-Editoren, Live-Tests und KI-Mentoring
             </p>
             <div className="mb-4">
-              <span className="text-sm text-gray-500">Enthält:</span>
-              <ul className="text-sm mt-2 space-y-1 text-gray-600">
+              <span className="text-sm text-gray-600">Enthält:</span>
+              <ul className="text-sm mt-2 space-y-1 text-gray-700">
                 <li>• Live Code-Editoren</li>
                 <li>• Instant Feedback</li>
                 <li>• KI-Assistierte Hilfe</li>
@@ -134,12 +134,12 @@ const SacredFeatures = () => (
           <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
             <div className="text-4xl mb-4">🚀</div>
             <h3 className="text-2xl font-bold mb-4 text-indigo-600">Praktische Projekte</h3>
-            <p className="mb-6 text-gray-600">
+            <p className="mb-6 text-gray-700">
               Baue echte Anwendungen während du lernst. Von MVP bis zur Production-Ready App.
             </p>
             <div className="mb-4">
-              <span className="text-sm text-gray-500">Du baust:</span>
-              <ul className="text-sm mt-2 space-y-1 text-gray-600">
+              <span className="text-sm text-gray-600">Du baust:</span>
+              <ul className="text-sm mt-2 space-y-1 text-gray-700">
                 <li>• SaaS Applications</li>
                 <li>• KI-Tools & Bots</li>
                 <li>• Profitable MVPs</li>
@@ -162,12 +162,12 @@ const SacredFeatures = () => (
           <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
             <div className="text-4xl mb-4">👥</div>
             <h3 className="text-2xl font-bold mb-4 text-blue-700">Community & Mentoring</h3>
-            <p className="mb-6 text-gray-600">
+            <p className="mb-6 text-gray-700">
               Private Discord Community + 1:1 Mentoring Sessions + Wöchentliche Live-Calls
             </p>
             <div className="mb-4">
-              <span className="text-sm text-gray-500">Support:</span>
-              <ul className="text-sm mt-2 space-y-1 text-gray-600">
+              <span className="text-sm text-gray-600">Support:</span>
+              <ul className="text-sm mt-2 space-y-1 text-gray-700">
                 <li>• 24/7 Community Chat</li>
                 <li>• Wöchentliche Q&A Calls</li>
                 <li>• Persönliches Mentoring</li>
@@ -198,19 +198,19 @@ const SacredStats = () => (
           <div className="text-6xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300 agentland-text">
             10
           </div>
-          <div className="text-gray-600 text-lg">Interaktive Workshops</div>
+          <div className="text-gray-700 text-lg">Interaktive Workshops</div>
         </div>
         <div className="group">
           <div className="text-6xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300 text-indigo-600">
             10k+
           </div>
-          <div className="text-gray-600 text-lg">Aktive Lernende</div>
+          <div className="text-gray-700 text-lg">Aktive Lernende</div>
         </div>
         <div className="group">
           <div className="text-6xl font-bold mb-2 group-hover:scale-110 transition-transform duration-300 text-blue-700">
             95%
           </div>
-          <div className="text-gray-600 text-lg">Erfolgsrate</div>
+          <div className="text-gray-700 text-lg">Erfolgsrate</div>
         </div>
       </div>
     </div>
@@ -224,7 +224,7 @@ const SacredTestimonials = () => (
         <h2 className="text-4xl md:text-5xl font-bold mb-4 agentland-text">
           Erfahrungsberichte
         </h2>
-        <p className="text-xl text-gray-600">Was unsere Absolventen über ihre Lernerfahrung sagen</p>
+        <p className="text-xl text-gray-700">Was unsere Absolventen über ihre Lernerfahrung sagen</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
@@ -255,7 +255,7 @@ const SacredTestimonials = () => (
             <div className="absolute inset-0 rounded-xl opacity-20 group-hover:opacity-30 transition-all duration-300 bg-gradient-to-br from-blue-600 to-indigo-600 filter blur-xl" />
             <div className="relative p-8 rounded-xl border transition-all duration-300 bg-white/90 backdrop-blur-sm border-gray-200 shadow-lg">
               <div className="text-4xl mb-4">{testimonial.emoji}</div>
-              <blockquote className="text-lg mb-6 text-gray-600">
+              <blockquote className="text-lg mb-6 text-gray-700">
                 "{testimonial.quote}"
               </blockquote>
               <div className="flex items-center gap-3">
@@ -267,7 +267,7 @@ const SacredTestimonials = () => (
                     <div className="font-semibold text-blue-600">{testimonial.author}</div>
                     <span className="text-xs text-green-600 font-medium">{testimonial.verification}</span>
                   </div>
-                  <div className="text-sm text-gray-500">{testimonial.role}</div>
+                  <div className="text-sm text-gray-600">{testimonial.role}</div>
                 </div>
               </div>
             </div>
@@ -285,7 +285,7 @@ const SacredExports = () => (
         <h2 className="text-4xl md:text-5xl font-bold mb-4 agentland-text">
           VibeCodingBibel™ als eBook
         </h2>
-        <p className="text-xl text-gray-600">
+        <p className="text-xl text-gray-700">
           Lade das vollständige Kompendium in professioneller Buchqualität herunter
         </p>
       </div>
@@ -305,7 +305,7 @@ const SacredCTA = () => (
       <h2 className="text-4xl md:text-5xl font-bold mb-6 agentland-text">
         Bereit für den nächsten Karriereschritt?
       </h2>
-      <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+      <p className="text-xl text-gray-700 mb-6 leading-relaxed">
         Über 10.000 Entwickler haben bereits ihre Produktivität mit KI-Tools verdoppelt. 
         Werde Teil der nächsten Generation von Software-Entwicklern.
       </p>

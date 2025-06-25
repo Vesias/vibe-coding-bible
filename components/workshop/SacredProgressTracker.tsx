@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Trophy, Star, Target, BookOpen, Clock, Zap, Crown, Award } from 'lucide-react'
-import { getAllWorkshops } from '@/lib/workshop/workshop-content-migrated'
+import { getAllWorkshops } from '@/lib/workshop/commandments'
 
 interface UserProgress {
   workshopsCompleted: string[]

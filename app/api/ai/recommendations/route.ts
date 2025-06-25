@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAIProvider } from '@/lib/ai/provider'
+import { getServerAIProvider } from '@/lib/ai/server-provider'
 import { createClient } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest) {
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Generate AI recommendations
-    const aiProvider = getAIProvider()
+    const aiProvider = getServerAIProvider()
     const recommendations = await aiProvider.generateLearningRecommendations(profileForAI, context)
     
     // Save recommendations to database for tracking

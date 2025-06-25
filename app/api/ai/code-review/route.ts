@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAIProvider } from '@/lib/ai/provider'
+import { getServerAIProvider } from '@/lib/ai/server-provider'
 import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Initialize AI provider
-    const aiProvider = getAIProvider()
+    const aiProvider = getServerAIProvider()
     
     // Perform code review
     const reviewResponse = await aiProvider.reviewCode({
